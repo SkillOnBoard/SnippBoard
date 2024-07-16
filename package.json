@@ -1,0 +1,19 @@
+{
+  "name": "snippboard",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^31.2.0"
+  },
+  "dependencies": {
+    "electron-reload": "^2.0.0-alpha.1",
+    "menubar": "^9.5.0"
+  }
+}
