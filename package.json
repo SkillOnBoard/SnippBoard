@@ -2,18 +2,47 @@
   "name": "snippboard",
   "version": "1.0.0",
   "description": "",
-  "main": "main.js",
+  "main": "app/main.js",
   "scripts": {
     "start": "electron .",
+    "dev": "NODE_ENV=development concurrently \"vite\" \"wait-on http://localhost:5173 && electron .\"",
+    "build": "vite build && electron-builder",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "build": {
+    "appId": "com.electron.vite.react",
+    "files": [
+      "dist/**/*",
+      "app/main.js",
+      "app/preload.js"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    }
+  },
+  "config": {
+    "forge": "./forge.config.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^31.2.0"
+    "electron-forge": "^5.2.4",
+    "electron-prebuilt-compile": "1.7.9",
+    "@electron-forge/maker-dmg": "^7.4.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "concurrently": "^8.2.2",
+    "electron": "^31.2.0",
+    "electron-builder": "^24.13.3",
+    "wait-on": "^7.2.0"
   },
   "dependencies": {
+    "electron-forge": "^5.2.4",
     "electron-reload": "^2.0.0-alpha.1",
-    "menubar": "^9.5.0"
+    "menubar": "^9.5.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   }
 }
