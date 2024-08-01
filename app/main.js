@@ -26,10 +26,10 @@ const createWindow = () => {
   console.log('NODE_ENV:', process.env.NODE_ENV);
   if (process.env.NODE_ENV === 'development') {
     console.log('Development mode');
-    mainWindow.loadURL('http://localhost:5173'); // Cambia el puerto si es necesario
+    mainWindow.loadURL('http://localhost:5173'); // Change the port if it's needed
   } else {
-    console.log('Dist');
-    mainWindow.loadFile('src/dist/index.html');
+    console.log('Build mode');
+    mainWindow.loadFile('app/src/dist/index.html');
   }
 
   const openShortcut = globalShortcut.register('Control+Space', () => {

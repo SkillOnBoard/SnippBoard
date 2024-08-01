@@ -5,7 +5,7 @@
   "main": "app/main.js",
   "scripts": {
     "start": "electron .",
-    "dev": "NODE_ENV=development concurrently \"vite\" \"wait-on http://localhost:5173 && electron .\"",
+    "dev": "NODE_ENV=development concurrently 'vite' 'wait-on http://localhost:5173 && electron .'",
     "build": "vite build && electron-builder",
     "package": "electron-forge package",
     "make": "electron-forge make",
@@ -29,18 +29,16 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron-forge": "^5.2.4",
-    "electron-prebuilt-compile": "1.7.9",
     "@electron-forge/maker-dmg": "^7.4.0",
     "@vitejs/plugin-react": "^4.3.1",
     "concurrently": "^8.2.2",
-    "electron": "^31.2.0",
+    "electron": "^31.3.1",
     "electron-builder": "^24.13.3",
+    "electron-forge": "^5.2.4",
     "wait-on": "^7.2.0"
   },
   "dependencies": {
     "electron-forge": "^5.2.4",
-    "electron-reload": "^2.0.0-alpha.1",
     "menubar": "^9.5.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"

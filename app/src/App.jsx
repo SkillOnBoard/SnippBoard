@@ -1,11 +1,9 @@
 import React from 'react';
 
-function App() {
+const App = () => {
   return (
     <div>
-      <h1>Hello, Vite and React!</h1>
-      <h3>Ola k ase 100% </h3>
-      <h3>Hola pablo </h3>
+      <h1>Hello, SnippBoard!</h1>
     </div>
   );
 }
