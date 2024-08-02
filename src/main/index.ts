@@ -1,15 +1,53 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, globalShortcut, Tray, Menu } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import trayIcon from '../../resources/logo.png?asset'
+
+let tray: Tray | null = null
+
+const createTrayMenu = (): void => {
+  tray = new Tray(trayIcon)
+
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: 'About SnippBoard',
+      click: (): void => {
+        console.log('About SnippBoard clicked')
+      }
+    },
+    {
+      label: 'Check for Updates',
+      click: (): void => {
+        console.log('Check for Updates clicked')
+      }
+    },
+    {
+      label: 'Settings',
+      click: (): void => {
+        console.log('Settings clicked')
+      }
+    },
+    {
+      label: 'Quit',
+      click: (): void => {
+        app.exit()
+      }
+    }
+  ])
+
+  tray.setToolTip('SnippBoard')
+  tray.setContextMenu(contextMenu)
+}
 
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: 750,
+    height: 100,
+    opacity: 0.9,
     show: false,
-    autoHideMenuBar: true,
+    frame: false,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
@@ -33,6 +71,25 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  const openShortcut = globalShortcut.register('Control+Space', () => {
+    mainWindow.show()
+  })
+
+  const closeShortcut = globalShortcut.register('Escape', () => {
+    mainWindow.hide()
+  })
+
+  if (!openShortcut || !closeShortcut) {
+    console.log('Registration failed.')
+  }
+
+  mainWindow.on('close', (event) => {
+    event.preventDefault()
+    mainWindow.hide()
+  })
+
+  createTrayMenu()
 }
 
 // This method will be called when Electron has finished
@@ -66,7 +123,7 @@ app.whenReady().then(() => {
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
-    app.quit()
+    app.exit()
   }
 })
 
