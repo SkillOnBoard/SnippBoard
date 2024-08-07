@@ -48,6 +48,7 @@ function createWindow(): void {
     opacity: 0.9,
     show: false,
     frame: false,
+    resizable: false,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
@@ -87,6 +88,22 @@ function createWindow(): void {
   mainWindow.on('close', (event) => {
     event.preventDefault()
     mainWindow.hide()
+  })
+
+  ipcMain.on('resize-window', (_event, size) => {
+    switch (size) {
+      case 'small': {
+        mainWindow.setSize(750, 100)
+        break
+      }
+      case 'big': {
+        mainWindow.setSize(750, 400)
+        break
+      }
+      default: {
+        mainWindow.setSize(750, 100)
+      }
+    }
   })
 
   createTrayMenu()
