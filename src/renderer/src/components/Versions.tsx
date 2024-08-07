@@ -1,14 +1,27 @@
-import { useState } from 'react'
-
 function Versions(): JSX.Element {
-  const [versions] = useState(window.electron.process.versions)
+  const showSmall = (event): void => {
+    event.preventDefault()
+    window.electron.ipcRenderer.send('resize-window', 'small')
+  }
+
+  const showBig = (event): void => {
+    event.preventDefault()
+    window.electron.ipcRenderer.send('resize-window', 'big')
+  }
 
   return (
-    <ul className="versions">
-      <li className="electron-version">Electron v{versions.electron}</li>
-      <li className="chrome-version">Chromium v{versions.chrome}</li>
-      <li className="node-version">Node v{versions.node}</li>
-    </ul>
+    <div className="content-center">
+      <input className="text-black draggable"></input>
+      <br />
+      <ul className="versions">
+        <li>
+          <button onClick={showSmall}>Show small</button>
+        </li>
+        <li>
+          <button onClick={showBig}>Show big</button>
+        </li>
+      </ul>
+    </div>
   )
 }
 
