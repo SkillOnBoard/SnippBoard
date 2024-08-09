@@ -1,19 +1,14 @@
 import Versions from './components/Versions'
-import electronLogo from './assets/electron.svg'
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-} from 'react-router-dom';
-import Home from './components/Home';
-import Other from './components/Other';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import Home from './components/Home'
+import Other from './components/Other'
 
 function App(): JSX.Element {
   // const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
 
   return (
     <>
-      <Versions></Versions>
+      {/* <Versions></Versions> */}
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
