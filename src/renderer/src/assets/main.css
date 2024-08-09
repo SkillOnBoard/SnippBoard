@@ -35,7 +35,7 @@ code {
 }
 
 .draggable {
-    /* TODO: Make draggable only the search bar when it's ready */
+  /* TODO: Make draggable only the search bar when it's ready */
   -webkit-app-region: drag;
 }
 
