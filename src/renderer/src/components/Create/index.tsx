@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 
-function Other(): JSX.Element {
+function Create(): JSX.Element {
   const navigate = useNavigate()
   window.electron.ipcRenderer.send('resize-window', 'big')
 
@@ -17,4 +17,4 @@ function Other(): JSX.Element {
   )
 }
 
-export default Other
+export default Create
