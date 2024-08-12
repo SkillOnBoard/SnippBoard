@@ -1,7 +1,7 @@
 //import Versions from './components/Versions'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import SearchBar from './components/SearchBar'
-import Create from './components/Create'
+import SearchBar from './pages/SearchBar'
+import Create from './pages/Create'
 
 function App(): JSX.Element {
   // const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
