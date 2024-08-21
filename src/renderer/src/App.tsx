@@ -1,7 +1,7 @@
-import Versions from './components/Versions'
+//import Versions from './components/Versions'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import Home from './components/Home'
-import Other from './components/Other'
+import SearchBar from './pages/SearchBar'
+import Create from './pages/Create'
 
 function App(): JSX.Element {
   // const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
@@ -11,8 +11,8 @@ function App(): JSX.Element {
       {/* <Versions></Versions> */}
       <Router>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/other" element={<Other />} />
+          <Route path="/" element={<SearchBar />} />
+          <Route path="/create" element={<Create />} />
         </Routes>
       </Router>
     </>
