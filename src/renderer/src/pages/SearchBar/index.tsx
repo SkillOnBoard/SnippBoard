@@ -12,7 +12,8 @@ function SearchBar(): JSX.Element {
   const navigate = useNavigate()
   const [query, setQuery] = useState<string>('')
   const [results, setResults] = useState<Data[]>([])
-  const [showCode, setshowCode] = useState<number | null>(null)
+  const [showCode, setShowCode] = useState<boolean>(false)
+  const [selectedIndex, setSelectedIndex] = useState(-1)
 
   useEffect(() => {
     window.electron.ipcRenderer.send('resize-window', 'small')
@@ -23,16 +24,43 @@ function SearchBar(): JSX.Element {
   }
 
   useEffect(() => {
+    const handleKeyDown = (e): void => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault()
+        setSelectedIndex((prevIndex) =>
+          prevIndex < results.length - 1 ? prevIndex + 1 : prevIndex
+        )
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault()
+        setSelectedIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0))
+      } else if (e.key === 'Enter') {
+        // Manejar la selección (por ejemplo, navegar a un enlace o hacer algo con el elemento seleccionado)
+        if (selectedIndex >= 0) {
+          setShowCode((prev) => !prev)
+        }
+      }
+    }
+
+    // Añadir el event listener global al montar el componente
+    window.addEventListener('keydown', handleKeyDown)
+
+    // Limpiar el event listener al desmontar el componente
+    return (): void => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [selectedIndex, results])
+
+  useEffect(() => {
+    setSelectedIndex(-1)
     switch (query) {
       case '':
-        setshowCode(null)
+        setShowCode(false)
         window.electron.ipcRenderer.send('resize-window', 'small')
         break
       case '/':
         navigate('/create')
         break
       default:
-        if (showCode != null) setshowCode(0)
         window.electron.ipcRenderer.send('resize-window', 'big')
     }
 
@@ -75,15 +103,13 @@ function SearchBar(): JSX.Element {
         {query && (
           <>
             <hr className="border-gray-600" />
-            <div
-              className={`w-full mt-2 text-gray-300 ${showCode !== null ? 'grid grid-cols-2' : ''}`}
-            >
+            <div className={`w-full mt-2 text-gray-300 ${showCode ? 'grid grid-cols-2' : ''}`}>
               <div>
                 {results.map((result, index) => (
                   <div
                     key={index}
-                    className={`flex justify-between items-center px-4 py-2 cursor-pointer hover:bg-gray-700 ${showCode == index ? 'bg-gray-800' : ''}`}
-                    onClick={() => setshowCode(index)}
+                    className={`flex justify-between items-center px-4 py-2 cursor-pointer hover:bg-gray-700 ${selectedIndex == index ? 'bg-gray-800' : ''}`}
+                    onClick={() => setShowCode(true)}
                   >
                     <div className="flex items-center space-x-2">
                       <span>{result.name}</span>
@@ -92,10 +118,10 @@ function SearchBar(): JSX.Element {
                   </div>
                 ))}
               </div>
-              {showCode !== null && results.length + 1 >= showCode && (
+              {showCode && results.length + 1 >= selectedIndex && (
                 <div className="bg-gray-800">
-                  <button onClick={() => setshowCode(null)}>Close</button>
-                  <div>{results[showCode].content}</div>
+                  <button onClick={() => setShowCode(false)}>Close</button>
+                  <div>{results[selectedIndex].content}</div>
                 </div>
               )}
             </div>
