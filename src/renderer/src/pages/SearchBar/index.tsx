@@ -1,3 +1,7 @@
+import Footer from '@renderer/components/Footer'
+import SearchBarCode from '@renderer/components/SearchBarCode'
+import SearchBarInput from '@renderer/components/SearchBarInput'
+import SearchBarRow from '@renderer/components/SearchBarRow'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -94,13 +98,7 @@ function SearchBar(): JSX.Element {
   return (
     <>
       <div className="fixed top-3 left-0 w-full px-4">
-        <input
-          type="text"
-          className="w-full px-4 py-2 text-xl outline-none bg-inherit placeholder-gray-500"
-          placeholder="Search for saved snippets"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
+        <SearchBarInput query={query} setQuery={setQuery} />
 
         {query && (
           <>
@@ -108,33 +106,24 @@ function SearchBar(): JSX.Element {
             <div className={`w-full mt-2 text-gray-300 ${showCode ? 'grid grid-cols-2' : ''}`}>
               <div>
                 {results.map((result, index) => (
-                  <div
+                  <SearchBarRow
                     key={index}
-                    className={`flex justify-between items-center px-4 py-2 cursor-pointer ${selectedIndex == index ? 'bg-gray-700' : ''}`}
-                    onClick={() => setShowCode(true)}
-                    onMouseOver={() => setSelectedIndex(index)}
-                  >
-                    <div className="flex items-center space-x-2">
-                      <span>{result.name}</span>
-                    </div>
-                    <span className="text-blue-400 text-sm">{result.type}</span>
-                  </div>
+                    index={index}
+                    resultName={result.name}
+                    resultType={result.type}
+                    selectedIndex={selectedIndex}
+                    setShowCode={setShowCode}
+                    setSelectedIndex={setSelectedIndex}
+                  />
                 ))}
               </div>
               {showCode && results.length + 1 >= selectedIndex && (
-                <div className="bg-gray-800">
-                  <button onClick={() => setShowCode(false)}>Close</button>
-                  <div>{results[selectedIndex]?.content}</div>
-                </div>
+                <SearchBarCode code={results[selectedIndex]?.content} setShowCode={setShowCode} />
               )}
             </div>
           </>
         )}
-        {/* footer */}
-        <div className="fixed bottom-2 left-0 w-full px-4">
-          <hr className="border-gray-600 pb-2" />
-          <div className="px-4">/ for actions</div>
-        </div>
+        <Footer tempText={'/ for actions'} />
       </div>
     </>
   )
