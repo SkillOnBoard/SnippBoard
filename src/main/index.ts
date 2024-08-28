@@ -1,12 +1,24 @@
-import { app, shell, BrowserWindow, ipcMain, globalShortcut, Tray, Menu } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, globalShortcut, Tray, Menu, dialog } from 'electron'
 import { join } from 'path'
+import path from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import trayIcon from '../../resources/logo.png?asset'
+import { fork, ChildProcess } from 'child_process'
+import fs from 'fs'
+
+// Ensure TypeScript can resolve __dirname correctly in ES modules
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirnameLocal = dirname(__filename)
 
 let tray: Tray | null = null
+let serverProcess: ChildProcess | null = null
+let userDataPath: string | null = null
 
-const createTrayMenu = (): void => {
+const createTrayMenu = (browserWindow: BrowserWindow): void => {
   tray = new Tray(trayIcon)
 
   const contextMenu = Menu.buildFromTemplate([
@@ -26,6 +38,7 @@ const createTrayMenu = (): void => {
       label: 'Settings',
       click: (): void => {
         console.log('Settings clicked')
+        chooseDataPath(browserWindow)
       }
     },
     {
@@ -51,8 +64,9 @@ function createWindow(): void {
     resizable: false,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      nodeIntegration: false, // Disable Node.js integration in the renderer
+      contextIsolation: true, // Enforce context isolation
+      preload: path.join(__dirnameLocal, 'preload/index.js') // Use a preload script
     }
   })
 
@@ -70,7 +84,7 @@ function createWindow(): void {
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
   } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+    mainWindow.loadFile(join(__dirnameLocal, '../renderer/index.html'))
   }
 
   const openShortcut = globalShortcut.register('Control+Space', () => {
@@ -106,7 +120,7 @@ function createWindow(): void {
     }
   })
 
-  createTrayMenu()
+  createTrayMenu(mainWindow)
 }
 
 // This method will be called when Electron has finished
@@ -126,6 +140,14 @@ app.whenReady().then(() => {
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
 
+  // Server Data
+  // userDataPath = chooseDataPath() || path.join(app.getPath('userData'), 'data.json')
+  // serverProcess = fork(path.join(__dirnameLocal, '../../server/server.mjs'), [userDataPath])
+
+  userDataPath = path.join(app.getPath('userData'), 'data.json')
+
+  // Start the server process
+  serverProcess = fork(path.join(__dirnameLocal, '../../server/server.mjs'), [userDataPath])
   createWindow()
 
   app.on('activate', function () {
@@ -133,6 +155,10 @@ app.whenReady().then(() => {
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
+})
+
+app.on('before-quit', () => {
+  if (serverProcess) serverProcess.kill()
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -146,3 +172,28 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
+
+// Function to let the user choose where to save their data
+function chooseDataPath(browserWindow: BrowserWindow): void {
+  const result = dialog.showSaveDialogSync(browserWindow, {
+    title: 'Choose where to save your data',
+    defaultPath: path.join(app.getPath('documents'), 'my-electron-app-data.json'),
+    filters: [{ name: 'JSON Files', extensions: ['json'] }]
+  })
+
+  if (result) {
+    userDataPath = result
+    fs.writeFileSync(userDataPath, '[]') // Initialize with an empty array
+
+    // Inform the renderer process about the new path
+    browserWindow.webContents.send('data-path-chosen', userDataPath)
+
+    // If the server is already running, you might need to restart it with the new path
+    if (serverProcess) {
+      serverProcess.kill()
+      serverProcess = fork(path.join(__dirnameLocal, '../../server/server.js'), [userDataPath])
+    } else {
+      serverProcess = fork(path.join(__dirnameLocal, '../../server/server.js'), [userDataPath])
+    }
+  }
+}
