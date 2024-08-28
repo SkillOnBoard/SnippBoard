@@ -1,4 +1,6 @@
 import Input from '@renderer/components/Input'
+import TagPicker from '@renderer/components/TagPicker'
+import TextArea from '@renderer/components/TextArea'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -31,36 +33,30 @@ function Create(): JSX.Element {
         Back to search{' '}
       </button>
       <form onSubmit={submit}>
-        <div className="grid grid-cols-2 gap-2">
-          <div>
+        <div className="gap-12">
+          <div className="grid grid-cols-2 gap-2">
             <Input
               label="Name"
               placeholder="Code name"
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
             />
-            <hr className="border-gray-600" />
-          </div>
 
-          <div>
-            <input
-              type="text"
-              className="w-full px-4 py-2 text-2xl outline-none bg-inherit"
-              placeholder="Label"
+            <TagPicker
+              label="Label"
+              placeholder="Select"
               value={form.labels}
-              onChange={() => setForm({ ...form, labels: ['Test'] })}
+              onChange={(values) => setForm({ ...form, labels: values })}
             />
-            <hr className="border-gray-600" />
           </div>
-        </div>
 
-        <Input
-          label="Code"
-          placeholder="Create your snippet"
-          value={form.description}
-          onChange={(e) => setForm({ ...form, description: e.target.value })}
-        />
-        <hr className="border-gray-600" />
+          <TextArea
+            label="Code"
+            placeholder="Create your snippet"
+            value={form.description}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
+          />
+        </div>
       </form>
     </>
   )

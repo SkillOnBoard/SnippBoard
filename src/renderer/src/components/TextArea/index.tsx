@@ -2,15 +2,15 @@ type Props = {
   label: string
   placeholder: string
   value: string
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
 }
 
-const Input = ({ label, placeholder, onChange, value }: Props): JSX.Element => {
+const TextArea = ({ label, placeholder, onChange, value }: Props): JSX.Element => {
   return (
     <div>
       <label className="block mb-2 text-sm font-medium dark:text-white">{label}</label>
-      <input
-        type="text"
+      <textarea
+        rows={4}
         className="bg-inherit border border-gray-300 text-sm rounded-lg block w-full p-2.5 outline-none"
         placeholder={placeholder}
         value={value}
@@ -21,4 +21,4 @@ const Input = ({ label, placeholder, onChange, value }: Props): JSX.Element => {
   )
 }
 
-export default Input
+export default TextArea
