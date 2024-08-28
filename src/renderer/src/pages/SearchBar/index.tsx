@@ -38,17 +38,14 @@ function SearchBar(): JSX.Element {
         e.preventDefault()
         setSelectedIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0))
       } else if (e.key === 'Enter') {
-        // Manejar la selección (por ejemplo, navegar a un enlace o hacer algo con el elemento seleccionado)
         if (selectedIndex >= 0) {
           setShowCode((prev) => !prev)
         }
       }
     }
 
-    // Añadir el event listener global al montar el componente
     window.addEventListener('keydown', handleKeyDown)
 
-    // Limpiar el event listener al desmontar el componente
     return (): void => {
       window.removeEventListener('keydown', handleKeyDown)
     }
