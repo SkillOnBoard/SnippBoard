@@ -1,29 +1,37 @@
 import { resolve } from 'path'
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   main: {
+    publicDir: '/resources',
     build: {
-      outDir: 'dist/main'
+      outDir: 'out/main'
     },
     plugins: [externalizeDepsPlugin()]
   },
   preload: {
+    publicDir: '/resources',
     build: {
-      outDir: 'dist/preload'
+      outDir: 'out/preload'
     },
     plugins: [externalizeDepsPlugin()]
   },
   renderer: {
     build: {
-      outDir: 'dist/renderer'
+      outDir: 'out/renderer'
     },
     resolve: {
       alias: {
-        '@': resolve(__dirname, 'src/renderer')
+        '@renderer': resolve('src/renderer/src')
       }
     },
-    plugins: [react()]
+    plugins: [
+      react(),
+      nodePolyfills({
+        include: ['fs', 'path']
+      })
+    ]
   }
 })

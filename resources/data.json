@@ -1,0 +1,5 @@
+[
+  { "id": 1, "name": "Customer orders", "type": "Code" },
+  { "id": 2, "name": "SQL master", "type": "URL" },
+  { "id": 3, "name": "Employees timesheet", "type": "Code" }
+]

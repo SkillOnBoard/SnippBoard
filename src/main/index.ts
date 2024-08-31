@@ -1,22 +1,25 @@
+/* eslint-disable prettier/prettier */
 import { app, shell, BrowserWindow, ipcMain, globalShortcut, Tray, Menu, dialog } from 'electron'
-import { join } from 'path'
-import path from 'path'
+import { join, dirname } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import trayIcon from '../../resources/logo.png?asset'
+import seedsData from '../../resources/data.json?commonjs-external&asset'
 import { fork, ChildProcess } from 'child_process'
-import fs from 'fs'
+import { fileURLToPath } from 'url'
+import * as fs from 'node:fs/promises'
 
 // Ensure TypeScript can resolve __dirname correctly in ES modules
-import { fileURLToPath } from 'url'
-import { dirname } from 'path'
-
 const __filename = fileURLToPath(import.meta.url)
 const __dirnameLocal = dirname(__filename)
 
+const isDev = process.env.NODE_ENV === 'development'
+const seedDataPath = join(__dirname, seedsData)
+
+//console.log(seedDataPath, join(__dirname, seedsData), process.resourcesPath)
+let userDataPath = join(app.getPath('userData'), 'snipp_board_data.json')
 let tray: Tray | null = null
 let serverProcess: ChildProcess | null = null
-let userDataPath: string | null = null
 
 const createTrayMenu = (browserWindow: BrowserWindow): void => {
   tray = new Tray(trayIcon)
@@ -38,6 +41,11 @@ const createTrayMenu = (browserWindow: BrowserWindow): void => {
       label: 'Settings',
       click: (): void => {
         console.log('Settings clicked')
+      }
+    },
+    {
+      label: 'Change data path',
+      click: (): void => {
         chooseDataPath(browserWindow)
       }
     },
@@ -66,7 +74,7 @@ function createWindow(): void {
     webPreferences: {
       nodeIntegration: false, // Disable Node.js integration in the renderer
       contextIsolation: true, // Enforce context isolation
-      preload: path.join(__dirnameLocal, 'preload/index.js') // Use a preload script
+      preload: join(__dirnameLocal, 'preload/index.js') // Use a preload script
     }
   })
 
@@ -126,7 +134,8 @@ function createWindow(): void {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  await initializeData()
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
 
@@ -137,17 +146,18 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  // IPC test
-  ipcMain.on('ping', () => console.log('pong'))
-
   // Server Data
-  // userDataPath = chooseDataPath() || path.join(app.getPath('userData'), 'data.json')
-  // serverProcess = fork(path.join(__dirnameLocal, '../../server/server.mjs'), [userDataPath])
 
-  userDataPath = path.join(app.getPath('userData'), 'data.json')
+  console.log(app.getPath('userData'))
 
   // Start the server process
-  serverProcess = fork(path.join(__dirnameLocal, '../../server/server.mjs'), [userDataPath])
+  serverProcess = fork(join(__dirnameLocal, '../../server/server.mjs'), [userDataPath])
+
+  // Add error handling for the server process
+  serverProcess.on('exit', (code, signal) => {
+    console.log(`Server process exited with code ${code} and signal ${signal}`)
+    serverProcess = null // Reset the process reference
+  })
   createWindow()
 
   app.on('activate', function () {
@@ -173,27 +183,73 @@ app.on('window-all-closed', () => {
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
 
+async function initializeData(): Promise<void> {
+  try {
+    // Check if the data file exists
+    const dataExists = await fs.access(userDataPath).then(() => true).catch(() => false)
+
+    if (!dataExists && isDev) {
+      // Load seed data from data.json in development
+      const seedData = await fs.readFile(seedDataPath, 'utf8')
+      await fs.writeFile(userDataPath, seedData)
+      console.log('Seed data loaded into user data path.')
+    } else if (!dataExists) {
+      // In production, also try to load seed data if file doesn't exist
+      const seedData = await fs.readFile(seedDataPath, 'utf8')
+      await fs.writeFile(userDataPath, seedData)
+      console.log('Seed data loaded into user data path.')
+    }
+  } catch (error) {
+    console.error('Error initializing data:', error)
+  }
+}
+
 // Function to let the user choose where to save their data
-function chooseDataPath(browserWindow: BrowserWindow): void {
+async function chooseDataPath(browserWindow: BrowserWindow | null): Promise<void> {
+  if (!browserWindow) return
+
   const result = dialog.showSaveDialogSync(browserWindow, {
     title: 'Choose where to save your data',
-    defaultPath: path.join(app.getPath('documents'), 'my-electron-app-data.json'),
+    defaultPath: join(app.getPath('documents'), 'my_snipp-board-app-data.json'),
     filters: [{ name: 'JSON Files', extensions: ['json'] }]
   })
 
   if (result) {
-    userDataPath = result
-    fs.writeFileSync(userDataPath, '[]') // Initialize with an empty array
+    browserWindow.webContents.send('loading-start')
 
-    // Inform the renderer process about the new path
-    browserWindow.webContents.send('data-path-chosen', userDataPath)
+    try {
+      const existingData =
+        userDataPath && (await fs.readFile(userDataPath, 'utf8').catch(() => null))
+      const options = ['Move existing data', 'Start fresh']
+      const response = dialog.showMessageBoxSync(browserWindow, {
+        type: 'question',
+        buttons: options,
+        defaultId: 0,
+        cancelId: 1,
+        title: 'Data Management',
+        message: 'Do you want to move the existing data to the new location or start fresh?'
+      })
 
-    // If the server is already running, you might need to restart it with the new path
-    if (serverProcess) {
-      serverProcess.kill()
-      serverProcess = fork(path.join(__dirnameLocal, '../../server/server.js'), [userDataPath])
-    } else {
-      serverProcess = fork(path.join(__dirnameLocal, '../../server/server.js'), [userDataPath])
+      userDataPath = result
+
+      if (response === 0 && existingData) {
+        await fs.writeFile(userDataPath, existingData)
+      } else {
+        await fs.writeFile(userDataPath, '[]')
+      }
+
+      // Check if the server process is still running before sending a message
+      if (serverProcess && !serverProcess.killed) {
+        serverProcess.send({ type: 'data-path-chosen', path: userDataPath })
+      } else {
+        // Handle the case where the server process is no longer running
+        console.error('Server process is not running. Cannot send the data path.')
+      }
+    } catch (error) {
+      console.error('Error handling data file:', error)
+      dialog.showErrorBox('Error', 'An error occurred while processing your data.')
+    } finally {
+      browserWindow.webContents.send('loading-end')
     }
   }
 }
