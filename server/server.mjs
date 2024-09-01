@@ -11,7 +11,7 @@ app.use(bodyParser.json())
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-let dataFilePath = process.argv[2] || path.join(__dirname, '../snipp_board_data.json')
+let dataFilePath = process.argv[2] || path.join(__dirname, '../resources/data.json')
 
 app.post('/api/data', (req, res) => {
   const newData = req.body

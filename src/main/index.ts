@@ -4,7 +4,7 @@ import { join, dirname } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import trayIcon from '../../resources/logo.png?asset'
-import seedsData from '../../resources/data.json?commonjs-external&asset'
+import seedsDataFile from '../../resources/data.json?commonjs-external&asset'
 import { fork, ChildProcess } from 'child_process'
 import { fileURLToPath } from 'url'
 import * as fs from 'node:fs/promises'
@@ -13,11 +13,11 @@ import * as fs from 'node:fs/promises'
 const __filename = fileURLToPath(import.meta.url)
 const __dirnameLocal = dirname(__filename)
 
-const isDev = process.env.NODE_ENV === 'development'
-const seedDataPath = join(__dirname, seedsData)
+const seedDataPath = seedsDataFile
+const defaultName = 'my_snipp-board-data.json'
 
-//console.log(seedDataPath, join(__dirname, seedsData), process.resourcesPath)
-let userDataPath = join(app.getPath('userData'), 'snipp_board_data.json')
+let userDataPath: string = join(app.getPath('userData'), defaultName)
+
 let tray: Tray | null = null
 let serverProcess: ChildProcess | null = null
 
@@ -135,7 +135,7 @@ function createWindow(): void {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(async () => {
-  await initializeData()
+  await initializeData();
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
 
@@ -146,12 +146,8 @@ app.whenReady().then(async () => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  // Server Data
-
-  console.log(app.getPath('userData'))
-
-  // Start the server process
-  serverProcess = fork(join(__dirnameLocal, '../../server/server.mjs'), [userDataPath])
+  // Start the server process with the user data path
+  serverProcess = fork(join(__dirname, '../../server/server.mjs'), [userDataPath]);
 
   // Add error handling for the server process
   serverProcess.on('exit', (code, signal) => {
@@ -183,21 +179,27 @@ app.on('window-all-closed', () => {
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
 
+async function dataFileExists(): Promise<boolean> {
+  try {
+    await fs.access(userDataPath);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
 async function initializeData(): Promise<void> {
   try {
     // Check if the data file exists
-    const dataExists = await fs.access(userDataPath).then(() => true).catch(() => false)
+    const dataExists = await dataFileExists()
 
-    if (!dataExists && isDev) {
-      // Load seed data from data.json in development
-      const seedData = await fs.readFile(seedDataPath, 'utf8')
-      await fs.writeFile(userDataPath, seedData)
-      console.log('Seed data loaded into user data path.')
-    } else if (!dataExists) {
-      // In production, also try to load seed data if file doesn't exist
-      const seedData = await fs.readFile(seedDataPath, 'utf8')
-      await fs.writeFile(userDataPath, seedData)
-      console.log('Seed data loaded into user data path.')
+    if (!dataExists) {
+      // Load seed data from seed_data.json
+      const seedData = await fs.readFile(seedDataPath, 'utf8');
+
+      // Write seed data to userDataPath
+      await fs.writeFile(userDataPath, seedData);
+      console.log(`Seed data loaded into user data path ${userDataPath}`);
     }
   } catch (error) {
     console.error('Error initializing data:', error)
@@ -208,9 +210,16 @@ async function initializeData(): Promise<void> {
 async function chooseDataPath(browserWindow: BrowserWindow | null): Promise<void> {
   if (!browserWindow) return
 
+  // Check if the data file exists
+  const dataExists = await dataFileExists()
+  if (!dataExists) {
+    dialog.showErrorBox('Error', 'Data file does not exist. Please restart the app.')
+    return 
+  }
+
   const result = dialog.showSaveDialogSync(browserWindow, {
     title: 'Choose where to save your data',
-    defaultPath: join(app.getPath('documents'), 'my_snipp-board-app-data.json'),
+    defaultPath: join(app.getPath('documents'), defaultName),
     filters: [{ name: 'JSON Files', extensions: ['json'] }]
   })
 
