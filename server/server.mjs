@@ -1,15 +1,19 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+
 import https from 'https'
 import fs from 'fs'
 import express from 'express'
 import bodyParser from 'body-parser'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { exec } from 'child_process'
 
 const app = express()
 app.use(bodyParser.json())
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
+const PORT = process.env.PORT || 3000
 
 let dataFilePath = process.argv[2] || path.join(__dirname, '../resources/data.json')
 
@@ -57,7 +61,29 @@ const sslOptions = {
   cert: fs.readFileSync(path.join(__dirname, '../certificate.crt'))
 }
 
-https.createServer(sslOptions, app).listen(3000, () => {
-  console.log('Secure server listening on port 3000')
+const server = https.createServer(sslOptions, app).listen(PORT, () => {
+  console.log(`Secure server listening on port ${PORT}`)
   console.log(`Data stored at: ${dataFilePath}`)
+})
+
+server.close(() => {
+  server.listen(PORT, () => {
+    console.log(`Server restarted on port ${PORT}`)
+  })
+})
+
+server.on('error', (error) => {
+  if (error.code === 'EADDRINUSE') {
+    console.error(`Port ${PORT} is already in use. Please use a different port.`)
+
+    // Optionally, you could try to use another port
+    console.error('Error:', error)
+    const newPort = PORT + 1
+
+    server.listen(newPort, () => {
+      console.log(`Server is now running on port ${newPort}`)
+    })
+  } else {
+    console.error('Server error:', error)
+  }
 })
