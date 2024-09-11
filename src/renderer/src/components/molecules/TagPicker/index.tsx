@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Dropdown from '@renderer/components/Dropdown'
-import Tag from '@renderer/components/Tag'
+import Tag from '@renderer/components/atoms/Tag'
 
 type Props = {
   label: string
@@ -10,9 +10,11 @@ type Props = {
 }
 
 const TagPicker = ({ label, placeholder, onChange, values }: Props): JSX.Element => {
-  const [selectedTags, setSelectedTags] = useState<string[]>([    'programming',
+  const [selectedTags, setSelectedTags] = useState<string[]>([
+    'programming',
     'design',
-    'web development'])
+    'web development'
+  ])
   const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([])
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false)
 
@@ -83,7 +85,9 @@ const TagPicker = ({ label, placeholder, onChange, values }: Props): JSX.Element
 
       <div id="tags-container" className="mt-2 flex flex-row flex-wrap align-middle gap-2">
         {selectedTags.map((tag, index) => (
-          <Tag key={index} name={tag} onClose={() => removeTag(index)} />
+          <Tag key={index} onClose={() => removeTag(index)}>
+            {tag}
+          </Tag>
         ))}
       </div>
 
