@@ -53,14 +53,37 @@ const TagPicker = ({ label, placeholder, onChange, values }: Props): JSX.Element
   return (
     <div>
       <label className="block mb-2 text-sm font-medium dark:text-white">{label}</label>
-      <input
-        type="text"
-        className="bg-inherit border border-gray-300 text-sm rounded-lg block w-full p-2.5 outline-none"
+      <div
+        className="flex flex-row justify-between items-center bg-gray-800 border border-gray-900 text-sm rounded-lg block w-full px-4 py-2 outline-none"
         placeholder={placeholder}
         onChange={handleSearch}
         onFocus={() => setIsDropdownOpen(!isDropdownOpen)}
         required
-      />
+      >
+        {/* Placeholder */}
+        {!selectedTags.length && (
+          <span className="text-gray-600 dark:text-gray-400">{placeholder}</span>
+        )}
+        <div id="tags-container" className="flex flex-row flex-wrap align-middle gap-2">
+          {selectedTags.slice(0, 2).map((tag, index) => (
+            <Tag key={index} onClose={() => removeTag(index)}>
+              {tag}
+            </Tag>
+          ))}
+          {selectedTags.length > 2 && <Tag key="plus">+{selectedTags.length - 2}</Tag>}
+        </div>
+        <div onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+          <svg
+            className="stroke-1 size-4"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+          </svg>
+        </div>
+      </div>
       {/* <div
         id="tags-suggestions"
         className="mt-2 border border-gray-300 rounded-lg shadow-md"
@@ -82,21 +105,6 @@ const TagPicker = ({ label, placeholder, onChange, values }: Props): JSX.Element
       </div> */}
 
       {isDropdownOpen && <Dropdown id="dropdownUsers" placeholder="Search" onSelect={addTag} />}
-
-      <div id="tags-container" className="mt-2 flex flex-row flex-wrap align-middle gap-2">
-        {selectedTags.map((tag, index) => (
-          <Tag key={index} onClose={() => removeTag(index)}>
-            {tag}
-          </Tag>
-        ))}
-      </div>
-
-      <p
-        id="tags-helper-text-explanation"
-        className="mt-2 text-sm text-gray-500 dark:text-gray-400"
-      >
-        Separate tags with commas. Example: programming, design, web development
-      </p>
     </div>
   )
 }

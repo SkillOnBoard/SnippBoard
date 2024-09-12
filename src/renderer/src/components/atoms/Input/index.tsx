@@ -9,7 +9,7 @@ const LabeledInput = ({ value, placeholder, onChange, required = false }: Props)
   return (
     <input
       type="text"
-      className="bg-inherit border border-gray-300 text-sm rounded-lg block w-full p-2.5 outline-none"
+      className="bg-gray-800 border border-gray-900 text-sm rounded-lg block w-full p-2.5 outline-none placeholder:text-gray-600"
       placeholder={placeholder}
       value={value}
       onChange={onChange}

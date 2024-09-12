@@ -5,9 +5,21 @@ type Props = {
 }
 
 const Tag = ({ onClose, children }: PropsWithChildren<Props>): JSX.Element => {
+  const colorsClassNames = [
+    'border-green-500 text-green-500',
+    'border-cyan-500 text-cyan-500',
+    'border-amber-500 text-amber-500'
+  ]
+  const color = colorsClassNames[Math.floor(Math.random() * colorsClassNames.length)]
+
+  const className = [
+    'flex flex-row align-middle bg-gray-700 text-sm font-medium px-2.5 py-0.5 rounded gap-1 border',
+    color
+  ].join(' ')
+
   return (
-    <div className="flex flex-row align-middle bg-blue-100 text-blue-800 text-sm font-medium px-3 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 gap-1 ">
-      <div className="flex flex-w-min">{children}</div>
+    <div className={className}>
+      <span className="flex flex-w-min">{children}</span>
       {onClose && <div onClick={onClose}>x</div>}
     </div>
   )
