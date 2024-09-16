@@ -6,7 +6,6 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { exec } from 'child_process'
 
 const app = express()
 app.use(bodyParser.json())

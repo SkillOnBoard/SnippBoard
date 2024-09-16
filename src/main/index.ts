@@ -219,7 +219,7 @@ async function chooseDataPath(browserWindow: BrowserWindow | null): Promise<void
 
   const result = dialog.showSaveDialogSync(browserWindow, {
     title: 'Choose where to save your data',
-    defaultPath: join(app.getPath('documents'), defaultName),
+    defaultPath: join(app.getPath('documents'), defaultName ),
     filters: [{ name: 'JSON Files', extensions: ['json'] }]
   })
 
