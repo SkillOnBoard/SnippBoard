@@ -30,7 +30,10 @@
     "body-parser": "^1.20.2",
     "electron-updater": "^6.1.7",
     "express": "^4.19.2",
+    "i18next": "^23.14.0",
+    "i18next-browser-languagedetector": "^8.0.0",
     "postcss": "^8.4.40",
+    "react-i18next": "^15.0.1",
     "react-router-dom": "^6.26.0",
     "tailwindcss": "^3.4.7"
   },
