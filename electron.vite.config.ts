@@ -30,7 +30,10 @@ export default defineConfig({
     plugins: [
       react(),
       nodePolyfills({
-        include: ['fs', 'path']
+        include: ['fs', 'path'],
+        exclude: [
+          'http' // Excludes the polyfill for `http` and `node:http`.
+        ]
       })
     ]
   }

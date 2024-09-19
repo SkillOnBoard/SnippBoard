@@ -55,12 +55,8 @@ process.on('message', (message) => {
   }
 })
 
-const sslOptions = {
-  key: fs.readFileSync(path.join(__dirname, '../private.key')),
-  cert: fs.readFileSync(path.join(__dirname, '../certificate.crt'))
-}
-
-const server = https.createServer(sslOptions, app).listen(PORT, () => {
+// TODO: Add the SSL certificate when creating the server
+const server = https.createServer(null, app).listen(PORT, () => {
   console.log(`Secure server listening on port ${PORT}`)
   console.log(`Data stored at: ${dataFilePath}`)
 })
@@ -75,9 +71,8 @@ server.on('error', (error) => {
   if (error.code === 'EADDRINUSE') {
     console.error(`Port ${PORT} is already in use. Please use a different port.`)
 
-    // Optionally, you could try to use another port
     console.error('Error:', error)
-    const newPort = PORT + 1
+    const newPort = Number(PORT) + 1
 
     server.listen(newPort, () => {
       console.log(`Server is now running on port ${newPort}`)
