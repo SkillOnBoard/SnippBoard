@@ -16,30 +16,7 @@ const TagPicker = ({ label, placeholder, onChange, values }: Props): JSX.Element
     'design',
     'web development'
   ])
-  const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([])
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false)
-
-  const predefinedTags = [
-    'programming',
-    'design',
-    'web development',
-    'javascript',
-    'python',
-    'css',
-    'html',
-    'backend',
-    'frontend',
-    'database'
-    // Add more predefined tags as needed
-  ]
-  console.log(filteredSuggestions)
-  console.log(selectedTags)
-
-  const handleSearch = (event): void => {
-    const inputValue = event.target.value.toLowerCase().trim()
-    const matchedTags = predefinedTags.filter((tag) => tag.includes(inputValue))
-    setFilteredSuggestions(matchedTags)
-  }
 
   const addTag = (tagText: string): void => {
     setSelectedTags([...selectedTags, tagText])
@@ -54,13 +31,7 @@ const TagPicker = ({ label, placeholder, onChange, values }: Props): JSX.Element
   return (
     <div>
       <label className="block mb-2 text-sm font-medium dark:text-white">{label}</label>
-      <div
-        className="flex flex-row justify-between items-center bg-gray-800 border border-gray-900 text-sm rounded-lg block w-full px-4 py-2 outline-none"
-        placeholder={placeholder}
-        onChange={handleSearch}
-        onFocus={() => setIsDropdownOpen(!isDropdownOpen)}
-        required
-      >
+      <div className="flex flex-row justify-between items-center bg-gray-800 border border-gray-900 text-sm rounded-lg block w-full px-4 py-2 outline-none">
         {/* Placeholder */}
         {!selectedTags.length && (
           <span className="text-gray-600 dark:text-gray-400">{placeholder}</span>
@@ -77,27 +48,8 @@ const TagPicker = ({ label, placeholder, onChange, values }: Props): JSX.Element
           <Icon name="chevron-down" stroke={2} />
         </div>
       </div>
-      {/* <div
-        id="tags-suggestions"
-        className="mt-2 border border-gray-300 rounded-lg shadow-md"
-        style={{
-          maxHeight: '8rem',
-          overflowY: 'auto'
-        }}
-      >
-        {filteredSuggestions.map((tag) => (
-          <div
-            key={tag}
-            className="p-2 cursor-pointer hover:bg-gray-100"
-            onClick={() => addTag(tag)}
-            onKeyDown={() => addTag(tag)}
-          >
-            {tag}
-          </div>
-        ))}
-      </div> */}
 
-      {isDropdownOpen && <Dropdown id="dropdownUsers" placeholder="Search" onSelect={addTag} />}
+      {isDropdownOpen && <Dropdown placeholder="Search" onSelect={addTag} />}
     </div>
   )
 }
