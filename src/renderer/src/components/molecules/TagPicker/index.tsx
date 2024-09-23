@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Dropdown from '@renderer/components/Dropdown'
 import Tag from '@renderer/components/atoms/Tag'
+import Icon from '@renderer/components/atoms/Icon'
 
 type Props = {
   label: string
@@ -73,15 +74,7 @@ const TagPicker = ({ label, placeholder, onChange, values }: Props): JSX.Element
           {selectedTags.length > 2 && <Tag key="plus">+{selectedTags.length - 2}</Tag>}
         </div>
         <div onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
-          <svg
-            className="stroke-1 size-4"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-          </svg>
+          <Icon name="chevron-down" stroke={2} />
         </div>
       </div>
       {/* <div
