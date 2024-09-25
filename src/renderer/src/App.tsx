@@ -22,8 +22,7 @@ function App(): JSX.Element {
     }
   }, [])
   return (
-    <>
-      {/* <Versions></Versions> */}
+    <div className="bg-inherit bg-gray900 top-5 left-0 w-full px-4 ">
       <Router>
         <Routes>
           <Route path="/" element={<SearchBar />} />
@@ -36,7 +35,7 @@ function App(): JSX.Element {
           <p>Moving data, please wait...</p>
         </div>
       )}
-    </>
+    </div>
   )
 }
 

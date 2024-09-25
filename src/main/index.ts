@@ -61,7 +61,6 @@ function createWindow(): void {
   const mainWindow = new BrowserWindow({
     width: 750,
     height: 100,
-    opacity: 0.9,
     show: false,
     frame: false,
     resizable: false,
