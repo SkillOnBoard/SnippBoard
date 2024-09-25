@@ -155,3 +155,14 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
+
+
+ipcMain.on('list-snippets', async (event) => {
+  try {
+    const data = JSON.parse(await fs.readFile(dataFile, 'utf8'))
+    event.reply('list-snippets-callback', { status: 'success', message: data });
+  } catch (error) {
+    event.reply('list-snippets-callback', { status: 'error', message: error });
+  }
+
+});
