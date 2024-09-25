@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
-import https from 'https'
+import http from 'http'
 import fs from 'fs'
 import express from 'express'
 import bodyParser from 'body-parser'
@@ -56,7 +56,7 @@ process.on('message', (message) => {
 })
 
 // TODO: Add the SSL certificate when creating the server
-const server = https.createServer(null, app).listen(PORT, () => {
+const server = http.createServer(app).listen(PORT, () => {
   console.log(`Secure server listening on port ${PORT}`)
   console.log(`Data stored at: ${dataFilePath}`)
 })
