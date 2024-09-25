@@ -7,15 +7,14 @@ function App(): JSX.Element {
   // const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
 
   return (
-    <>
-      {/* <Versions></Versions> */}
+    <div className="bg-inherit bg-gray900 top-5 left-0 w-full px-4 ">
       <Router>
         <Routes>
           <Route path="/" element={<SearchBar />} />
           <Route path="/create" element={<Create />} />
         </Routes>
       </Router>
-    </>
+    </div>
   )
 }
 

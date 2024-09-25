@@ -1,5 +1,21 @@
 {
   "search_bar": {
     "placeholder": "Search for saved snippets"
+  },
+  "create": {
+    "fields": {
+      "name": {
+        "label": "Name",
+        "placeholder": "Code name"
+      },
+      "label": {
+        "label": "Label",
+        "placeholder": "Select"
+      },
+      "code": {
+        "label": "Code",
+        "placeholder": "Create your snippet"
+      }
+    }
   }
 }
