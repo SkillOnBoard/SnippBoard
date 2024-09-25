@@ -1,8 +1,18 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
 
+type ResponseStatus = 'success' | 'error'
+
+interface response {
+  status: ResponseStatus
+  message: unknown
+}
+
 declare global {
   interface Window {
     electron: ElectronAPI
-    api: unknown
+    api: {
+      listSnippetsResponse: (callback: (event: unknown, response: response) => void) => void
+      createSnippetResponse: (callback: (event: unknown, response: response) => void) => void
+    }
   }
 }

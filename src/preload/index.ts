@@ -3,8 +3,8 @@ import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
 const api = {
-  listSnippets: () => ipcRenderer.invoke('list-snippets'),
-  listSnippetsCallback: (callback) => ipcRenderer.on('list-snippets-callback', callback),
+  listSnippetsResponse: (callback): unknown => ipcRenderer.on('list-snippets-response', callback),
+  createSnippetResponse: (callback): unknown => ipcRenderer.on('create-snippet-response', callback)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

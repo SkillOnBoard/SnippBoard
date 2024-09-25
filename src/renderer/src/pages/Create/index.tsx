@@ -25,6 +25,16 @@ function Create(): JSX.Element {
   const submit = (event): void => {
     event.preventDefault()
     navigate('/')
+
+    // Send the form to the main process
+    window.electron.ipcRenderer.send('create-snippet', form)
+
+    // Listen for the response
+    window.api.createSnippetResponse((event, response) => {
+      if (response.status === 'success') {
+        console.log('snippets list after creation', response.message)
+      }
+    })
   }
 
   return (
@@ -57,6 +67,9 @@ function Create(): JSX.Element {
             />
           </div>
         </form>
+
+        <button onClick={submit}>{t('create.submit')}</button>
+
         {/* TODO: Send actions */}
         <Footer tempText={'/ for actions'} />
       </div>
