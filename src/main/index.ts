@@ -4,6 +4,11 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import trayIcon from '../../resources/logo.png?asset'
 
+import dataFile from '../../resources/data.json?commonjs-external&asset'
+import * as fs from 'node:fs/promises'
+
+
+
 let tray: Tray | null = null
 
 const createTrayMenu = (): void => {
@@ -50,6 +55,9 @@ function createWindow(): void {
     resizable: false,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true,
+      webSecurity: true,
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
     }
@@ -132,6 +140,8 @@ app.whenReady().then(() => {
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
+
+  
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common
