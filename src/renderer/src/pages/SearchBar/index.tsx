@@ -38,9 +38,7 @@ function SearchBar(): JSX.Element {
     }
   }, [])
 
-  useEffect(() => {
-   
-  }, [])
+  useEffect(() => {}, [])
 
   const filterData = (): Data[] => {
     return data.filter((obj) => obj.title.toLowerCase().includes(query.toLowerCase()))
@@ -112,7 +110,10 @@ function SearchBar(): JSX.Element {
                 ))}
               </div>
               {showCode && results.length + 1 >= selectedIndex && (
-                <SearchBarCode code={results[selectedIndex]?.description} setShowCode={setShowCode} />
+                <SearchBarCode
+                  code={results[selectedIndex]?.description}
+                  setShowCode={setShowCode}
+                />
               )}
             </div>
           </>

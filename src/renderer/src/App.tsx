@@ -4,7 +4,6 @@ import SearchBar from './pages/SearchBar'
 import Create from './pages/Create'
 
 function App(): JSX.Element {
-  
   return (
     <div className="bg-inherit bg-gray900 top-5 left-0 w-full px-4 ">
       <Router>
