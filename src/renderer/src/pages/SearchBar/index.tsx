@@ -2,6 +2,7 @@ import Footer from '@renderer/components/Footer'
 import SearchBarCode from '@renderer/components/SearchBarCode'
 import SearchBarInput from '@renderer/components/SearchBarInput'
 import SearchBarRow from '@renderer/components/SearchBarRow'
+import { useListSnippets } from '@renderer/hooks/UseListSnippets'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -13,35 +14,21 @@ type Data = {
 
 function SearchBar(): JSX.Element {
   const navigate = useNavigate()
-  const [data, setData] = useState<Data[]>([])
   const [query, setQuery] = useState<string>('')
   const [results, setResults] = useState<Data[]>([])
   const [showCode, setShowCode] = useState<boolean>(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
 
+  const { data } = useListSnippets()
+
   useEffect(() => {
     window.electron.ipcRenderer.send('resize-window', 'small')
-
-    try {
-      // Send the order to the main process
-      window.electron.ipcRenderer.send('list-snippets')
-
-      // Listen for the response
-      window.api.listSnippetsResponse((event, response) => {
-        if (response.status === 'success') {
-          setResults(response.message as Data[])
-          setData(response.message as Data[])
-        }
-      })
-    } catch (error) {
-      console.error(error)
-    }
   }, [])
 
-  useEffect(() => {}, [])
-
   const filterData = (): Data[] => {
-    return data.filter((obj) => obj.title.toLowerCase().includes(query.toLowerCase()))
+    return data
+      ? data.filter((obj) => obj.title.toLowerCase().includes(query.trim().toLowerCase()))
+      : []
   }
 
   useEffect(() => {
