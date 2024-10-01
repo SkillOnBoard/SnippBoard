@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useState } from 'react'
 
 type ResponseType = {
   data: DataType[] | null
@@ -13,26 +13,38 @@ type DataType = {
 }
 
 export const useListSnippets = (): ResponseType => {
-  const result = useRef<ResponseType>({ data: null, error: null, loading: true })
+  const [response, setResponse] = useState<ResponseType>({
+    data: null,
+    error: null,
+    loading: true
+  })
+
   useEffect(() => {
     console.log('ejecuta')
     try {
-      // Send the order to the main process
+      // Envía el comando para listar snippets
       window.electron.ipcRenderer.send('list-snippets')
 
-      // Listen for the response
-      window.api.listSnippetsResponse((event, response) => {
-        if (response.status === 'success') {
-          result.current.data = response.message as DataType[]
+      // Escucha la respuesta
+      window.api.listSnippetsResponse((event: any, responseData: any) => {
+        if (responseData.status === 'success') {
+          setResponse({ ...response, data: responseData.message as DataType[], loading: false })
         } else {
-          result.current.error = response.message as string
+          setResponse({
+            ...response,
+            error: responseData.message as string,
+            loading: false
+          })
         }
-        result.current.loading = false
       })
     } catch (error) {
-      result.current.error = error as string
-      result.current.loading = false
+      setResponse({
+        ...response,
+        error: error as string,
+        loading: false
+      })
     }
-  }, [])
-  return result.current
+  }, []) // Solo se ejecuta una vez al montar el componente
+
+  return response
 }
