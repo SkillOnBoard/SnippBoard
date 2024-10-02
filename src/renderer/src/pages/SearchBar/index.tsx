@@ -2,14 +2,14 @@ import Footer from '@renderer/components/Footer'
 import SearchBarCode from '@renderer/components/SearchBarCode'
 import SearchBarInput from '@renderer/components/SearchBarInput'
 import SearchBarRow from '@renderer/components/SearchBarRow'
+import { useListSnippets } from '../../hooks/useListSnippets'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 type Data = {
-  id: number
-  name: string
-  type: string
-  content: string
+  title: string
+  labels: string[]
+  description: string
 }
 
 function SearchBar(): JSX.Element {
@@ -19,12 +19,16 @@ function SearchBar(): JSX.Element {
   const [showCode, setShowCode] = useState<boolean>(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
 
+  const { data } = useListSnippets()
+
   useEffect(() => {
     window.electron.ipcRenderer.send('resize-window', 'small')
   }, [])
 
   const filterData = (): Data[] => {
-    return data.filter((obj) => obj.name.toLowerCase().includes(query.toLowerCase()))
+    return data
+      ? data.filter((obj) => obj.title.toLowerCase().includes(query.trim().toLowerCase()))
+      : []
   }
 
   useEffect(() => {
@@ -70,28 +74,6 @@ function SearchBar(): JSX.Element {
     }
   }, [query])
 
-  const data: Data[] = [
-    {
-      id: 1,
-      name: 'Customer orders',
-      type: 'Code',
-      content: ' Customer orders hdsakd dhsadks dshadjkdhs'
-    },
-    { id: 2, name: 'SQL master', type: 'URL', content: 'SQL master hdsakd dhsadks dshadjkdhs' },
-    {
-      id: 3,
-      name: 'Employees timesheet',
-      type: 'Code',
-      content: 'Employees timesheet hdsakd dhsadks dshadjkdhs'
-    },
-    {
-      id: 4,
-      name: 'undo last two commits',
-      type: 'Code',
-      content: 'undo last two commits hdsakd dhsadks dshadjkdhs'
-    }
-  ]
-
   return (
     <>
       <div className="fixed top-3 left-0 w-full px-4">
@@ -106,8 +88,8 @@ function SearchBar(): JSX.Element {
                   <SearchBarRow
                     key={index}
                     index={index}
-                    resultName={result.name}
-                    resultType={result.type}
+                    title={result.title}
+                    labels={result.labels}
                     selectedIndex={selectedIndex}
                     setShowCode={setShowCode}
                     setSelectedIndex={setSelectedIndex}
@@ -115,7 +97,10 @@ function SearchBar(): JSX.Element {
                 ))}
               </div>
               {showCode && results.length + 1 >= selectedIndex && (
-                <SearchBarCode code={results[selectedIndex]?.content} setShowCode={setShowCode} />
+                <SearchBarCode
+                  code={results[selectedIndex]?.description}
+                  setShowCode={setShowCode}
+                />
               )}
             </div>
           </>

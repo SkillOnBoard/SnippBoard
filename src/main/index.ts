@@ -4,6 +4,9 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import trayIcon from '../../resources/logo.png?asset'
 
+import dataFile from '../../resources/data.json?commonjs-external&asset'
+import * as fs from 'node:fs/promises'
+
 let tray: Tray | null = null
 
 const createTrayMenu = (): void => {
@@ -50,6 +53,9 @@ function createWindow(): void {
     resizable: false,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true,
+      webSecurity: true,
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
     }
@@ -145,3 +151,23 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
+
+ipcMain.on('list-snippets', async (event) => {
+  try {
+    const data = JSON.parse(await fs.readFile(dataFile, 'utf8'))
+    event.reply('list-snippets-response', { status: 'success', message: data })
+  } catch (error) {
+    event.reply('list-snippets-response', { status: 'error', message: error })
+  }
+})
+
+ipcMain.on('create-snippet', async (event, snippet) => {
+  try {
+    const data = JSON.parse(await fs.readFile(dataFile, 'utf8'))
+    data.push(snippet)
+    await fs.writeFile(dataFile, JSON.stringify(data, null, 2))
+    event.reply('create-snippet-response', { status: 'success', message: data })
+  } catch (error) {
+    event.reply('create-snippet-response', { status: 'error', message: error })
+  }
+})

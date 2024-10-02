@@ -6,6 +6,7 @@ import LabeledTextArea from '@renderer/components/molecules/LabeledTextArea'
 import { useTranslation } from 'react-i18next'
 import Header from '@renderer/components/Header'
 import Footer from '@renderer/components/Footer'
+import { useCreateSnippet } from '@renderer/hooks/useCreateSnippet'
 
 type CreateForm = {
   title: string
@@ -22,9 +23,15 @@ function Create(): JSX.Element {
     window.electron?.ipcRenderer.send('resize-window', 'big')
   }, [])
 
-  const submit = (event): void => {
+  const [createSnippet, { error }] = useCreateSnippet()
+
+  const submit = (event: React.FormEvent) => {
     event.preventDefault()
     navigate('/')
+    createSnippet(form)
+    if (error) {
+      console.log('error', error)
+    }
   }
 
   return (
@@ -57,6 +64,9 @@ function Create(): JSX.Element {
             />
           </div>
         </form>
+
+        <button onClick={submit}>{t('create.submit')}</button>
+
         {/* TODO: Send actions */}
         <Footer tempText={'/ for actions'} />
       </div>

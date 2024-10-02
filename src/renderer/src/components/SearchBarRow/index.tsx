@@ -1,7 +1,7 @@
 interface ISearchBarRow {
   index: number
-  resultName: string
-  resultType: string
+  title: string
+  labels: string[]
   selectedIndex: number
   setShowCode: (value: boolean) => void
   setSelectedIndex: (value: number) => void
@@ -9,8 +9,8 @@ interface ISearchBarRow {
 
 function SearchBarRow({
   index,
-  resultName,
-  resultType,
+  title,
+  labels,
   selectedIndex,
   setShowCode,
   setSelectedIndex
@@ -23,9 +23,9 @@ function SearchBarRow({
       onMouseOver={() => setSelectedIndex(index)}
     >
       <div className="flex items-center space-x-2">
-        <span>{resultName}</span>
+        <span>{title}</span>
       </div>
-      <span className="text-blue-400 text-sm">{resultType}</span>
+      <span className="text-blue-400 text-sm">{labels[0]}</span>
     </div>
   )
 }
