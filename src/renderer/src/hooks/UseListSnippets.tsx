@@ -20,12 +20,9 @@ export const useListSnippets = (): ResponseType => {
   })
 
   useEffect(() => {
-    console.log('ejecuta')
     try {
-      // Envía el comando para listar snippets
       window.electron.ipcRenderer.send('list-snippets')
 
-      // Escucha la respuesta
       window.api.listSnippetsResponse((event: any, responseData: any) => {
         if (responseData.status === 'success') {
           setResponse({ ...response, data: responseData.message as DataType[], loading: false })
@@ -44,7 +41,7 @@ export const useListSnippets = (): ResponseType => {
         loading: false
       })
     }
-  }, []) // Solo se ejecuta una vez al montar el componente
+  }, [])
 
   return response
 }

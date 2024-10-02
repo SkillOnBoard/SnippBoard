@@ -23,10 +23,8 @@ export const useCreateSnippet = (): [(data: SnippetDataType) => void, ResponseTy
     setResponse({ ...response, loading: true })
 
     try {
-      // Envía el comando para crear un snippet
       window.electron.ipcRenderer.send('create-snippet', form)
 
-      // Escucha la respuesta
       window.api.createSnippetResponse((event: any, response: any) => {
         if (response.status === 'success') {
           setResponse({ ...response, loading: true })
