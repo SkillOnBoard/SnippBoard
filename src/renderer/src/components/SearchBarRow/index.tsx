@@ -37,10 +37,6 @@ function SearchBarRow({
               <div key={index} className="ml-2">
                 <Tag defaultColor="blue">{result}</Tag>
               </div>
-
-              // <div key={index} className=" ml-2 text-blue-400 text-sm">
-              //   {result}
-              // </div>
             )
           })}
           <div className="ml-2">
