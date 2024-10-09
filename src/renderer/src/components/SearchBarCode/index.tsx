@@ -20,13 +20,9 @@ function SearchBarCode({ labels, code }: ISearchBarCode): JSX.Element {
           <Tag defaultColor="blue">{'prueba'}</Tag>
         </div>
       </div>
-
-      {/* <div className="w-full h-[250px] mt-2 bg-black p-4 rounded-lg">
-        {code}
-      </div> */}
-      <div className="w-full h-[250px] mt-2 bg-black p-2">
+      <div className="w-full h-[250px] mt-2 bg-black p-2 rounded-lg">
         <textarea
-          className="bg-black h-full text-sm rounded-lg block w-full outline-none p-2"
+          className="bg-black h-full text-sm block w-full outline-none p-2 resize-none"
           value={code || ''}
           disabled
         />

@@ -100,7 +100,6 @@ function SearchBar(): JSX.Element {
                 <SearchBarCode
                   labels={results[selectedIndex]?.labels || []}
                   code={results[selectedIndex]?.description}
-                  setShowCode={setShowCode}
                 />
               )}
             </div>
