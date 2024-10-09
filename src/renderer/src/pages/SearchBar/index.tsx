@@ -1,10 +1,10 @@
 import Footer from '@renderer/components/Footer'
 import SearchBarCode from '@renderer/components/SearchBarCode'
-import SearchBarInput from '@renderer/components/SearchBarInput'
 import SearchBarRow from '@renderer/components/SearchBarRow'
-import { useListSnippets } from '../../hooks/useListSnippets'
+import { useListSnippets } from '../../hooks/UseListSnippets'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import SearchBarHeader from '@renderer/components/SearchBarHeader'
 
 type Data = {
   title: string
@@ -76,9 +76,8 @@ function SearchBar(): JSX.Element {
 
   return (
     <>
-      <div className="fixed top-3 left-0 w-full px-4">
-        <SearchBarInput query={query} setQuery={setQuery} />
-
+      <div className="fixed w-full left-0 top-0">
+        <SearchBarHeader query={query} setQuery={setQuery} />
         {query && (
           <>
             <hr className="border-gray-600" />
@@ -105,7 +104,7 @@ function SearchBar(): JSX.Element {
             </div>
           </>
         )}
-        <Footer tempText={'/ for actions'} />
+        <Footer tempText={'/ for actions'} topBorder={Boolean(query)} />
       </div>
     </>
   )
