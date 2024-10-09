@@ -26,7 +26,7 @@ function SearchBarRow({
       onClick={() => setShowCode(true)}
       onMouseOver={() => setSelectedIndex(index)}
     >
-      <div className={`flex items-center space-x-2`}>
+      <div className={`flex items-center space-x-2 my-1`}>
         <span>{title}</span>
       </div>
 
