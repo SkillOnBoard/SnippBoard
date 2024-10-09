@@ -23,7 +23,7 @@ function SearchBarRow({
     <div
       key={index}
       className={`flex justify-between items-center cursor-pointer mx-4 px-4 py-2 rounded-lg ${selectedIndex == index ? 'bg-gray-800' : ''}`}
-      onClick={() => setShowCode(true)}
+      onClick={() => setShowCode(!showCode)}
       onMouseOver={() => setSelectedIndex(index)}
     >
       <div className={`flex items-center space-x-2 my-1`}>

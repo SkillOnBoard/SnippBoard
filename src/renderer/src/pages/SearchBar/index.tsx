@@ -81,8 +81,8 @@ function SearchBar(): JSX.Element {
         {query && (
           <>
             <hr className="border-gray-600" />
-            <div className={`w-full mt-2 text-gray-300 ${showCode ? 'grid grid-cols-2' : ''}`}>
-              <div>
+            <div className={`w-full h-[301px] text-gray-300 ${showCode ? 'grid grid-cols-2' : ''}`}>
+              <div className="mt-2">
                 {results.map((result, index) => (
                   <SearchBarRow
                     key={index}
@@ -98,6 +98,7 @@ function SearchBar(): JSX.Element {
               </div>
               {showCode && results.length + 1 >= selectedIndex && (
                 <SearchBarCode
+                  labels={results[selectedIndex]?.labels || []}
                   code={results[selectedIndex]?.description}
                   setShowCode={setShowCode}
                 />
