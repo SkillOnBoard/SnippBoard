@@ -4,9 +4,8 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import LabeledTextArea from '@renderer/components/molecules/LabeledTextArea'
 import { useTranslation } from 'react-i18next'
-import Header from '@renderer/components/Header'
-import Footer from '@renderer/components/Footer'
 import { useCreateSnippet } from '@renderer/hooks/useCreateSnippet'
+import Layout from '@renderer/components/Layout'
 import Button from '@renderer/components/atoms/Button'
 
 type CreateForm = {
@@ -35,9 +34,20 @@ function Create(): JSX.Element {
   }
 
   return (
-    <div className="fixed w-full left-0 top-0">
-      <Header tempText={'Save code'} />
-      <div className="p-4 gap-12">
+    <Layout
+      back={() => navigate('/')}
+      footerActions={[
+        {
+          shortcut: 'Escape',
+          onClick: () => navigate('/')
+        },
+        {
+          shortcut: 'Enter',
+          onClick: submit
+        }
+      ]}
+    >
+      <div className="p-4">
         <form onSubmit={submit}>
           <div className="gap-12">
             <div className="grid grid-cols-2 gap-2">
@@ -64,15 +74,11 @@ function Create(): JSX.Element {
             />
           </div>
         </form>
-
         <div className="pt-4">
           <Button onClick={submit}>{t('create.submit')}</Button>
         </div>
-
-        {/* TODO: Send actions */}
-        <Footer tempText={'/ for actions'} />
       </div>
-    </div>
+    </Layout>
   )
 }
 

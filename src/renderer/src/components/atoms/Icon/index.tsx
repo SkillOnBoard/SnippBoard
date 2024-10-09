@@ -1,4 +1,12 @@
-type IconsTypes = 'chevron-down' | 'arrow-left' | 'magnifying-glass'
+type IconsTypes =
+  | 'arrow-down'
+  | 'arrow-left'
+  | 'arrow-up'
+  | 'chevron-down'
+  | 'command'
+  | 'enter'
+  | 'magnifying-glass'
+
 type Sizes = 'small' | 'medium' | 'large'
 type Strokes = 1 | 2 | 3 | 4 | 5
 
@@ -27,11 +35,25 @@ const strokes = {
 
 const Content = ({ name }: ContentProps): JSX.Element => {
   switch (name) {
-    case 'chevron-down':
-      return <path d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+    case 'arrow-down':
+      return <path d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
 
     case 'arrow-left':
       return <path d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+
+    case 'arrow-up':
+      return <path d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
+
+    case 'chevron-down':
+      return <path d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+
+    case 'command':
+      return (
+        <path d="m6.75 7.5 3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0 0 21 18V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v12a2.25 2.25 0 0 0 2.25 2.25Z" />
+      )
+
+    case 'enter':
+      return <path d="m7.49 12-3.75 3.75m0 0 3.75 3.75m-3.75-3.75h16.5V4.499" />
 
     case 'magnifying-glass':
       return (
