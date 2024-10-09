@@ -90,6 +90,7 @@ function SearchBar(): JSX.Element {
                     title={result.title}
                     labels={result.labels}
                     selectedIndex={selectedIndex}
+                    showCode={showCode}
                     setShowCode={setShowCode}
                     setSelectedIndex={setSelectedIndex}
                   />
