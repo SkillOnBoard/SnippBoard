@@ -1,3 +1,5 @@
+import Tag from '../atoms/Tag'
+
 interface ISearchBarRow {
   index: number
   title: string
@@ -28,18 +30,26 @@ function SearchBarRow({
         <span>{title}</span>
       </div>
 
-      {!showCode && <div className=" flex flex-row">
-        {labels.map((result, index) => {
-          return (
-            <div key={index} className=" ml-2 text-blue-400 text-sm">
-              {result}
-            </div>
-          )
-        })}
-        <div className="ml-2 text-blue-400 text-sm">
-          otro
+      {!showCode && (
+        <div className=" flex flex-row">
+          {labels.map((result, index) => {
+            return (
+              <div key={index} className="ml-2">
+                <Tag defaultColor="blue">{result}</Tag>
+              </div>
+
+              // <div key={index} className=" ml-2 text-blue-400 text-sm">
+              //   {result}
+              // </div>
+            )
+          })}
+          <div className="ml-2">
+            <Tag key={index} defaultColor="blue">
+              {'test'}
+            </Tag>
+          </div>
         </div>
-      </div>}
+      )}
     </div>
   )
 }
