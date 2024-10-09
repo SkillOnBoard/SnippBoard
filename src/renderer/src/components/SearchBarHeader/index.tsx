@@ -11,7 +11,7 @@ function SearchBarHeader({ query, setQuery }: ISearchBarHeader): JSX.Element {
   return (
     <div className="left-0 w-full">
       <div className="flex flex-row gap-2 items-center p-4">
-        <Icon name="arrow-left" size="large" />
+        <Icon name="magnifying-glass" size="large" />
         <input
           type="text"
           className="text-gray-600 dark:text-gray-400 outline-none bg-inherit placeholder-gray-500"
