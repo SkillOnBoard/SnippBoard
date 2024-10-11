@@ -32,6 +32,8 @@ function SearchBar(): JSX.Element {
   }
 
   useEffect(() => {
+    const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
+
     const handleKeyDown = (e): void => {
       if (e.key === 'ArrowDown') {
         e.preventDefault()
@@ -42,8 +44,14 @@ function SearchBar(): JSX.Element {
         e.preventDefault()
         setSelectedIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0))
       } else if (e.key === 'Enter') {
+        e.preventDefault()
         if (selectedIndex >= 0) {
           setShowCode((prev) => !prev)
+        }
+      } else if ((e.ctrlKey && e.key === 'c' && !isMac) || (e.metaKey && e.key === 'c' && isMac)) {
+        e.preventDefault()
+        if (showCode && selectedIndex >= 0) {
+          navigator.clipboard.writeText(results[selectedIndex]?.description)
         }
       }
     }
