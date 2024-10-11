@@ -1,11 +1,11 @@
 import Tag from '../atoms/Tag'
 
-interface ISearchBarCode {
+interface Props {
   labels: string[]
   code: string | null
 }
 
-function SearchBarCode({ labels, code }: ISearchBarCode): JSX.Element {
+const SearchBarCode = ({ labels, code }: Props): JSX.Element => {
   return (
     <div className="bg-gray-800 w-full px-4 py-2">
       <div>
@@ -17,7 +17,6 @@ function SearchBarCode({ labels, code }: ISearchBarCode): JSX.Element {
               </Tag>
             )
           })}
-          <Tag defaultColor="blue">{'prueba'}</Tag>
         </div>
       </div>
       <div className="w-full h-[250px] mt-2 bg-black p-2 rounded-lg">

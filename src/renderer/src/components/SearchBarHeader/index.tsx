@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next'
 import Icon from '../atoms/Icon'
 
-interface ISearchBarHeader {
+interface Props {
   query: string
   setQuery: (value: string) => void
 }
 
-function SearchBarHeader({ query, setQuery }: ISearchBarHeader): JSX.Element {
+const SearchBarHeader = ({ query, setQuery }: Props): JSX.Element => {
   const { t } = useTranslation()
   return (
     <div className="left-0 w-full">

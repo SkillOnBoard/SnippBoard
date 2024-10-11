@@ -1,6 +1,6 @@
 import Tag from '../atoms/Tag'
 
-interface ISearchBarRow {
+interface Props {
   index: number
   title: string
   labels: string[]
@@ -10,7 +10,7 @@ interface ISearchBarRow {
   setSelectedIndex: (value: number) => void
 }
 
-function SearchBarRow({
+const SearchBarRow = ({
   index,
   title,
   labels,
@@ -18,7 +18,7 @@ function SearchBarRow({
   showCode,
   setShowCode,
   setSelectedIndex
-}: ISearchBarRow): JSX.Element {
+}: Props): JSX.Element => {
   return (
     <div
       key={index}
@@ -39,11 +39,6 @@ function SearchBarRow({
               </div>
             )
           })}
-          <div className="ml-2">
-            <Tag key={index} defaultColor="blue">
-              {'test'}
-            </Tag>
-          </div>
         </div>
       )}
     </div>
