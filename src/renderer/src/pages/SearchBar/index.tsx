@@ -1,10 +1,10 @@
 import Footer from '@renderer/components/Footer'
 import SearchBarCode from '@renderer/components/SearchBarCode'
-import SearchBarInput from '@renderer/components/SearchBarInput'
 import SearchBarRow from '@renderer/components/SearchBarRow'
-import { useListSnippets } from '../../hooks/useListSnippets'
+import { useListSnippets } from '../../hooks/UseListSnippets'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import SearchBarHeader from '@renderer/components/SearchBarHeader'
 
 type Data = {
   title: string
@@ -76,14 +76,13 @@ function SearchBar(): JSX.Element {
 
   return (
     <>
-      <div className="fixed top-3 left-0 w-full px-4">
-        <SearchBarInput query={query} setQuery={setQuery} />
-
+      <div className="fixed w-full left-0 top-0">
+        <SearchBarHeader query={query} setQuery={setQuery} />
         {query && (
           <>
             <hr className="border-gray-600" />
-            <div className={`w-full mt-2 text-gray-300 ${showCode ? 'grid grid-cols-2' : ''}`}>
-              <div>
+            <div className={`w-full h-[301px] text-gray-300 ${showCode ? 'grid grid-cols-2' : ''}`}>
+              <div className="mt-2">
                 {results.map((result, index) => (
                   <SearchBarRow
                     key={index}
@@ -91,6 +90,7 @@ function SearchBar(): JSX.Element {
                     title={result.title}
                     labels={result.labels}
                     selectedIndex={selectedIndex}
+                    showCode={showCode}
                     setShowCode={setShowCode}
                     setSelectedIndex={setSelectedIndex}
                   />
@@ -98,14 +98,14 @@ function SearchBar(): JSX.Element {
               </div>
               {showCode && results.length + 1 >= selectedIndex && (
                 <SearchBarCode
+                  labels={results[selectedIndex]?.labels || []}
                   code={results[selectedIndex]?.description}
-                  setShowCode={setShowCode}
                 />
               )}
             </div>
           </>
         )}
-        <Footer tempText={'/ for actions'} />
+        <Footer tempText={'/ for actions'} topBorder={Boolean(query)} />
       </div>
     </>
   )
