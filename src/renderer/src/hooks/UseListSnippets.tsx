@@ -23,7 +23,7 @@ export const useListSnippets = (): ResponseType => {
     try {
       window.electron.ipcRenderer.send('list-snippets')
 
-      window.api.listSnippetsResponse((event: any, responseData: any) => {
+      window.api.listSnippetsResponse((_event: any, responseData: any) => {
         if (responseData.status === 'success') {
           setResponse({ ...response, data: responseData.message as DataType[], loading: false })
         } else {

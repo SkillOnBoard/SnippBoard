@@ -19,13 +19,13 @@ export const useCreateSnippet = (): [(data: SnippetDataType) => void, ResponseTy
     loading: false
   })
 
-  const createSnippet = (form: SnippetDataType) => {
+  const createSnippet = (form: SnippetDataType): void => {
     setResponse({ ...response, loading: true })
 
     try {
       window.electron.ipcRenderer.send('create-snippet', form)
 
-      window.api.createSnippetResponse((event: any, response: any) => {
+      window.api.createSnippetResponse((_event: any, response: any) => {
         if (response.status === 'success') {
           setResponse({ ...response, loading: true })
         } else {
