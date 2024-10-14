@@ -5,9 +5,11 @@ const Header = ({ tempText }: { tempText: string }): JSX.Element => {
   const navigate = useNavigate()
 
   return (
-    <div className="left-0 w-full">
+    <div className="left-0 w-full draggable">
       <div className="flex flex-row gap-2 items-center p-4" onClick={() => navigate('/')}>
-        <Icon name="arrow-left" size="large" />
+        <div className="no-draggable" onClick={() => navigate('/')}>
+          <Icon name="arrow-left" size="large" />
+        </div>
 
         <span className="text-gray-600 dark:text-gray-400">{tempText}</span>
       </div>
