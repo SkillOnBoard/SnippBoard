@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import Header from '@renderer/components/Header'
 import Footer from '@renderer/components/Footer'
 import { useCreateSnippet } from '@renderer/hooks/useCreateSnippet'
+import Button from '@renderer/components/atoms/Button'
 
 type CreateForm = {
   title: string
@@ -25,8 +26,7 @@ function Create(): JSX.Element {
 
   const [createSnippet, { error }] = useCreateSnippet()
 
-  const submit = (event: React.FormEvent) => {
-    event.preventDefault()
+  const submit = (): void => {
     navigate('/')
     createSnippet(form)
     if (error) {
@@ -37,7 +37,7 @@ function Create(): JSX.Element {
   return (
     <div className="fixed w-full left-0 top-0">
       <Header tempText={'Save code'} />
-      <div className="p-4">
+      <div className="p-4 gap-12">
         <form onSubmit={submit}>
           <div className="gap-12">
             <div className="grid grid-cols-2 gap-2">
@@ -51,7 +51,7 @@ function Create(): JSX.Element {
               <TagPicker
                 label={t('create.fields.label.label')}
                 placeholder={t('create.fields.label.placeholder')}
-                value={form.labels}
+                values={form.labels}
                 onChange={(values) => setForm({ ...form, labels: values })}
               />
             </div>
@@ -65,7 +65,9 @@ function Create(): JSX.Element {
           </div>
         </form>
 
-        <button onClick={submit}>{t('create.submit')}</button>
+        <div className="pt-4">
+          <Button onClick={submit}>{t('create.submit')}</Button>
+        </div>
 
         {/* TODO: Send actions */}
         <Footer tempText={'/ for actions'} />
