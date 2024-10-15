@@ -1,11 +1,15 @@
+import { useRef } from 'react'
+
 type Props = {
-  value: string
+  value?: string
   placeholder?: string
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   required?: boolean
 }
 
 const LabeledInput = ({ value, placeholder, onChange, required = false }: Props): JSX.Element => {
+  const inputRef = useRef<HTMLInputElement>(null)
+
   return (
     <input
       type="text"

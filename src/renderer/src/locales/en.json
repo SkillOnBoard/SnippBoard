@@ -16,6 +16,7 @@
         "label": "Code",
         "placeholder": "Create your snippet"
       }
-    }
+    },
+    "submit": "Create"
   }
 }

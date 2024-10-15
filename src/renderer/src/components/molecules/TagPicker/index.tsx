@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Dropdown from '@renderer/components/Dropdown'
 import Tag from '@renderer/components/atoms/Tag'
 import Icon from '@renderer/components/atoms/Icon'
@@ -11,22 +11,36 @@ type Props = {
 }
 
 const TagPicker = ({ label, placeholder, onChange, values }: Props): JSX.Element => {
-  const [selectedTags, setSelectedTags] = useState<string[]>([
-    'programming',
-    'design',
-    'web development'
-  ])
+  const [selectedTags, setSelectedTags] = useState<string[]>(values)
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false)
 
   const addTag = (tagText: string): void => {
-    setSelectedTags([...selectedTags, tagText])
-    onChange(selectedTags)
+    setSelectedTags([tagText]) // Only allows 1 item, otherwise [...selectedTags, tagText]
+    onChange([tagText])
+    setIsDropdownOpen(false)
   }
 
   const removeTag = (index): void => {
     const newSelectedTags = selectedTags.filter((_, i) => i !== index)
     setSelectedTags([...newSelectedTags])
   }
+
+  const openDropdown = (): void => {
+    setIsDropdownOpen(true)
+  }
+
+  const closeDropdown = (): void => {
+    setIsDropdownOpen(false)
+  }
+
+  useEffect(() => {
+    window.addEventListener('focus', openDropdown)
+    window.addEventListener('blur', closeDropdown)
+    return (): void => {
+      window.removeEventListener('focus', openDropdown)
+      window.removeEventListener('blur', closeDropdown)
+    }
+  }, [])
 
   return (
     <div>

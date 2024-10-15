@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react'
+import { PropsWithChildren, useMemo } from 'react'
 
 const colors = {
   green: 'border-green-500 text-green-500',
@@ -15,9 +15,11 @@ type Props = {
 }
 
 const Tag = ({ onClose, defaultColor, children }: PropsWithChildren<Props>): JSX.Element => {
-  const selectedColor = defaultColor
-    ? defaultColor
-    : colorsNames[Math.floor(Math.random() * colorsNames.length)]
+  const selectedColor = useMemo(
+    () =>
+      defaultColor ? defaultColor : colorsNames[Math.floor(Math.random() * colorsNames.length)],
+    []
+  )
   const color = colors[selectedColor]
 
   const className = [
