@@ -14,7 +14,8 @@ const SearchBarHeader = ({ query, setQuery }: Props): JSX.Element => {
         <Icon name="magnifying-glass" size="large" />
         <input
           type="text"
-          className="no-draggable text-gray-600 dark:text-gray-400 outline-none bg-inherit placeholder-gray-500"
+          autoFocus
+          className="no-draggable text-gray-600 dark:text-gray-400 outline-none w-6/12 bg-inherit placeholder-gray-500"
           placeholder={t('search_bar.placeholder')}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
