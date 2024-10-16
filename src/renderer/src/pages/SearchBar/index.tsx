@@ -61,7 +61,7 @@ function SearchBar(): JSX.Element {
     return (): void => {
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [selectedIndex, results])
+  }, [selectedIndex, results, showCode])
 
   useEffect(() => {
     const filteredData = filterData()
