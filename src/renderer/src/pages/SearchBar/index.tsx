@@ -2,7 +2,7 @@ import Footer from '@renderer/components/Footer'
 import SearchBarCode from '@renderer/components/SearchBarCode'
 import SearchBarRow from '@renderer/components/SearchBarRow'
 import { useListSnippets } from '../../hooks/UseListSnippets'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import SearchBarHeader from '@renderer/components/SearchBarHeader'
 
@@ -18,6 +18,7 @@ function SearchBar(): JSX.Element {
   const [results, setResults] = useState<Data[]>([])
   const [showCode, setShowCode] = useState<boolean>(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
+  const rowRefs = useRef<(HTMLDivElement | null)[]>([])
 
   const { data } = useListSnippets()
 
@@ -53,6 +54,10 @@ function SearchBar(): JSX.Element {
         if (showCode && selectedIndex >= 0) {
           navigator.clipboard.writeText(results[selectedIndex]?.description)
         }
+      }
+
+      if (selectedIndex !== null && rowRefs.current[selectedIndex]) {
+        rowRefs.current[selectedIndex]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
       }
     }
 
@@ -90,18 +95,20 @@ function SearchBar(): JSX.Element {
           <>
             <hr className="border-gray-600" />
             <div className={`w-full h-[301px] text-gray-300 ${showCode ? 'grid grid-cols-2' : ''}`}>
-              <div className="mt-2">
+              <div className="mt-2 h-[297px] overflow-y-scroll">
                 {results.map((result, index) => (
-                  <SearchBarRow
-                    key={index}
-                    index={index}
-                    title={result.title}
-                    labels={result.labels}
-                    selectedIndex={selectedIndex}
-                    showCode={showCode}
-                    setShowCode={setShowCode}
-                    setSelectedIndex={setSelectedIndex}
-                  />
+                  <div key={index} ref={(el) => (rowRefs.current[index] = el)}>
+                    <SearchBarRow
+                      key={index}
+                      index={index}
+                      title={result.title}
+                      labels={result.labels}
+                      selectedIndex={selectedIndex}
+                      showCode={showCode}
+                      setShowCode={setShowCode}
+                      setSelectedIndex={setSelectedIndex}
+                    />
+                  </div>
                 ))}
               </div>
               {showCode && results.length + 1 >= selectedIndex && (
