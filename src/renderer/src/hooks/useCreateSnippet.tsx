@@ -12,7 +12,15 @@ type SnippetDataType = {
   description: string
 }
 
-export const useCreateSnippet = (): [(data: SnippetDataType) => void, ResponseType] => {
+type Props = {
+  onSuccess: () => void
+  onFailure: (error: string) => void
+}
+
+export const useCreateSnippet = ({
+  onSuccess,
+  onFailure
+}: Props): [(data: SnippetDataType) => void, ResponseType] => {
   const [response, setResponse] = useState<ResponseType>({
     data: null,
     error: null,
@@ -28,8 +36,10 @@ export const useCreateSnippet = (): [(data: SnippetDataType) => void, ResponseTy
       window.api.createSnippetResponse((event: any, response: any) => {
         if (response.status === 'success') {
           setResponse({ ...response, loading: true })
+          onSuccess()
         } else {
           setResponse({ ...response, error: response.message, loading: false })
+          onFailure(response.message)
         }
       })
     } catch (error) {
