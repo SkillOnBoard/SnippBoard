@@ -55,10 +55,6 @@ function SearchBar(): JSX.Element {
           navigator.clipboard.writeText(results[selectedIndex]?.description)
         }
       }
-
-      if (selectedIndex !== null && rowRefs.current[selectedIndex]) {
-        rowRefs.current[selectedIndex]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-      }
     }
 
     window.addEventListener('keydown', handleKeyDown)
@@ -67,6 +63,12 @@ function SearchBar(): JSX.Element {
       window.removeEventListener('keydown', handleKeyDown)
     }
   }, [selectedIndex, results, showCode])
+
+  useEffect(() => {
+    if (selectedIndex !== null && rowRefs.current[selectedIndex]) {
+      rowRefs.current[selectedIndex]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    }
+  }, [selectedIndex])
 
   useEffect(() => {
     const filteredData = filterData()
