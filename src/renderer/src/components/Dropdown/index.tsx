@@ -53,7 +53,7 @@ const Dropdown = ({ placeholder = 'Search', onSelect }: Props): JSX.Element => {
 
   return (
     <div className="z-10 bg-gray-800 rounded-lg shadow w-60 dark:bg-gray-700 absolute">
-      <Input placeholder={placeholder} onChange={handleSearch} required autoFocus />
+      <Input placeholder={placeholder} onChange={handleSearch} required />
       <ul className="h-48 py-2 overflow-y-auto" aria-labelledby="dropdownUsersButton">
         {filteredSuggestions.map((tag, index) => (
           <li
