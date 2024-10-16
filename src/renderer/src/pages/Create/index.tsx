@@ -24,14 +24,13 @@ function Create(): JSX.Element {
     window.electron?.ipcRenderer.send('resize-window', 'big')
   }, [])
 
-  const [createSnippet, { error }] = useCreateSnippet()
+  const [createSnippet] = useCreateSnippet({
+    onSuccess: () => navigate('/'),
+    onFailure: (error) => console.log('error', error)
+  })
 
   const submit = (): void => {
-    navigate('/')
     createSnippet(form)
-    if (error) {
-      console.log('error', error)
-    }
   }
 
   return (
