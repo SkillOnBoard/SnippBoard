@@ -158,7 +158,6 @@ app.on('window-all-closed', () => {
 ipcMain.on('list-snippets', async (event) => {
   try {
     const data = JSON.parse(await fs.readFile(datafile, 'utf8'))
-    console.log(datafile)
     event.reply('list-snippets-response', { status: 'success', message: data })
   } catch (error) {
     event.reply('list-snippets-response', { status: 'error', message: error })
