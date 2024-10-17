@@ -4,7 +4,6 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import trayIcon from '../../resources/logo.png?asset'
 
-//import dataFile from '../../resources/data.json?commonjs-external&asset'
 import * as fs from 'node:fs/promises'
 import * as path from 'path'
 
