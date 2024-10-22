@@ -23,7 +23,7 @@ const Tag = ({ onClose, defaultColor, children }: PropsWithChildren<Props>): JSX
   const color = colors[selectedColor]
 
   const className = [
-    'flex flex-row align-middle bg-gray-700 text-sm font-medium px-2.5 py-0.5 rounded gap-1 border',
+    'flex flex-row align-middle bg-gray-700 text-sm font-medium px-2.5 py-0.5 rounded gap-1 border whitespace-nowrap',
     color
   ].join(' ')
 
