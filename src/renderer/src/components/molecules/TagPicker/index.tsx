@@ -8,23 +8,16 @@ type Props = {
   placeholder: string
   values: string[]
   onChange: (value: string[]) => void
+  predefinedTags?: string[]
 }
 
-const TagPicker = ({ label, placeholder, onChange, values }: Props): JSX.Element => {
-  // TODO: fetch tags from API
-  const predefinedTags = [
-    'programming',
-    'design',
-    'web development',
-    'javascript',
-    'python',
-    'css',
-    'html',
-    'backend',
-    'frontend',
-    'database'
-    // Add more predefined tags as needed
-  ]
+const TagPicker = ({
+  label,
+  placeholder,
+  onChange,
+  values,
+  predefinedTags = []
+}: Props): JSX.Element => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false)
   const [inputValue, setInputValue] = useState<string>('')
   const hasTags = !!values.length

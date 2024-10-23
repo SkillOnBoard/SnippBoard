@@ -6,8 +6,10 @@ import LabeledTextArea from '@renderer/components/molecules/LabeledTextArea'
 import { useTranslation } from 'react-i18next'
 import Header from '@renderer/components/Header'
 import Footer from '@renderer/components/Footer'
-import { useCreateSnippet } from '@renderer/hooks/useCreateSnippet'
+import { useCreateSnippet } from '../../hooks/useCreateSnippet'
 import Button from '@renderer/components/atoms/Button'
+import { useListTags } from '@renderer/hooks/useListTags'
+import { useCreateTag } from '@renderer/hooks/useCreateTag'
 
 type CreateForm = {
   title: string
@@ -19,6 +21,7 @@ function Create(): JSX.Element {
   const navigate = useNavigate()
   const [form, setForm] = useState<CreateForm>({ title: '', description: '', labels: [] })
   const { t } = useTranslation()
+  const { data: predefinedTags } = useListTags()
 
   useEffect(() => {
     window.electron?.ipcRenderer.send('resize-window', 'big')
@@ -29,7 +32,14 @@ function Create(): JSX.Element {
     onFailure: (error) => console.log('error', error)
   })
 
+  const [createTag] = useCreateTag({
+    onFailure: (error) => console.log('error', error)
+  })
+
   const submit = (): void => {
+    form.labels.forEach((label) => {
+      if (!predefinedTags?.includes(label)) createTag(label)
+    })
     createSnippet(form)
   }
 
@@ -52,6 +62,7 @@ function Create(): JSX.Element {
                 placeholder={t('create.fields.label.placeholder')}
                 values={form.labels}
                 onChange={(values) => setForm({ ...form, labels: values })}
+                predefinedTags={predefinedTags}
               />
             </div>
 
