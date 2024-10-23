@@ -25,28 +25,26 @@ const TagPicker = ({ label, placeholder, onChange, values }: Props): JSX.Element
     'database'
     // Add more predefined tags as needed
   ]
-  const [selectedTags, setSelectedTags] = useState<string[]>(values)
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false)
-  const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>(predefinedTags)
   const [inputValue, setInputValue] = useState<string>('')
-  const hasTags = !!selectedTags.length
+  const hasTags = !!values.length
   const inputRef = createRef<HTMLInputElement>()
+  const filteredOptions = predefinedTags.filter((tag) => tag.includes(inputValue))
+  const options = inputValue ? filteredOptions.concat(inputValue) : filteredOptions
 
   const addTag = (tagText: string): void => {
-    setSelectedTags([tagText]) // Only allows 1 item, otherwise [...selectedTags, tagText]
-    onChange([tagText])
+    onChange([tagText]) // Only allows 1 item, otherwise [...selectedTags, tagText]
     cleanInput()
     setIsDropdownOpen(false)
   }
 
   const cleanInput = (): void => {
     setInputValue('')
-    setFilteredSuggestions(predefinedTags)
   }
 
   const removeTag = (index): void => {
-    const newSelectedTags = selectedTags.filter((_, i) => i !== index)
-    setSelectedTags([...newSelectedTags])
+    const newSelectedTags = values.filter((_, i) => i !== index)
+    onChange([...newSelectedTags])
   }
 
   const handleSearch = (event): void => {
@@ -54,14 +52,8 @@ const TagPicker = ({ label, placeholder, onChange, values }: Props): JSX.Element
   }
 
   useEffect(() => {
-    if (inputValue && !isDropdownOpen) {
-      setIsDropdownOpen(true)
-    }
-    const matchedTags = predefinedTags.filter((tag) => tag.includes(inputValue))
-    setFilteredSuggestions(matchedTags)
+    if (inputValue && !isDropdownOpen) setIsDropdownOpen(true)
   }, [inputValue])
-
-  const options = filteredSuggestions.concat(inputValue)
 
   return (
     <div>
@@ -69,15 +61,14 @@ const TagPicker = ({ label, placeholder, onChange, values }: Props): JSX.Element
       <div className="flex flex-row justify-between items-center bg-gray-800 border border-gray-900 text-sm rounded-lg block w-full px-4 py-2 outline-none gap-2">
         {hasTags && (
           <div className="flex flex-row flex-wrap align-middle gap-2">
-            {selectedTags.slice(0, 2).map((tag, index) => (
+            {values.slice(0, 2).map((tag, index) => (
               <Tag key={index} onClose={() => removeTag(index)}>
                 {tag}
               </Tag>
             ))}
-            {selectedTags.length > 2 && <Tag key="plus">+{selectedTags.length - 2}</Tag>}
+            {values.length > 2 && <Tag key="plus">+{values.length - 2}</Tag>}
           </div>
         )}
-        {/* TODO: Add placeholder copy */}
         <input
           ref={inputRef}
           placeholder={hasTags ? '' : placeholder}
@@ -86,7 +77,7 @@ const TagPicker = ({ label, placeholder, onChange, values }: Props): JSX.Element
           onFocus={() => setIsDropdownOpen(true)}
           onBlur={() => setIsDropdownOpen(false)}
           required
-          className="bg-inherit outline-none w-full"
+          className="bg-inherit outline-none w-full placeholder:text-gray-600"
         />
 
         <div onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
