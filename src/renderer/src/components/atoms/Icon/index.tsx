@@ -1,4 +1,4 @@
-type IconsTypes = 'chevron-down' | 'arrow-left' | 'magnifying-glass'
+type IconsTypes = 'chevron-down' | 'chevron-up' | 'arrow-left' | 'magnifying-glass'
 type Sizes = 'small' | 'medium' | 'large'
 type Strokes = 1 | 2 | 3 | 4 | 5
 
@@ -29,6 +29,9 @@ const Content = ({ name }: ContentProps): JSX.Element => {
   switch (name) {
     case 'chevron-down':
       return <path d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+
+    case 'chevron-up':
+      return <path d="m4.5 15.75 7.5-7.5 7.5 7.5" />
 
     case 'arrow-left':
       return <path d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
