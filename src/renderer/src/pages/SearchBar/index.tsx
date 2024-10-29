@@ -91,13 +91,13 @@ function SearchBar(): JSX.Element {
 
   return (
     <>
-      <div className="fixed w-full left-0 top-0">
+      <div className="fixed w-full h-full left-0 top-0 bg-gray-800">
         <SearchBarHeader query={query} setQuery={setQuery} />
         {query && (
           <>
-            <hr className="border-gray-600" />
+            <hr className="border-gray-700" />
             <div className={`w-full h-[301px] text-gray-300 ${showCode ? 'grid grid-cols-2' : ''}`}>
-              <div className="mt-2 h-[297px] overflow-y-scroll">
+              <div className="mt-2 h-[297px] overflow-hidden">
                 {results.map((result, index) => (
                   <div key={index} ref={(el) => (rowRefs.current[index] = el)}>
                     <SearchBarRow

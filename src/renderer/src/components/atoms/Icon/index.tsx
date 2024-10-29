@@ -54,7 +54,7 @@ const Icon = ({ name, size = 'medium', stroke = 3 }: Props): JSX.Element => {
       viewBox="0 0 24 24"
       stroke="currentColor"
       strokeWidth={stroke}
-      className={`${sizes[size]} ${strokes[stroke]}`}
+      className={`${sizes[size]} ${strokes[stroke]} text-white`}
     >
       <Content name={name} />
     </svg>

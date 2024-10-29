@@ -44,12 +44,12 @@ function Create(): JSX.Element {
   }
 
   return (
-    <div className="fixed w-full left-0 top-0">
+    <div className="fixed w-full h-full left-0 top-0 bg-gray-800 border border-gray-700">
       <Header tempText={'Save code'} />
       <div className="p-4 gap-12">
         <form onSubmit={submit}>
-          <div className="gap-12">
-            <div className="grid grid-cols-2 gap-2">
+          <div className="grid gap-4">
+            <div className="grid grid-cols-2 gap-3">
               <LabeledInput
                 label={t('create.fields.name.label')}
                 placeholder={t('create.fields.name.label')}

@@ -15,7 +15,7 @@ const SearchBarHeader = ({ query, setQuery }: Props): JSX.Element => {
         <input
           type="text"
           autoFocus
-          className="no-draggable text-gray-600 dark:text-gray-400 outline-none w-6/12 bg-inherit placeholder-gray-500"
+          className="no-draggable text-white outline-none w-6/12 bg-inherit placeholder-gray-200"
           placeholder={t('search_bar.placeholder')}
           value={query}
           onChange={(e) => setQuery(e.target.value)}

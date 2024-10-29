@@ -40,16 +40,18 @@ const Dropdown = ({ onSelect, options }: Props): JSX.Element => {
   }, [selectedIndex])
 
   return (
-    <div className="z-10 bg-gray-800 rounded-lg shadow w-60 dark:bg-gray-700 absolute">
-      <ul className="h-48 py-2 overflow-y-auto" aria-labelledby="dropdownUsersButton">
+    <div className="z-10 bg-gray-700 rounded-lg shadow w-60 dark:bg-gray-700 absolute border border-gray-600 mt-2">
+      <ul className="grid gap-1 p-1 overflow-hidden max-h-48">
         {options.map((tag, index) => (
           <li
-            ref={(el) => (rowRefs.current[index] = el)}
             key={index}
+            ref={(el) => (rowRefs.current[index] = el)}
             className={
-              'hover:bg-gray-600 ' + (selectedIndex === index ? 'bg-gray-700' : 'bg-gray-800')
+              'rounded-lg hover:bg-gray-800 h-min ' +
+              (selectedIndex === index ? 'bg-gray-800' : 'bg-gray-700')
             }
-            onClick={() => onSelect(tag)}
+            onClick={() => onSelect(options[selectedIndex])}
+            onMouseOver={() => setSelectedIndex(index)}
           >
             <span className={'flex justify-between items-center p-2'}>{tag}</span>
           </li>
