@@ -7,8 +7,9 @@ import trayIcon from '../../resources/logo.png?asset'
 import * as fs from 'node:fs/promises'
 import * as path from 'path'
 
-const userDataPath = app.getPath('userData');
-const datafile = path.join(userDataPath, 'data.json');
+const userDataPath = app.getPath('userData')
+const datafile = path.join(userDataPath, 'data.json')
+const tagsfile = path.join(userDataPath, 'tags.json')
 
 let tray: Tray | null = null
 
@@ -177,5 +178,30 @@ ipcMain.on('create-snippet', async (event, snippet) => {
     event.reply('create-snippet-response', { status: 'success', message: data })
   } catch (error) {
     event.reply('create-snippet-response', { status: 'error', message: error })
+  }
+})
+
+ipcMain.on('list-tags', async (event) => {
+  try {
+    const data = JSON.parse(await fs.readFile(tagsfile, 'utf8'))
+    event.reply('list-tags-response', { status: 'success', message: data })
+  } catch (error) {
+    event.reply('list-tags-response', { status: 'error', message: error })
+  }
+})
+
+ipcMain.on('create-tag', async (event, tag) => {
+  try {
+    await fs.access(tagsfile)
+  } catch {
+    await fs.writeFile(tagsfile, '[]')
+  }
+  try {
+    const data = JSON.parse(await fs.readFile(tagsfile, 'utf8'))
+    data.push(tag)
+    await fs.writeFile(tagsfile, JSON.stringify(data, null, 2))
+    event.reply('create-tag-response', { status: 'success', message: data })
+  } catch (error) {
+    event.reply('create-tag-response', { status: 'error', message: error })
   }
 })

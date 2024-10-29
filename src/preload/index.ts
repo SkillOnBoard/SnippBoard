@@ -4,7 +4,9 @@ import { electronAPI } from '@electron-toolkit/preload'
 // Custom APIs for renderer
 const api = {
   listSnippetsResponse: (callback): unknown => ipcRenderer.on('list-snippets-response', callback),
-  createSnippetResponse: (callback): unknown => ipcRenderer.on('create-snippet-response', callback)
+  createSnippetResponse: (callback): unknown => ipcRenderer.on('create-snippet-response', callback),
+  listTagsResponse: (callback): unknown => ipcRenderer.on('list-tags-response', callback),
+  createTagResponse: (callback): unknown => ipcRenderer.on('create-tag-response', callback)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

@@ -13,6 +13,8 @@ declare global {
     api: {
       listSnippetsResponse: (callback: (event: unknown, response: response) => void) => void
       createSnippetResponse: (callback: (event: unknown, response: response) => void) => void
+      listTagsResponse: (callback: (event: unknown, response: response) => void) => void
+      createTagResponse: (callback: (event: unknown, response: response) => void) => void
     }
   }
 }
