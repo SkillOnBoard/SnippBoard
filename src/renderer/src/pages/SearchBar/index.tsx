@@ -1,7 +1,7 @@
 import Footer from '@renderer/components/Footer'
 import SearchBarCode from '@renderer/components/SearchBarCode'
 import SearchBarRow from '@renderer/components/SearchBarRow'
-import { useListSnippets } from '../../hooks/useListSnippets'
+import { useListSnippets } from '@renderer/hooks/useListSnippets'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import SearchBarHeader from '@renderer/components/SearchBarHeader'
