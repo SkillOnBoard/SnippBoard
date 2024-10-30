@@ -11,9 +11,9 @@ const Header = ({ tempText }: { tempText: string }): JSX.Element => {
           <Icon name="arrow-left" size="large" />
         </div>
 
-        <span className="text-gray-600 dark:text-gray-400">{tempText}</span>
+        <span className="text-gray-200 dark:text-gray-400">{tempText}</span>
       </div>
-      <hr className="border-gray-600" />
+      <hr className="border-gray-700" />
     </div>
   )
 }

@@ -2,6 +2,7 @@ import { createRef, useEffect, useState } from 'react'
 import Dropdown from '@renderer/components/Dropdown'
 import Tag from '@renderer/components/atoms/Tag'
 import Icon from '@renderer/components/atoms/Icon'
+import Label from '@renderer/components/atoms/Label'
 
 type Props = {
   label: string
@@ -50,8 +51,8 @@ const TagPicker = ({
 
   return (
     <div>
-      <label className="block mb-2 text-sm font-medium dark:text-white">{label}</label>
-      <div className="flex flex-row justify-between items-center bg-gray-800 border border-gray-900 text-sm rounded-lg block w-full px-4 py-2 outline-none gap-2">
+      <Label>{label}</Label>
+      <div className="flex flex-row justify-between items-center bg-gray-700 border border-gray-600 text-sm rounded-lg block w-full px-4 py-2 outline-none gap-2">
         {hasTags && (
           <div className="flex flex-row flex-wrap align-middle gap-2">
             {values.slice(0, 2).map((tag, index) => (
@@ -70,7 +71,7 @@ const TagPicker = ({
           onFocus={() => setIsDropdownOpen(true)}
           onBlur={() => setIsDropdownOpen(false)}
           required
-          className="bg-inherit outline-none w-full placeholder:text-gray-600"
+          className="bg-inherit outline-none w-full placeholder:text-gray-50"
         />
 
         <div onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
