@@ -31,7 +31,7 @@ const Footer = ({ actions }: Props): JSX.Element => {
 
   return (
     <div className="fixed bottom-0 w-full left-0">
-      <hr className="border-gray-600 " />
+      <hr className="border-gray-700 " />
       <div className="grid place-items-end py-2 px-8">
         <div className="flex flex-row gap-2">
           {actions.map(({ shortcut, onClick }, index) => (

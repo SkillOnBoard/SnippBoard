@@ -7,6 +7,8 @@ import { useTranslation } from 'react-i18next'
 import { useCreateSnippet } from '@renderer/hooks/useCreateSnippet'
 import Layout from '@renderer/components/Layout'
 import Button from '@renderer/components/atoms/Button'
+import { useListTags } from '@renderer/hooks/useListTags'
+import { useCreateTag } from '@renderer/hooks/useCreateTag'
 
 type CreateForm = {
   title: string
@@ -18,19 +20,26 @@ function Create(): JSX.Element {
   const navigate = useNavigate()
   const [form, setForm] = useState<CreateForm>({ title: '', description: '', labels: [] })
   const { t } = useTranslation()
+  const { data: predefinedTags } = useListTags()
 
   useEffect(() => {
     window.electron?.ipcRenderer.send('resize-window', 'big')
   }, [])
 
-  const [createSnippet, { error }] = useCreateSnippet()
+  const [createSnippet] = useCreateSnippet({
+    onSuccess: () => navigate('/'),
+    onFailure: (error) => console.log('error', error)
+  })
+
+  const [createTag] = useCreateTag({
+    onFailure: (error) => console.log('error', error)
+  })
 
   const submit = (): void => {
-    navigate('/')
+    form.labels.forEach((label) => {
+      if (!predefinedTags?.includes(label)) createTag(label)
+    })
     createSnippet(form)
-    if (error) {
-      console.log('error', error)
-    }
   }
 
   return (
@@ -49,8 +58,8 @@ function Create(): JSX.Element {
     >
       <div className="p-4">
         <form onSubmit={submit}>
-          <div className="gap-12">
-            <div className="grid grid-cols-2 gap-2">
+          <div className="grid gap-4">
+            <div className="grid grid-cols-2 gap-3">
               <LabeledInput
                 label={t('create.fields.name.label')}
                 placeholder={t('create.fields.name.label')}
@@ -63,6 +72,7 @@ function Create(): JSX.Element {
                 placeholder={t('create.fields.label.placeholder')}
                 values={form.labels}
                 onChange={(values) => setForm({ ...form, labels: values })}
+                predefinedTags={predefinedTags}
               />
             </div>
 

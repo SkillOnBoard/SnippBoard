@@ -4,8 +4,12 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import trayIcon from '../../resources/logo.png?asset'
 
-import dataFile from '../../resources/data.json?commonjs-external&asset'
 import * as fs from 'node:fs/promises'
+import * as path from 'path'
+
+const userDataPath = app.getPath('userData')
+const datafile = path.join(userDataPath, 'data.json')
+const tagsfile = path.join(userDataPath, 'tags.json')
 
 let tray: Tray | null = null
 
@@ -150,7 +154,7 @@ app.on('window-all-closed', () => {
 
 ipcMain.on('list-snippets', async (event) => {
   try {
-    const data = JSON.parse(await fs.readFile(dataFile, 'utf8'))
+    const data = JSON.parse(await fs.readFile(datafile, 'utf8'))
     event.reply('list-snippets-response', { status: 'success', message: data })
   } catch (error) {
     event.reply('list-snippets-response', { status: 'error', message: error })
@@ -159,11 +163,41 @@ ipcMain.on('list-snippets', async (event) => {
 
 ipcMain.on('create-snippet', async (event, snippet) => {
   try {
-    const data = JSON.parse(await fs.readFile(dataFile, 'utf8'))
+    await fs.access(datafile)
+  } catch {
+    await fs.writeFile(datafile, '[]')
+  }
+  try {
+    const data = JSON.parse(await fs.readFile(datafile, 'utf8'))
     data.push(snippet)
-    await fs.writeFile(dataFile, JSON.stringify(data, null, 2))
+    await fs.writeFile(datafile, JSON.stringify(data, null, 2))
     event.reply('create-snippet-response', { status: 'success', message: data })
   } catch (error) {
     event.reply('create-snippet-response', { status: 'error', message: error })
+  }
+})
+
+ipcMain.on('list-tags', async (event) => {
+  try {
+    const data = JSON.parse(await fs.readFile(tagsfile, 'utf8'))
+    event.reply('list-tags-response', { status: 'success', message: data })
+  } catch (error) {
+    event.reply('list-tags-response', { status: 'error', message: error })
+  }
+})
+
+ipcMain.on('create-tag', async (event, tag) => {
+  try {
+    await fs.access(tagsfile)
+  } catch {
+    await fs.writeFile(tagsfile, '[]')
+  }
+  try {
+    const data = JSON.parse(await fs.readFile(tagsfile, 'utf8'))
+    data.push(tag)
+    await fs.writeFile(tagsfile, JSON.stringify(data, null, 2))
+    event.reply('create-tag-response', { status: 'success', message: data })
+  } catch (error) {
+    event.reply('create-tag-response', { status: 'error', message: error })
   }
 })

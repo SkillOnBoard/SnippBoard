@@ -1,31 +1,25 @@
 import { useEffect, useState } from 'react'
 
 type ResponseType = {
-  data: DataType[] | null
+  data: string[]
   error: string | null
   loading: boolean
 }
 
-type DataType = {
-  title: string
-  labels: string[]
-  description: string
-}
-
-export const useListSnippets = (): ResponseType => {
+export const useListTags = (): ResponseType => {
   const [response, setResponse] = useState<ResponseType>({
-    data: null,
+    data: [],
     error: null,
     loading: true
   })
 
   useEffect(() => {
     try {
-      window.electron.ipcRenderer.send('list-snippets')
+      window.electron.ipcRenderer.send('list-tags')
 
-      window.api.listSnippetsResponse((event: any, responseData: any) => {
+      window.api.listTagsResponse((_event: any, responseData: any) => {
         if (responseData.status === 'success') {
-          setResponse({ ...response, data: responseData.message as DataType[], loading: false })
+          setResponse({ ...response, data: responseData.message || [], loading: false })
         } else {
           setResponse({
             ...response,

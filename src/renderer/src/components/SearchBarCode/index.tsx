@@ -1,4 +1,4 @@
-import Tag from '../atoms/Tag'
+import Tag from '@renderer/components/atoms/Tag'
 
 interface Props {
   labels: string[]
@@ -7,7 +7,7 @@ interface Props {
 
 const SearchBarCode = ({ labels, code }: Props): JSX.Element => {
   return (
-    <div className="bg-gray-800 w-full px-4 py-2">
+    <div className="bg-gray-900 w-full px-4 py-2">
       <div>
         <div className="flex flex-row gap-2 items-center">
           {labels.map((label, index) => {
@@ -19,12 +19,8 @@ const SearchBarCode = ({ labels, code }: Props): JSX.Element => {
           })}
         </div>
       </div>
-      <div className="w-full h-[250px] mt-2 bg-black p-2 rounded-lg">
-        <textarea
-          className="bg-black h-full text-sm block w-full outline-none p-2 resize-none"
-          value={code || ''}
-          disabled
-        />
+      <div className="w-full h-[250px] mt-2 bg-gray-700 text-white border border-gray-600 p-2 rounded-lg">
+        {code}
       </div>
     </div>
   )

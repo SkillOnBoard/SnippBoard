@@ -1,7 +1,7 @@
 import SearchBarCode from '@renderer/components/SearchBarCode'
 import SearchBarRow from '@renderer/components/SearchBarRow'
-import { useListSnippets } from '../../hooks/UseListSnippets'
-import { useEffect, useState } from 'react'
+import { useListSnippets } from '@renderer/hooks/useListSnippets'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import SearchBarHeader from '@renderer/components/SearchBarHeader'
 import Layout from '@renderer/components/Layout'
@@ -18,6 +18,7 @@ function SearchBar(): JSX.Element {
   const [results, setResults] = useState<Data[]>([])
   const [showCode, setShowCode] = useState<boolean>(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
+  const rowRefs = useRef<(HTMLDivElement | null)[]>([])
 
   const { data } = useListSnippets()
 
@@ -80,6 +81,12 @@ function SearchBar(): JSX.Element {
   //     window.removeEventListener('keydown', handleKeyDown)
   //   }
   // }, [selectedIndex, results])
+
+  useEffect(() => {
+    if (selectedIndex !== null && rowRefs.current[selectedIndex]) {
+      rowRefs.current[selectedIndex]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    }
+  }, [selectedIndex])
 
   useEffect(() => {
     const filteredData = filterData()

@@ -3,6 +3,7 @@ type IconsTypes =
   | 'arrow-left'
   | 'arrow-up'
   | 'chevron-down'
+  | 'chevron-up'
   | 'command'
   | 'enter'
   | 'magnifying-glass'
@@ -37,6 +38,9 @@ const Content = ({ name }: ContentProps): JSX.Element => {
   switch (name) {
     case 'arrow-down':
       return <path d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
+
+    case 'chevron-up':
+      return <path d="m4.5 15.75 7.5-7.5 7.5 7.5" />
 
     case 'arrow-left':
       return <path d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
@@ -73,7 +77,7 @@ const Icon = ({ name, size = 'medium', stroke = 3 }: Props): JSX.Element => {
       viewBox="0 0 24 24"
       stroke="currentColor"
       strokeWidth={stroke}
-      className={`${sizes[size]} ${strokes[stroke]}`}
+      className={`${sizes[size]} ${strokes[stroke]} text-white`}
     >
       <Content name={name} />
     </svg>

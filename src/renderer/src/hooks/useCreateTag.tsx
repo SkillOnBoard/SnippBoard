@@ -1,42 +1,36 @@
 import { useState } from 'react'
 
 type ResponseType = {
-  data: SnippetDataType | null
+  data: string | null
   error: string | null
   loading: boolean
 }
 
-type SnippetDataType = {
-  title: string
-  labels: string[]
-  description: string
-}
-
 type Props = {
-  onSuccess: () => void
+  onSuccess?: () => void
   onFailure: (error: string) => void
 }
 
-export const useCreateSnippet = ({
+export const useCreateTag = ({
   onSuccess,
   onFailure
-}: Props): [(data: SnippetDataType) => void, ResponseType] => {
+}: Props): [(data: string) => void, ResponseType] => {
   const [response, setResponse] = useState<ResponseType>({
     data: null,
     error: null,
     loading: false
   })
 
-  const createSnippet = (form: SnippetDataType): void => {
+  const createTag = (tag: string): void => {
     setResponse({ ...response, loading: true })
 
     try {
-      window.electron.ipcRenderer.send('create-snippet', form)
+      window.electron.ipcRenderer.send('create-tag', tag)
 
-      window.api.createSnippetResponse((_event: any, response: any) => {
+      window.api.createTagResponse((_event: any, response: any) => {
         if (response.status === 'success') {
           setResponse({ ...response, loading: true })
-          onSuccess()
+          if (onSuccess) onSuccess()
         } else {
           setResponse({ ...response, error: response.message, loading: false })
           onFailure(response.message)
@@ -47,5 +41,5 @@ export const useCreateSnippet = ({
     }
   }
 
-  return [createSnippet, response]
+  return [createTag, response]
 }

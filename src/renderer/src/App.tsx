@@ -1,5 +1,5 @@
 //import Versions from './components/Versions'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import { HashRouter as Router, Route, Routes } from 'react-router-dom'
 import SearchBar from './pages/SearchBar'
 import Create from './pages/Create'
 

@@ -1,41 +1,25 @@
-import { useCallback, useEffect, useState } from 'react'
-import Input from '@renderer/components/atoms/Input'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 type Props = {
-  placeholder: string
   onSelect: (value: string) => void
+  options: string[]
 }
 
-const Dropdown = ({ placeholder = 'Search', onSelect }: Props): JSX.Element => {
-  const predefinedTags = [
-    'programming',
-    'design',
-    'web development',
-    'javascript',
-    'python',
-    'css',
-    'html',
-    'backend',
-    'frontend',
-    'database'
-    // Add more predefined tags as needed
-  ]
-  const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>(predefinedTags)
+const Dropdown = ({ onSelect, options }: Props): JSX.Element => {
   const [selectedIndex, setSelectedIndex] = useState(0)
+  const rowRefs = useRef<(HTMLLIElement | null)[]>([])
 
   const handleKeyDown = useCallback(
     (event): void => {
       if (event.key === 'ArrowDown') {
-        setSelectedIndex(
-          selectedIndex < filteredSuggestions.length - 1 ? selectedIndex + 1 : selectedIndex
-        )
+        setSelectedIndex(selectedIndex < options.length - 1 ? selectedIndex + 1 : selectedIndex)
       } else if (event.key === 'ArrowUp') {
         setSelectedIndex(selectedIndex > 0 ? selectedIndex - 1 : 0)
       } else if (event.key === 'Enter') {
-        if (selectedIndex >= 0) onSelect(filteredSuggestions[selectedIndex])
+        if (selectedIndex >= 0) onSelect(options[selectedIndex])
       }
     },
-    [selectedIndex, onSelect, filteredSuggestions]
+    [selectedIndex, onSelect, options]
   )
 
   useEffect(() => {
@@ -45,23 +29,29 @@ const Dropdown = ({ placeholder = 'Search', onSelect }: Props): JSX.Element => {
     }
   }, [handleKeyDown])
 
-  const handleSearch = (event): void => {
-    const inputValue = event.target.value.toLowerCase().trim()
-    const matchedTags = predefinedTags.filter((tag) => tag.includes(inputValue))
-    setFilteredSuggestions(matchedTags)
-  }
+  useEffect(() => {
+    setSelectedIndex(0)
+  }, [options])
+
+  useEffect(() => {
+    if (selectedIndex !== null && rowRefs.current[selectedIndex]) {
+      rowRefs.current[selectedIndex]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    }
+  }, [selectedIndex])
 
   return (
-    <div className="z-10 bg-gray-800 rounded-lg shadow w-60 dark:bg-gray-700 absolute">
-      <Input placeholder={placeholder} onChange={handleSearch} required autoFocus />
-      <ul className="h-48 py-2 overflow-y-auto" aria-labelledby="dropdownUsersButton">
-        {filteredSuggestions.map((tag, index) => (
+    <div className="z-10 bg-gray-700 rounded-lg shadow w-60 dark:bg-gray-700 absolute border border-gray-600 mt-2">
+      <ul className="grid gap-1 p-1 overflow-hidden max-h-48">
+        {options.map((tag, index) => (
           <li
             key={index}
+            ref={(el) => (rowRefs.current[index] = el)}
             className={
-              'hover:bg-gray-600 ' + (selectedIndex === index ? 'bg-gray-700' : 'bg-gray-800')
+              'rounded-lg hover:bg-gray-800 h-min ' +
+              (selectedIndex === index ? 'bg-gray-800' : 'bg-gray-700')
             }
-            onClick={() => onSelect(tag)}
+            onClick={() => onSelect(options[selectedIndex])}
+            onMouseOver={() => setSelectedIndex(index)}
           >
             <span className={'flex justify-between items-center p-2'}>{tag}</span>
           </li>
