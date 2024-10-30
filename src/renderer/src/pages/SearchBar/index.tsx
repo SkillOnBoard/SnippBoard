@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import SearchBarHeader from '@renderer/components/SearchBarHeader'
 import Layout from '@renderer/components/Layout'
+import { KeyboardKeys } from '@renderer/utils/keys'
 
 type Data = {
   title: string
@@ -46,44 +47,14 @@ function SearchBar(): JSX.Element {
 
   const handleCopy = (): void => {
     if (showCode && selectedIndex >= 0) {
-      navigator.clipboard.writeText(' testestes tes ')
+      navigator.clipboard.writeText(results[selectedIndex]?.description)
     }
   }
 
-  // useEffect(() => {
-  //   const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
-
-  //   const handleKeyDown = (e): void => {
-  //     if (e.key === 'ArrowDown') {
-  //       e.preventDefault()
-  //       setSelectedIndex((prevIndex) =>
-  //         prevIndex < results.length - 1 ? prevIndex + 1 : prevIndex
-  //       )
-  //     } else if (e.key === 'ArrowUp') {
-  //       e.preventDefault()
-  //       setSelectedIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0))
-  //     } else if (e.key === 'Enter') {
-  //       e.preventDefault()
-  //       if (selectedIndex >= 0) {
-  //         setShowCode((prev) => !prev)
-  //       }
-  //     } else if ((e.ctrlKey && e.key === 'c' && !isMac) || (e.metaKey && e.key === 'c' && isMac)) {
-  //       e.preventDefault()
-  //       if (showCode && selectedIndex >= 0) {
-  //         navigator.clipboard.writeText(results[selectedIndex]?.description)
-  //       }
-  //     }
-  //   }
-
-  //   window.addEventListener('keydown', handleKeyDown)
-
-  //   return (): void => {
-  //     window.removeEventListener('keydown', handleKeyDown)
-  //   }
-  // }, [selectedIndex, results])
-
   useEffect(() => {
+    console.log({ selectedIndex, rowRefs })
     if (selectedIndex !== null && rowRefs.current[selectedIndex]) {
+      console.log('scrolling')
       rowRefs.current[selectedIndex]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
     }
   }, [selectedIndex])
@@ -107,43 +78,52 @@ function SearchBar(): JSX.Element {
     }
   }, [query])
 
-  return (
-    <Layout
-      footerActions={[
+  const actions = !query
+    ? [
         {
-          shortcut: 'ArrowDown',
-          onClick: handleArrowDown
-        },
-        {
-          shortcut: 'ArrowUp',
-          onClick: handleArrowUp
-        },
-        {
-          shortcut: 'Enter',
-          onClick: handleEnter
-        },
-        {
-          shortcut: 'copy',
-          onClick: handleCopy
+          cmd: [KeyboardKeys.Slash],
+          callback: (): void => setQuery('/')
         }
-      ]}
-    >
+      ]
+    : [
+        {
+          cmd: [KeyboardKeys.ArrowDown],
+          callback: handleArrowDown
+        },
+        {
+          cmd: [KeyboardKeys.ArrowUp],
+          callback: handleArrowUp
+        },
+        {
+          cmd: [KeyboardKeys.Enter],
+          callback: handleEnter
+        },
+        {
+          cmd: [KeyboardKeys.Meta, KeyboardKeys.KeyC],
+          callback: handleCopy
+        }
+      ]
+
+  return (
+    <Layout footerActions={actions}>
       <SearchBarHeader query={query} setQuery={setQuery} />
       {query && (
         <>
           <div className={`w-full h-[301px] text-gray-300 ${showCode ? 'grid grid-cols-2' : ''}`}>
-            <div className="mt-2">
+            <div className="mt-2 h-[297px] overflow-hidden">
               {results.map((result, index) => (
-                <SearchBarRow
-                  key={index}
-                  index={index}
-                  title={result.title}
-                  labels={result.labels}
-                  selectedIndex={selectedIndex}
-                  showCode={showCode}
-                  setShowCode={setShowCode}
-                  setSelectedIndex={setSelectedIndex}
-                />
+                <div key={index} ref={(el) => (rowRefs.current[index] = el)}>
+                  <SearchBarRow
+                    key={index}
+                    index={index}
+                    title={result.title}
+                    labels={result.labels}
+                    selectedIndex={selectedIndex}
+                    showCode={showCode}
+                    setShowCode={setShowCode}
+                    setSelectedIndex={setSelectedIndex}
+                  />
+                </div>
               ))}
             </div>
             {showCode && results.length + 1 >= selectedIndex && (

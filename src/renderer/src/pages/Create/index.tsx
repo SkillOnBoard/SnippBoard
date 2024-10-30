@@ -9,6 +9,7 @@ import Layout from '@renderer/components/Layout'
 import Button from '@renderer/components/atoms/Button'
 import { useListTags } from '@renderer/hooks/useListTags'
 import { useCreateTag } from '@renderer/hooks/useCreateTag'
+import { KeyboardKeys } from '@renderer/utils/keys'
 
 type CreateForm = {
   title: string
@@ -47,12 +48,12 @@ function Create(): JSX.Element {
       back={() => navigate('/')}
       footerActions={[
         {
-          shortcut: 'Escape',
-          onClick: () => navigate('/')
+          cmd: [KeyboardKeys.Escape],
+          callback: () => navigate('/')
         },
         {
-          shortcut: 'Enter',
-          onClick: submit
+          cmd: [KeyboardKeys.Meta, KeyboardKeys.Enter],
+          callback: submit
         }
       ]}
     >
