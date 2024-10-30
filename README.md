@@ -1,6 +1,6 @@
-# snippboard
+# SnippBoard
 
-An Electron application with React and TypeScript
+The best partner to save all your favorite code snipped.
 
 ## Recommended IDE Setup
 
