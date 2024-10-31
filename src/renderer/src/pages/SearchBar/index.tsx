@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import SearchBarHeader from '@renderer/components/SearchBarHeader'
 import Layout from '@renderer/components/Layout'
-import { KeyboardKeys } from '@renderer/utils/keys'
+import { ActionType } from '@renderer/components/Footer/Action'
 
 type Data = {
   title: string
@@ -78,29 +78,36 @@ function SearchBar(): JSX.Element {
     }
   }, [query])
 
-  const actions = !query
+  const actions: ActionType[] = !query
     ? [
         {
-          cmd: [KeyboardKeys.Slash],
+          label: 'for actions',
+          keyboardKeys: ['Slash'],
           callback: (): void => setQuery('/')
         }
       ]
     : [
         {
-          cmd: [KeyboardKeys.ArrowDown],
+          label: 'to navigate',
+          hidden: true,
+          keyboardKeys: ['ArrowDown'],
           callback: handleArrowDown
         },
         {
-          cmd: [KeyboardKeys.ArrowUp],
+          hidden: true,
+          label: 'to navigate',
+          keyboardKeys: ['ArrowUp'],
           callback: handleArrowUp
         },
         {
-          cmd: [KeyboardKeys.Enter],
-          callback: handleEnter
+          label: 'to copy',
+          keyboardKeys: ['Meta', 'KeyC'],
+          callback: handleCopy
         },
         {
-          cmd: [KeyboardKeys.Meta, KeyboardKeys.KeyC],
-          callback: handleCopy
+          label: 'to edit',
+          keyboardKeys: ['Enter'],
+          callback: handleEnter
         }
       ]
 
@@ -109,6 +116,7 @@ function SearchBar(): JSX.Element {
       <SearchBarHeader query={query} setQuery={setQuery} />
       {query && (
         <>
+          <hr className="border-gray-700" />
           <div className={`w-full h-[301px] text-gray-300 ${showCode ? 'grid grid-cols-2' : ''}`}>
             <div className="mt-2 h-[297px] overflow-hidden">
               {results.map((result, index) => (

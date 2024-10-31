@@ -21,7 +21,6 @@ const SearchBarHeader = ({ query, setQuery }: Props): JSX.Element => {
           onChange={(e) => setQuery(e.target.value)}
         />
       </div>
-      <hr className="border-gray-600" />
     </div>
   )
 }
