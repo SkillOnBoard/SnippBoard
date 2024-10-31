@@ -1,64 +1,73 @@
-type IconsTypes = 'chevron-down' | 'chevron-up' | 'arrow-left' | 'magnifying-glass'
-type Sizes = 'small' | 'medium' | 'large'
-type Strokes = 1 | 2 | 3 | 4 | 5
+import ArrowDown from './icons/ArrowDown'
+import ArrowLeft from './icons/ArrowLeft'
+import ArrowRight from './icons/ArrowRight'
+import ArrowUp from './icons/ArrowUp'
+import Back from './icons/Back'
+import ChevronDown from './icons/ChevronDown'
+import ChevronUp from './icons/ChevronUp'
+import Command from './icons/Command'
+import Enter from './icons/Enter'
+import KeyC from './icons/KeyC'
+import Search from './icons/Search'
+import Slash from './icons/Slash'
 
-type ContentProps = {
-  name: IconsTypes
+export type IconType =
+  | 'arrow-down'
+  | 'arrow-left'
+  | 'arrow-right'
+  | 'arrow-up'
+  | 'back'
+  | 'chevron-down'
+  | 'chevron-up'
+  | 'command'
+  | 'enter'
+  | 'key-c'
+  | 'slash'
+  | 'search'
+
+type Props = {
+  name: IconType
 }
 
-type Props = ContentProps & {
-  size?: Sizes
-  stroke?: Strokes
-}
-
-const sizes = {
-  small: 'size-3',
-  medium: 'size-4',
-  large: 'size-5'
-}
-
-const strokes = {
-  1: 'stroke-1',
-  2: 'stroke-2',
-  3: 'stroke-3',
-  4: 'stroke-4',
-  5: 'stroke-5'
-}
-
-const Content = ({ name }: ContentProps): JSX.Element => {
+const Icon = ({ name }: Props): JSX.Element => {
   switch (name) {
-    case 'chevron-down':
-      return <path d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-
-    case 'chevron-up':
-      return <path d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+    case 'arrow-down':
+      return <ArrowDown />
 
     case 'arrow-left':
-      return <path d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+      return <ArrowLeft />
 
-    case 'magnifying-glass':
-      return (
-        <path d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-      )
+    case 'arrow-right':
+      return <ArrowRight />
+
+    case 'arrow-up':
+      return <ArrowUp />
+
+    case 'back':
+      return <Back />
+
+    case 'chevron-up':
+      return <ChevronUp />
+
+    case 'chevron-down':
+      return <ChevronDown />
+
+    case 'command':
+      return <Command />
+
+    case 'enter':
+      return <Enter />
+
+    case 'key-c':
+      return <KeyC />
+    case 'search':
+      return <Search />
+    case 'slash':
+      return <Slash />
 
     default:
       return <></>
   }
-}
-
-const Icon = ({ name, size = 'medium', stroke = 3 }: Props): JSX.Element => {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      strokeWidth={stroke}
-      className={`${sizes[size]} ${strokes[stroke]} text-white`}
-    >
-      <Content name={name} />
-    </svg>
-  )
 }
 
 export default Icon
