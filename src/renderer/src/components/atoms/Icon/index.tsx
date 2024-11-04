@@ -4,6 +4,7 @@ import ArrowRight from './icons/ArrowRight'
 import ArrowUp from './icons/ArrowUp'
 import Back from './icons/Back'
 import ChevronDown from './icons/ChevronDown'
+import ChevronUp from './icons/ChevronUp'
 import Command from './icons/Command'
 import Enter from './icons/Enter'
 import KeyC from './icons/KeyC'
@@ -46,7 +47,7 @@ const Icon = ({ name }: Props): JSX.Element => {
       return <Back />
 
     case 'chevron-up':
-      return <path d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+      return <ChevronUp />
 
     case 'chevron-down':
       return <ChevronDown />

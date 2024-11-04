@@ -1,12 +1,12 @@
 {
   "name": "snippboard",
-  "version": "1.0.0",
-  "description": "An Electron application with React and TypeScript",
+  "version": "0.0.1",
+  "description": "An application to store and manage code snippets",
   "main": "./out/main/index.js",
-  "author": "example.com",
-  "homepage": "https://electron-vite.org",
+  "author": "SnippBoard",
+  "homepage": "https://snippboard.com",
   "engines": {
-    "node": ">=20.15.1 <23"
+    "node": "20.18.0"
   },
   "scripts": {
     "format": "prettier --write .",
@@ -24,36 +24,35 @@
     "build:linux": "electron-vite build && electron-builder --linux"
   },
   "dependencies": {
-    "@electron-toolkit/preload": "^3.0.1",
-    "@electron-toolkit/utils": "^3.0.0",
-    "autoprefixer": "^10.4.20",
-    "electron-updater": "^6.1.7",
-    "i18next": "^23.14.0",
-    "i18next-browser-languagedetector": "^8.0.0",
-    "postcss": "^8.4.40",
-    "react-i18next": "^15.0.1",
-    "react-router-dom": "^6.26.0",
-    "tailwindcss": "^3.4.7",
-    "vite-plugin-node-polyfills": "^0.22.0"
+    "@electron-toolkit/preload": "3.0.1",
+    "@electron-toolkit/utils": "3.0.0",
+    "autoprefixer": "10.4.20",
+    "electron-updater": "6.3.9",
+    "i18next": "23.14.0",
+    "i18next-browser-languagedetector": "8.0.0",
+    "postcss": "8.4.40",
+    "react-i18next": "15.0.1",
+    "react-router-dom": "6.26.0",
+    "tailwindcss": "3.4.7",
+    "vite-plugin-node-polyfills": "0.22.0"
   },
   "devDependencies": {
-    "@electron-toolkit/eslint-config-prettier": "^2.0.0",
-    "@electron-toolkit/eslint-config-ts": "^2.0.0",
-    "@electron-toolkit/tsconfig": "^1.0.1",
-    "@types/node": "^20.14.8",
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.3.1",
-    "electron": "^31.0.2",
-    "electron-builder": "^24.13.3",
-    "electron-vite": "^2.3.0",
-    "eslint": "^8.57.0",
-    "eslint-plugin-react": "^7.34.3",
-    "prettier": "^3.3.2",
-    "react": "^18.3.1",
-    "react-devtools": "^4.27.2",
-    "react-dom": "^18.3.1",
-    "typescript": "^5.5.2",
-    "vite": "^5.3.1"
+    "@electron-toolkit/eslint-config-prettier": "2.0.0",
+    "@electron-toolkit/eslint-config-ts": "2.0.0",
+    "@electron-toolkit/tsconfig": "1.0.1",
+    "@types/node": "20.14.8",
+    "@types/react": "18.3.3",
+    "@types/react-dom": "18.3.0",
+    "@vitejs/plugin-react": "4.3.1",
+    "electron": "31.0.2",
+    "electron-builder": "24.13.3",
+    "electron-vite": "2.3.0",
+    "eslint": "8.57.0",
+    "eslint-plugin-react": "7.34.3",
+    "prettier": "3.3.2",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "typescript": "5.5.2",
+    "vite": "5.4.10"
   }
 }
