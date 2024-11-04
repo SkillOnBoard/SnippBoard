@@ -14,7 +14,7 @@ const Footer = ({ actions }: Props): JSX.Element => {
   return (
     <div className="fixed bottom-0 w-full left-0 bg-gray-800">
       <hr className="border-gray-700" />
-      <div className="grid grid-cols-2 place-content-between py-2 px-8">
+      <div className="grid grid-cols-2 place-content-between py-1 px-6">
         <div className="flex flex-row gap-2 place-content-start">
           {leftActions.map((action, index) => (
             <Action key={index} action={action} />

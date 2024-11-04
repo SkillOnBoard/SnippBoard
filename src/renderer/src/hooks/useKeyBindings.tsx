@@ -18,7 +18,6 @@ export const useKeyBindings = (props: KeyBinding[]): void => {
 
   const bindingsKeyDown = (e: KeyboardEvent): void => {
     currentlyPressedKeys.add(e.key)
-    console.log({ key: e.key })
     props.forEach((binding) => {
       if (areAllKeyPressed(binding.cmd)) {
         binding.callback()

@@ -45,15 +45,16 @@ function Create(): JSX.Element {
   return (
     <Layout
       back={() => navigate('/')}
+      header={t('create.header')}
       footerActions={[
         {
-          label: 'to back',
+          label: t('actions.back'),
           keyboardKeys: ['Escape'],
           callback: () => navigate('/'),
           position: 'left'
         },
         {
-          label: 'to save',
+          label: t('actions.save'),
           keyboardKeys: ['Meta', 'Enter'],
           callback: submit
         }

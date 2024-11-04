@@ -25,7 +25,10 @@ const Action = ({ action }: { action: ActionType }): JSX.Element => {
   const { label, keyboardKeys, callback } = action
 
   return (
-    <div className="flex flex-row gap-2 content-center" onClick={callback}>
+    <div
+      className="flex flex-row gap-2 content-center p-0.5 pr-4 rounded-lg hover:cursor-pointer border bg-gray-800 border-gray-800 hover:bg-gray-700 active:bg-gray-900 active:border active:border-accent"
+      onClick={callback}
+    >
       <div className="flex flex-row gap-0.5">
         {keyboardKeys.map((key) => (
           <Icon key={key} name={icons[key]} />

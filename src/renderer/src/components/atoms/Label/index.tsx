@@ -5,7 +5,7 @@ type Props = {
 }
 
 const Label = ({ children, color = 'text-white' }: PropsWithChildren<Props>): JSX.Element => {
-  return <label className={'block text-sm font-medium content-center ' + color}>{children}</label>
+  return <span className={'block text-sm font-medium content-center ' + color}>{children}</span>
 }
 
 export default Label

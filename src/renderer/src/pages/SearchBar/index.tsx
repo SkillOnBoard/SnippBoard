@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import SearchBarHeader from '@renderer/components/SearchBarHeader'
 import Layout from '@renderer/components/Layout'
 import { ActionType } from '@renderer/components/Footer/Action'
+import { useTranslation } from 'react-i18next'
 
 type Data = {
   title: string
@@ -20,6 +21,7 @@ function SearchBar(): JSX.Element {
   const [showCode, setShowCode] = useState<boolean>(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const rowRefs = useRef<(HTMLDivElement | null)[]>([])
+  const { t } = useTranslation()
 
   const { data } = useListSnippets()
 
@@ -52,9 +54,7 @@ function SearchBar(): JSX.Element {
   }
 
   useEffect(() => {
-    console.log({ selectedIndex, rowRefs })
     if (selectedIndex !== null && rowRefs.current[selectedIndex]) {
-      console.log('scrolling')
       rowRefs.current[selectedIndex]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
     }
   }, [selectedIndex])
@@ -81,31 +81,31 @@ function SearchBar(): JSX.Element {
   const actions: ActionType[] = !query
     ? [
         {
-          label: 'for actions',
+          label: t('actions.for_actions'),
           keyboardKeys: ['Slash'],
           callback: (): void => setQuery('/')
         }
       ]
     : [
         {
-          label: 'to navigate',
+          label: t('actions.navigate'),
           hidden: true,
           keyboardKeys: ['ArrowDown'],
           callback: handleArrowDown
         },
         {
           hidden: true,
-          label: 'to navigate',
+          label: t('actions.navigate'),
           keyboardKeys: ['ArrowUp'],
           callback: handleArrowUp
         },
         {
-          label: 'to copy',
+          label: t('actions.copy'),
           keyboardKeys: ['Meta', 'KeyC'],
           callback: handleCopy
         },
         {
-          label: 'to edit',
+          label: t('actions.edit'),
           keyboardKeys: ['Enter'],
           callback: handleEnter
         }
