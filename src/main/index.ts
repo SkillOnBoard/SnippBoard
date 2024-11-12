@@ -84,14 +84,10 @@ function createWindow(): void {
   }
 
   const openShortcut = globalShortcut.register('Control+Space', () => {
-    mainWindow.show()
+    mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show()
   })
 
-  const closeShortcut = globalShortcut.register('Escape', () => {
-    mainWindow.hide()
-  })
-
-  if (!openShortcut || !closeShortcut) {
+  if (!openShortcut) {
     console.log('Registration failed.')
   }
 

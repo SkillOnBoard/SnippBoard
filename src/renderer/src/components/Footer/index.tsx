@@ -1,14 +1,31 @@
-function Footer({
-  tempText,
-  topBorder = true
-}: {
-  tempText: string
-  topBorder?: boolean
-}): JSX.Element {
+import Action, { ActionType } from './Action'
+import { useActionKeyBindings } from './useActionKeyBindings'
+
+type Props = {
+  actions: ActionType[]
+}
+
+const Footer = ({ actions }: Props): JSX.Element => {
+  const validActions = actions.filter((action) => !action.hidden)
+  const leftActions = validActions.filter((action) => action.position === 'left')
+  const rightActions = validActions.filter((action) => !leftActions.includes(action))
+  useActionKeyBindings(actions)
+
   return (
-    <div className="fixed bottom-2 left-0 w-full px-4">
-      {topBorder && <hr className="border-gray-700 pb-2" />}
-      <div className="px-4 text-gray-400">{tempText}</div>
+    <div className="fixed bottom-0 w-full left-0 bg-gray-800">
+      <hr className="border-gray-700" />
+      <div className="grid grid-cols-2 place-content-between py-1 px-6">
+        <div className="flex flex-row gap-2 place-content-start">
+          {leftActions.map((action, index) => (
+            <Action key={index} action={action} />
+          ))}
+        </div>
+        <div className="flex flex-row gap-2 place-content-end">
+          {rightActions.map((action, index) => (
+            <Action key={index} action={action} />
+          ))}
+        </div>
+      </div>
     </div>
   )
 }

@@ -1,10 +1,12 @@
-import Footer from '@renderer/components/Footer'
 import SearchBarCode from '@renderer/components/SearchBarCode'
 import SearchBarRow from '@renderer/components/SearchBarRow'
 import { useListSnippets } from '@renderer/hooks/useListSnippets'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import SearchBarHeader from '@renderer/components/SearchBarHeader'
+import Layout from '@renderer/components/Layout'
+import { ActionType } from '@renderer/components/Footer/Action'
+import { useTranslation } from 'react-i18next'
 
 type Data = {
   title: string
@@ -19,6 +21,7 @@ function SearchBar(): JSX.Element {
   const [showCode, setShowCode] = useState<boolean>(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const rowRefs = useRef<(HTMLDivElement | null)[]>([])
+  const { t } = useTranslation()
 
   const { data } = useListSnippets()
 
@@ -32,37 +35,23 @@ function SearchBar(): JSX.Element {
       : []
   }
 
-  useEffect(() => {
-    const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
+  const handleArrowDown = (): void => {
+    setSelectedIndex((prevIndex) => (prevIndex < results.length - 1 ? prevIndex + 1 : prevIndex))
+  }
 
-    const handleKeyDown = (e): void => {
-      if (e.key === 'ArrowDown') {
-        e.preventDefault()
-        setSelectedIndex((prevIndex) =>
-          prevIndex < results.length - 1 ? prevIndex + 1 : prevIndex
-        )
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault()
-        setSelectedIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0))
-      } else if (e.key === 'Enter') {
-        e.preventDefault()
-        if (selectedIndex >= 0) {
-          setShowCode((prev) => !prev)
-        }
-      } else if ((e.ctrlKey && e.key === 'c' && !isMac) || (e.metaKey && e.key === 'c' && isMac)) {
-        e.preventDefault()
-        if (showCode && selectedIndex >= 0) {
-          navigator.clipboard.writeText(results[selectedIndex]?.description)
-        }
-      }
+  const handleArrowUp = (): void => {
+    setSelectedIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0))
+  }
+
+  const handleEnter = (): void => {
+    if (selectedIndex >= 0) setShowCode((prev) => !prev)
+  }
+
+  const handleCopy = (): void => {
+    if (showCode && selectedIndex >= 0) {
+      navigator.clipboard.writeText(results[selectedIndex]?.description)
     }
-
-    window.addEventListener('keydown', handleKeyDown)
-
-    return (): void => {
-      window.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [selectedIndex, results, showCode])
+  }
 
   useEffect(() => {
     if (selectedIndex !== null && rowRefs.current[selectedIndex]) {
@@ -89,42 +78,72 @@ function SearchBar(): JSX.Element {
     }
   }, [query])
 
+  const actions: ActionType[] = !query
+    ? [
+        {
+          label: t('actions.for_actions'),
+          keyboardKeys: ['Slash'],
+          callback: (): void => setQuery('/')
+        }
+      ]
+    : [
+        {
+          label: t('actions.navigate'),
+          hidden: true,
+          keyboardKeys: ['ArrowDown'],
+          callback: handleArrowDown
+        },
+        {
+          hidden: true,
+          label: t('actions.navigate'),
+          keyboardKeys: ['ArrowUp'],
+          callback: handleArrowUp
+        },
+        {
+          label: t('actions.copy'),
+          keyboardKeys: ['Meta', 'KeyC'],
+          callback: handleCopy
+        },
+        {
+          label: t('actions.edit'),
+          keyboardKeys: ['Enter'],
+          callback: handleEnter
+        }
+      ]
+
   return (
-    <>
-      <div className="fixed w-full h-full left-0 top-0 bg-gray-800">
-        <SearchBarHeader query={query} setQuery={setQuery} />
-        {query && (
-          <>
-            <hr className="border-gray-700" />
-            <div className={`w-full h-[301px] text-gray-300 ${showCode ? 'grid grid-cols-2' : ''}`}>
-              <div className="mt-2 h-[297px] overflow-hidden">
-                {results.map((result, index) => (
-                  <div key={index} ref={(el) => (rowRefs.current[index] = el)}>
-                    <SearchBarRow
-                      key={index}
-                      index={index}
-                      title={result.title}
-                      labels={result.labels}
-                      selectedIndex={selectedIndex}
-                      showCode={showCode}
-                      setShowCode={setShowCode}
-                      setSelectedIndex={setSelectedIndex}
-                    />
-                  </div>
-                ))}
-              </div>
-              {showCode && results.length + 1 >= selectedIndex && (
-                <SearchBarCode
-                  labels={results[selectedIndex]?.labels || []}
-                  code={results[selectedIndex]?.description}
-                />
-              )}
+    <Layout footerActions={actions}>
+      <SearchBarHeader query={query} setQuery={setQuery} />
+      {query && (
+        <>
+          <hr className="border-gray-700" />
+          <div className={`w-full h-[301px] text-gray-300 ${showCode ? 'grid grid-cols-2' : ''}`}>
+            <div className="mt-2 h-[297px] overflow-hidden">
+              {results.map((result, index) => (
+                <div key={index} ref={(el) => (rowRefs.current[index] = el)}>
+                  <SearchBarRow
+                    key={index}
+                    index={index}
+                    title={result.title}
+                    labels={result.labels}
+                    selectedIndex={selectedIndex}
+                    showCode={showCode}
+                    setShowCode={setShowCode}
+                    setSelectedIndex={setSelectedIndex}
+                  />
+                </div>
+              ))}
             </div>
-          </>
-        )}
-        <Footer tempText={'/ for actions'} topBorder={Boolean(query)} />
-      </div>
-    </>
+            {showCode && results.length + 1 >= selectedIndex && (
+              <SearchBarCode
+                labels={results[selectedIndex]?.labels || []}
+                code={results[selectedIndex]?.description}
+              />
+            )}
+          </div>
+        </>
+      )}
+    </Layout>
   )
 }
 

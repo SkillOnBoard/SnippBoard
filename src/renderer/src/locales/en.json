@@ -1,8 +1,17 @@
 {
+  "actions": {
+    "back": "to go back",
+    "copy": "to copy",
+    "edit": "to edit",
+    "for_actions": "for actions",
+    "navigate": "to navigate",
+    "save": "to save"
+  },
   "search_bar": {
     "placeholder": "Search for saved snippets"
   },
   "create": {
+    "header": "Save code",
     "fields": {
       "name": {
         "label": "Name",
