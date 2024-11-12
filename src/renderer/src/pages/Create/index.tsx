@@ -2,7 +2,7 @@ import LabeledInput from '@renderer/components/molecules/LabeledInput'
 import TagPicker from '@renderer/components/molecules/TagPicker'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import LabeledTextArea from '@renderer/components/molecules/LabeledTextArea'
+import StyledLabeledTextArea from '@renderer/components/molecules/StyledLabeledTextArea'
 import { useTranslation } from 'react-i18next'
 import { useCreateSnippet } from '@renderer/hooks/useCreateSnippet'
 import Layout from '@renderer/components/Layout'
@@ -80,17 +80,15 @@ function Create(): JSX.Element {
               />
             </div>
 
-            <LabeledTextArea
+            <StyledLabeledTextArea
               label={t('create.fields.code.label')}
               placeholder={t('create.fields.code.placeholder')}
               value={form.description}
+              numOfLines={4}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
             />
           </div>
         </form>
-        <div className="pt-4">
-          <Button onClick={submit}>{t('create.submit')}</Button>
-        </div>
       </div>
     </Layout>
   )
