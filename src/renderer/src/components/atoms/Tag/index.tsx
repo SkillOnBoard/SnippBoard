@@ -23,14 +23,18 @@ const Tag = ({ onClose, defaultColor, children }: PropsWithChildren<Props>): JSX
   const color = colors[selectedColor]
 
   const className = [
-    'flex flex-row align-middle bg-gray-700 text-sm font-medium px-2.5 py-0.5 rounded gap-1 border whitespace-nowrap',
+    'grid grid-flow-col auto-cols-max items-center bg-gray-700 text-sm font-medium px-3 py-0.5 rounded-lg gap-1 border whitespace-nowrap',
     color
   ].join(' ')
 
   return (
     <div className={className}>
       <span className="flex flex-w-min">{children}</span>
-      {onClose && <div onClick={onClose}>x</div>}
+      {onClose && (
+        <div className="cursor-pointer" onClick={onClose}>
+          <span>x</span>
+        </div>
+      )}
     </div>
   )
 }

@@ -40,14 +40,14 @@ const Dropdown = ({ onSelect, options }: Props): JSX.Element => {
   }, [selectedIndex])
 
   return (
-    <div className="z-10 bg-gray-700 rounded-lg shadow w-60 dark:bg-gray-700 absolute border border-gray-600 mt-2">
+    <div className="z-10 bg-gray-700 rounded-lg shadow min-w-60 max-w-xs dark:bg-gray-700 absolute border border-gray-600 mt-2">
       <ul className="grid gap-1 p-1 overflow-hidden max-h-48">
         {options.map((tag, index) => (
           <li
             key={index}
             ref={(el) => (rowRefs.current[index] = el)}
             className={
-              'rounded-lg hover:bg-gray-800 h-min ' +
+              'rounded-lg hover:bg-gray-800 h-min cursor-pointer ' +
               (selectedIndex === index ? 'bg-gray-800' : 'bg-gray-700')
             }
             onClick={() => onSelect(options[selectedIndex])}

@@ -25,6 +25,7 @@ const TagPicker = ({
   const inputRef = createRef<HTMLInputElement>()
   const filteredOptions = predefinedTags.filter((tag) => tag.includes(inputValue))
   const options = inputValue ? filteredOptions.concat(inputValue) : filteredOptions
+  let timeout: NodeJS.Timeout | null = null
 
   const addTag = (tagText: string): void => {
     onChange([tagText]) // Only allows 1 item, otherwise [...selectedTags, tagText]
@@ -49,10 +50,16 @@ const TagPicker = ({
     if (inputValue && !isDropdownOpen) setIsDropdownOpen(true)
   }, [inputValue])
 
+  useEffect(() => {
+    return (): void => {
+      timeout && clearTimeout(timeout) // Clear timeout on unmount
+    }
+  }, [timeout])
+
   return (
     <div>
       <Label>{label}</Label>
-      <div className="flex flex-row justify-between items-center bg-gray-700 border border-gray-600 text-sm rounded-lg block w-full px-4 py-2 outline-none gap-2">
+      <div className="flex flex-row justify-between items-center bg-gray-700 border border-gray-600 text-sm rounded-lg block w-full px-4 py-1 outline-none gap-2 min-h-10 overflow-x-hidden">
         {hasTags && (
           <div className="flex flex-row flex-wrap align-middle gap-2">
             {values.slice(0, 2).map((tag, index) => (
@@ -69,12 +76,13 @@ const TagPicker = ({
           value={inputValue}
           onChange={handleSearch}
           onFocus={() => setIsDropdownOpen(true)}
-          onBlur={() => setIsDropdownOpen(false)}
+          // Using setTimeout to prevent the dropdown from closing when clicking on it (blur event)
+          onBlur={() => (timeout = setTimeout(() => setIsDropdownOpen(false), 500))}
           required
-          className="bg-inherit outline-none w-full placeholder:text-gray-50"
+          className="bg-inherit outline-none w-full placeholder:text-gray-50 min-w-0.5"
         />
 
-        <div onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+        <div className="cursor-pointer top-1/2" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
           {isDropdownOpen ? <Icon name="chevron-up" /> : <Icon name="chevron-down" />}
         </div>
       </div>
