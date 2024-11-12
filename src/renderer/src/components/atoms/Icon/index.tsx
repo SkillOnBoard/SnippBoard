@@ -29,45 +29,23 @@ type Props = {
   name: IconType
 }
 
+const Components = {
+  'arrow-down': <ArrowDown />,
+  'arrow-left': <ArrowLeft />,
+  'arrow-right': <ArrowRight />,
+  'arrow-up': <ArrowUp />,
+  back: <Back />,
+  'chevron-up': <ChevronUp />,
+  'chevron-down': <ChevronDown />,
+  command: <Command />,
+  enter: <Enter />,
+  'key-c': <KeyC />,
+  search: <Search />,
+  slash: <Slash />
+}
+
 const Icon = ({ name }: Props): JSX.Element => {
-  switch (name) {
-    case 'arrow-down':
-      return <ArrowDown />
-
-    case 'arrow-left':
-      return <ArrowLeft />
-
-    case 'arrow-right':
-      return <ArrowRight />
-
-    case 'arrow-up':
-      return <ArrowUp />
-
-    case 'back':
-      return <Back />
-
-    case 'chevron-up':
-      return <ChevronUp />
-
-    case 'chevron-down':
-      return <ChevronDown />
-
-    case 'command':
-      return <Command />
-
-    case 'enter':
-      return <Enter />
-
-    case 'key-c':
-      return <KeyC />
-    case 'search':
-      return <Search />
-    case 'slash':
-      return <Slash />
-
-    default:
-      return <></>
-  }
+  return Components[name] || <></>
 }
 
 export default Icon
