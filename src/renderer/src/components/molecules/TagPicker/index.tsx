@@ -25,6 +25,7 @@ const TagPicker = ({
   const inputRef = createRef<HTMLInputElement>()
   const filteredOptions = predefinedTags.filter((tag) => tag.includes(inputValue))
   const options = inputValue ? filteredOptions.concat(inputValue) : filteredOptions
+  let timeout: NodeJS.Timeout | null = null
 
   const addTag = (tagText: string): void => {
     onChange([tagText]) // Only allows 1 item, otherwise [...selectedTags, tagText]
@@ -49,6 +50,12 @@ const TagPicker = ({
     if (inputValue && !isDropdownOpen) setIsDropdownOpen(true)
   }, [inputValue])
 
+  useEffect(() => {
+    return (): void => {
+      timeout && clearTimeout(timeout) // Clear timeout on unmount
+    }
+  }, [timeout])
+
   return (
     <div>
       <Label>{label}</Label>
@@ -70,7 +77,7 @@ const TagPicker = ({
           onChange={handleSearch}
           onFocus={() => setIsDropdownOpen(true)}
           // Using setTimeout to prevent the dropdown from closing when clicking on it (blur event)
-          onBlur={() => setTimeout(() => setIsDropdownOpen(false), 500)}
+          onBlur={() => (timeout = setTimeout(() => setIsDropdownOpen(false), 500))}
           required
           className="bg-inherit outline-none w-full placeholder:text-gray-50 min-w-0.5"
         />
