@@ -50,6 +50,7 @@ const createTrayMenu = (): void => {
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
+    alwaysOnTop: true,
     width: 750,
     height: 100,
     show: false,
@@ -92,7 +93,7 @@ function createWindow(): void {
 
   mainWindow.on('close', (event) => {
     event.preventDefault()
-    mainWindow.hide()
+    app.exit()
   })
 
   ipcMain.on('resize-window', (_event, size) => {
@@ -130,6 +131,10 @@ app.whenReady().then(() => {
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
+
+  app.setLoginItemSettings({
+    openAtLogin: true
+  })
 
   createWindow()
 
