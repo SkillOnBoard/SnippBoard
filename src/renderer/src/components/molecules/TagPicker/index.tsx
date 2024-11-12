@@ -83,11 +83,7 @@ const TagPicker = ({
         />
 
         <div className="cursor-pointer top-1/2" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
-          {isDropdownOpen ? (
-            <Icon name="chevron-up" stroke={2} />
-          ) : (
-            <Icon name="chevron-down" stroke={2} />
-          )}
+          {isDropdownOpen ? <Icon name="chevron-up" /> : <Icon name="chevron-down" />}
         </div>
       </div>
 

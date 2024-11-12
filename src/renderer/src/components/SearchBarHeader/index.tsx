@@ -11,7 +11,7 @@ const SearchBarHeader = ({ query, setQuery }: Props): JSX.Element => {
   return (
     <div className="left-0 w-full draggable">
       <div className="flex flex-row gap-2 items-center p-4">
-        <Icon name="magnifying-glass" size="large" />
+        <Icon name="search" />
         <input
           type="text"
           autoFocus

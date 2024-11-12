@@ -8,7 +8,7 @@ const Header = ({ tempText }: { tempText: string }): JSX.Element => {
     <div className="left-0 w-full draggable">
       <div className="flex flex-row gap-2 items-center p-4" onClick={() => navigate('/')}>
         <div className="no-draggable" onClick={() => navigate('/')}>
-          <Icon name="arrow-left" size="large" />
+          <Icon name="arrow-left" />
         </div>
 
         <span className="text-gray-200 dark:text-gray-400">{tempText}</span>
