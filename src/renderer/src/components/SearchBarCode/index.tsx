@@ -1,15 +1,16 @@
 import Tag from '@renderer/components/atoms/Tag'
+import StyledTextArea from '../atoms/StyledTextArea'
 
 interface Props {
   labels: string[]
-  code: string | null
+  code: string
 }
 
 const SearchBarCode = ({ labels, code }: Props): JSX.Element => {
   return (
-    <div className="bg-gray-900 w-full px-4 py-2">
-      <div>
-        <div className="flex flex-row gap-2 items-center">
+    <div className="flex flex-col gap-4 bg-gray-900 w-full h-full p-4">
+      {!!labels.length && (
+        <div className="row-span-full	flex flex-row  gap-2 items-center">
           {labels.map((label, index) => {
             return (
               <Tag key={index} defaultColor="blue">
@@ -18,9 +19,9 @@ const SearchBarCode = ({ labels, code }: Props): JSX.Element => {
             )
           })}
         </div>
-      </div>
-      <div className="w-full h-[250px] mt-2 bg-gray-700 text-white border border-gray-600 p-2 rounded-lg">
-        {code}
+      )}
+      <div className="max-h-56">
+        <StyledTextArea value={code} numOfLines={1} disabled />
       </div>
     </div>
   )

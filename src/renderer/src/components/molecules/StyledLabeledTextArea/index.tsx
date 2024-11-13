@@ -17,7 +17,7 @@ const StyledLabeledTextArea = ({
   numOfLines
 }: Props): JSX.Element => {
   return (
-    <div className="grid gap-1">
+    <div className="grid gap-1 max-h-36">
       <Label>{label}</Label>
       <StyledTextArea
         placeholder={placeholder}

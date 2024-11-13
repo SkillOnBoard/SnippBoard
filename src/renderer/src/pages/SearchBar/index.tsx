@@ -118,7 +118,7 @@ function SearchBar(): JSX.Element {
         <>
           <hr className="border-gray-700" />
           <div className={`w-full h-[301px] text-gray-300 ${showCode ? 'grid grid-cols-2' : ''}`}>
-            <div className="mt-2 h-[297px] overflow-hidden">
+            <div className="mt-2 h-[301px] overflow-y-scroll no-scrollbar">
               {results.map((result, index) => (
                 <div key={index} ref={(el) => (rowRefs.current[index] = el)}>
                   <SearchBarRow

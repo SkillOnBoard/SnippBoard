@@ -84,7 +84,7 @@ function Create(): JSX.Element {
               label={t('create.fields.code.label')}
               placeholder={t('create.fields.code.placeholder')}
               value={form.description}
-              numOfLines={4}
+              numOfLines={6}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
             />
           </div>
