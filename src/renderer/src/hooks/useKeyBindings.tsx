@@ -20,6 +20,8 @@ export const useKeyBindings = (props: KeyBinding[]): void => {
     currentlyPressedKeys.add(e.key)
     props.forEach((binding) => {
       if (areAllKeyPressed(binding.cmd)) {
+        // Clear the keys so that the next key press can be detected
+        currentlyPressedKeys.clear()
         binding.callback()
       }
     })

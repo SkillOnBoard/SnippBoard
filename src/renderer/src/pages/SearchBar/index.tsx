@@ -81,6 +81,12 @@ function SearchBar(): JSX.Element {
   const actions: ActionType[] = !query
     ? [
         {
+          label: '',
+          keyboardKeys: ['Escape'],
+          hidden: true,
+          callback: (): void => window.electron.ipcRenderer.send('hide-window')
+        },
+        {
           label: t('actions.for_actions'),
           keyboardKeys: ['Slash'],
           callback: (): void => setQuery('/')
