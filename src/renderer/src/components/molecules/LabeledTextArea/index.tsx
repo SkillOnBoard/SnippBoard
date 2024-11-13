@@ -10,7 +10,7 @@ type Props = {
 
 const LabeledTextArea = ({ label, placeholder, onChange, value }: Props): JSX.Element => {
   return (
-    <div>
+    <div className="grid gap-1">
       <Label>{label}</Label>
       <TextArea placeholder={placeholder} value={value} onChange={onChange} required />
     </div>
