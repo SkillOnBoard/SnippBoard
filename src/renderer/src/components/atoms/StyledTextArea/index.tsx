@@ -65,7 +65,7 @@ const StyledTextArea = ({
       <textarea
         ref={textAreaRef}
         rows={numOfLines}
-        className="col-start-1 col-end-13  bg-gray-700 text-sm rounded-lg block w-full px-1.5 py-1.5 outline-none placeholder:text-gray-300 resize-none h-full overflow-y-hidden no-scrollbar"
+        className="col-start-1 col-end-13 bg-gray-700 text-gray-100 rounded-lg block w-full px-1.5 py-1.5 outline-none placeholder:text-gray-300 resize-none h-full overflow-y-hidden no-scrollbar"
         placeholder={placeholder}
         value={value}
         onChange={handleTextareaChange}
