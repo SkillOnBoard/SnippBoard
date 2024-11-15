@@ -58,32 +58,37 @@ const TagPicker = ({
 
   return (
     <div>
-      <Label>{label}</Label>
-      <div className="flex flex-row justify-between items-center bg-gray-700 border border-gray-600 text-sm rounded-lg block w-full px-4 py-1 outline-none gap-2 min-h-10 overflow-x-hidden">
-        {hasTags && (
-          <div className="flex flex-row flex-wrap align-middle gap-2">
-            {values.slice(0, 2).map((tag, index) => (
-              <Tag key={index} onClose={() => removeTag(index)}>
-                {tag}
-              </Tag>
-            ))}
-            {values.length > 2 && <Tag key="plus">+{values.length - 2}</Tag>}
-          </div>
-        )}
-        <input
-          ref={inputRef}
-          placeholder={hasTags ? '' : placeholder}
-          value={inputValue}
-          onChange={handleSearch}
-          onFocus={() => setIsDropdownOpen(true)}
-          // Using setTimeout to prevent the dropdown from closing when clicking on it (blur event)
-          onBlur={() => (timeout = setTimeout(() => setIsDropdownOpen(false), 500))}
-          required
-          className="bg-inherit outline-none w-full placeholder:text-gray-50 min-w-0.5"
-        />
+      <div className="grid gap-1">
+        <Label>{label}</Label>
+        <div className="flex flex-row justify-between items-center bg-gray-700 border border-gray-600 text-sm rounded-lg block w-full px-4 py-1 outline-none gap-2 min-h-10 overflow-x-hidden">
+          {hasTags && (
+            <div className="flex flex-row flex-wrap align-middle gap-2">
+              {values.slice(0, 2).map((tag, index) => (
+                <Tag key={index} onClose={() => removeTag(index)}>
+                  {tag}
+                </Tag>
+              ))}
+              {values.length > 2 && <Tag key="plus">+{values.length - 2}</Tag>}
+            </div>
+          )}
+          <input
+            ref={inputRef}
+            placeholder={hasTags ? '' : placeholder}
+            value={inputValue}
+            onChange={handleSearch}
+            onFocus={() => setIsDropdownOpen(true)}
+            // Using setTimeout to prevent the dropdown from closing when clicking on it (blur event)
+            onBlur={() => (timeout = setTimeout(() => setIsDropdownOpen(false), 500))}
+            required
+            className="bg-inherit outline-none w-full placeholder:text-gray-50 min-w-0.5"
+          />
 
-        <div className="cursor-pointer top-1/2" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
-          {isDropdownOpen ? <Icon name="chevron-up" /> : <Icon name="chevron-down" />}
+          <div
+            className="cursor-pointer top-1/2"
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          >
+            {isDropdownOpen ? <Icon name="chevron-up" /> : <Icon name="chevron-down" />}
+          </div>
         </div>
       </div>
 
