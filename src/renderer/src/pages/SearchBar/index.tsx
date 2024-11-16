@@ -73,7 +73,7 @@ function SearchBar(): JSX.Element {
         navigate('/create')
         break
       default:
-        if (filteredData.length > 0) setSelectedIndex(0)
+        filteredData.length > 0 ? setSelectedIndex(0) : setSelectedIndex(-1)
         window.electron.ipcRenderer.send('resize-window', 'big')
     }
   }, [query])
