@@ -6,7 +6,6 @@ import StyledLabeledTextArea from '@renderer/components/molecules/StyledLabeledT
 import { useTranslation } from 'react-i18next'
 import { useCreateSnippet } from '@renderer/hooks/useCreateSnippet'
 import Layout from '@renderer/components/Layout'
-import Button from '@renderer/components/atoms/Button'
 import { useListTags } from '@renderer/hooks/useListTags'
 import { useCreateTag } from '@renderer/hooks/useCreateTag'
 

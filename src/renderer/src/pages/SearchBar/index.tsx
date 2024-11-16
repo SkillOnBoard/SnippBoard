@@ -47,6 +47,11 @@ function SearchBar(): JSX.Element {
     if (selectedIndex >= 0) setShowCode((prev) => !prev)
   }
 
+  const handleDelete = (): void => {
+    console.log('delete')
+    // window.electron.ipcRenderer.send('delete-snippet', results[selectedIndex].title)
+  }
+
   const handleCopy = (): void => {
     if (showCode && selectedIndex >= 0) {
       navigator.clipboard.writeText(results[selectedIndex]?.description)
@@ -98,6 +103,11 @@ function SearchBar(): JSX.Element {
           label: t('actions.navigate'),
           keyboardKeys: ['ArrowUp'],
           callback: handleArrowUp
+        },
+        {
+          label: t('actions.delete'),
+          keyboardKeys: ['Meta', 'Backspace'],
+          callback: handleDelete
         },
         {
           label: t('actions.copy'),

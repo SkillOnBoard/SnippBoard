@@ -6,6 +6,7 @@ import { KeyboardKeysType } from '@renderer/utils/keys'
 const icons = {
   ArrowDown: 'arrow-down',
   ArrowUp: 'arrow-up',
+  Backspace: 'back',
   Enter: 'enter',
   Escape: 'back',
   KeyC: 'key-c', // Use KeyC: 'key-c'
