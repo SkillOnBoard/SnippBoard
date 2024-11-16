@@ -31,7 +31,15 @@ function SearchBar(): JSX.Element {
 
   const filterData = (): Data[] => {
     return data
-      ? data.filter((obj) => obj.title.toLowerCase().includes(query.trim().toLowerCase()))
+      ? // TODO: Explore how to filter faster and properly
+        data.filter((obj) => {
+          const value = query.trim().toLowerCase()
+          return (
+            obj.title.toLowerCase().includes(value) ||
+            obj.description.toLowerCase().includes(value) ||
+            obj.labels.join(' ').toLowerCase().includes(value)
+          )
+        })
       : []
   }
 
@@ -48,7 +56,7 @@ function SearchBar(): JSX.Element {
   }
 
   const handleCopy = (): void => {
-    if (showCode && selectedIndex >= 0) {
+    if (selectedIndex >= 0) {
       navigator.clipboard.writeText(results[selectedIndex]?.description)
     }
   }
