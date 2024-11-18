@@ -31,7 +31,15 @@ function SearchBar(): JSX.Element {
 
   const filterData = (): Data[] => {
     return data
-      ? data.filter((obj) => obj.title.toLowerCase().includes(query.trim().toLowerCase()))
+      ? // TODO: Explore how to filter faster and properly
+        data.filter((obj) => {
+          const value = query.trim().toLowerCase()
+          return (
+            obj.title.toLowerCase().includes(value) ||
+            obj.description.toLowerCase().includes(value) ||
+            obj.labels.join(' ').toLowerCase().includes(value)
+          )
+        })
       : []
   }
 
@@ -53,7 +61,7 @@ function SearchBar(): JSX.Element {
   }
 
   const handleCopy = (): void => {
-    if (showCode && selectedIndex >= 0) {
+    if (selectedIndex >= 0) {
       navigator.clipboard.writeText(results[selectedIndex]?.description)
     }
   }
@@ -78,13 +86,19 @@ function SearchBar(): JSX.Element {
         navigate('/create')
         break
       default:
-        if (filteredData.length > 0) setSelectedIndex(0)
+        filteredData.length > 0 ? setSelectedIndex(0) : setSelectedIndex(-1)
         window.electron.ipcRenderer.send('resize-window', 'big')
     }
   }, [query])
 
   const actions: ActionType[] = !query
     ? [
+        {
+          label: '',
+          keyboardKeys: ['Escape'],
+          hidden: true,
+          callback: (): void => window.electron.ipcRenderer.send('hide-window')
+        },
         {
           label: t('actions.for_actions'),
           keyboardKeys: ['Slash'],

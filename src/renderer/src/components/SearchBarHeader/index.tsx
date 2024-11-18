@@ -19,6 +19,7 @@ const SearchBarHeader = ({ query, setQuery }: Props): JSX.Element => {
           placeholder={t('search_bar.placeholder')}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          onBlur={(e) => e.target.focus()} // Keep always focus on input
         />
       </div>
     </div>

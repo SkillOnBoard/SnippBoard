@@ -96,6 +96,14 @@ function createWindow(): void {
     app.exit()
   })
 
+  mainWindow.on('blur', () => {
+    mainWindow.hide()
+  })
+
+  ipcMain.on('hide-window', () => {
+    mainWindow.hide()
+  })
+
   ipcMain.on('resize-window', (_event, size) => {
     switch (size) {
       case 'small': {

@@ -43,7 +43,7 @@ const TagPicker = ({
   }
 
   const handleSearch = (event): void => {
-    setInputValue(event.target.value.toLowerCase().trim())
+    setInputValue(event.target.value.trim())
   }
 
   useEffect(() => {

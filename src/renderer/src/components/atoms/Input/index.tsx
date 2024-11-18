@@ -3,9 +3,16 @@ type Props = {
   placeholder?: string
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   required?: boolean
+  autofocus?: boolean
 }
 
-const LabeledInput = ({ value, placeholder, onChange, required = false }: Props): JSX.Element => {
+const LabeledInput = ({
+  value,
+  placeholder,
+  onChange,
+  required = false,
+  autofocus = false
+}: Props): JSX.Element => {
   return (
     <input
       type="text"
@@ -14,6 +21,7 @@ const LabeledInput = ({ value, placeholder, onChange, required = false }: Props)
       value={value}
       onChange={onChange}
       required={required}
+      autoFocus={autofocus}
     />
   )
 }
