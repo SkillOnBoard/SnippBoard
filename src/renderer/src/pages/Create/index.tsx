@@ -69,6 +69,7 @@ function Create(): JSX.Element {
                 placeholder={t('create.fields.name.label')}
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
+                autofocus
               />
 
               <TagPicker
