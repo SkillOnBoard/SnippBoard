@@ -26,7 +26,7 @@ const Action = ({ action }: { action: ActionType }): JSX.Element => {
 
   return (
     <div
-      className="flex flex-row gap-2 content-center p-0.5 pr-4 rounded-lg hover:cursor-pointer border bg-gray-800 border-gray-800 hover:bg-gray-700 active:bg-gray-900 active:border active:border-accent"
+      className="flex flex-row gap-2 content-center p-0.5 pr-4 rounded-lg hover:cursor-pointer border bg-gray-800 border-gray-800 hover:bg-gray-700 active:bg-gray-900 active:border active:border-accent no-draggable"
       onClick={callback}
     >
       <div className="flex flex-row gap-0.5">
