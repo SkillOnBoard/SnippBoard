@@ -5,8 +5,11 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import SearchBarHeader from '@renderer/components/SearchBarHeader'
 import Layout from '@renderer/components/Layout'
-import { ActionType } from '@renderer/components/Footer/Action'
+import Action, { ActionType } from '@renderer/components/Footer/Action'
 import { useTranslation } from 'react-i18next'
+import Icon from '@renderer/components/atoms/Icon'
+import Label from '@renderer/components/atoms/Label'
+import DeleteModal from '@renderer/components/DeleteModal'
 
 type Data = {
   title: string
@@ -21,6 +24,7 @@ function SearchBar(): JSX.Element {
   const [showCode, setShowCode] = useState<boolean>(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const rowRefs = useRef<(HTMLDivElement | null)[]>([])
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const { t } = useTranslation()
 
   const { data } = useListSnippets()
@@ -58,6 +62,7 @@ function SearchBar(): JSX.Element {
   const handleDelete = (): void => {
     console.log('delete')
     // window.electron.ipcRenderer.send('delete-snippet', results[selectedIndex].title)
+    setDeleteModalOpen(true)
   }
 
   const handleCopy = (): void => {
@@ -76,18 +81,13 @@ function SearchBar(): JSX.Element {
     const filteredData = filterData()
     setResults(filteredData)
 
-    switch (query) {
-      case '':
-        setShowCode(false)
-        setSelectedIndex(-1)
-        window.electron.ipcRenderer.send('resize-window', 'small')
-        break
-      case '/':
-        navigate('/create')
-        break
-      default:
-        filteredData.length > 0 ? setSelectedIndex(0) : setSelectedIndex(-1)
-        window.electron.ipcRenderer.send('resize-window', 'big')
+    if (query) {
+      filteredData.length > 0 ? setSelectedIndex(0) : setSelectedIndex(-1)
+      window.electron.ipcRenderer.send('resize-window', 'big')
+    } else {
+      setShowCode(false)
+      setSelectedIndex(-1)
+      window.electron.ipcRenderer.send('resize-window', 'small')
     }
   }, [query])
 
@@ -100,12 +100,18 @@ function SearchBar(): JSX.Element {
           callback: (): void => window.electron.ipcRenderer.send('hide-window')
         },
         {
-          label: t('actions.for_actions'),
-          keyboardKeys: ['Slash'],
-          callback: (): void => setQuery('/')
+          label: t('actions.create'),
+          keyboardKeys: ['Meta', 'KeyR'], // Use KeyN once it has icon
+          callback: (): void => navigate('/create')
         }
       ]
     : [
+        {
+          label: t('actions.create'),
+          hidden: true,
+          keyboardKeys: ['Meta', 'KeyR'], // Use KeyN once it has icon
+          callback: (): void => navigate('/create')
+        },
         {
           label: t('actions.navigate'),
           hidden: true,
@@ -120,7 +126,7 @@ function SearchBar(): JSX.Element {
         },
         {
           label: t('actions.delete'),
-          keyboardKeys: ['Meta', 'Backspace'],
+          keyboardKeys: ['Meta', 'KeyD'],
           callback: handleDelete
         },
         {
@@ -143,20 +149,33 @@ function SearchBar(): JSX.Element {
           <hr className="border-gray-700" />
           <div className={`w-full h-[301px] text-gray-300 ${showCode ? 'grid grid-cols-2' : ''}`}>
             <div className="mt-2 h-[301px] overflow-y-scroll no-scrollbar">
-              {results.map((result, index) => (
-                <div key={index} ref={(el) => (rowRefs.current[index] = el)}>
-                  <SearchBarRow
-                    key={index}
-                    index={index}
-                    title={result.title}
-                    labels={result.labels}
-                    selectedIndex={selectedIndex}
-                    showCode={showCode}
-                    setShowCode={setShowCode}
-                    setSelectedIndex={setSelectedIndex}
+              {!!results.length &&
+                results.map((result, index) => (
+                  <div key={index} ref={(el) => (rowRefs.current[index] = el)}>
+                    <SearchBarRow
+                      key={index}
+                      index={index}
+                      title={result.title}
+                      labels={result.labels}
+                      selectedIndex={selectedIndex}
+                      showCode={showCode}
+                      setShowCode={setShowCode}
+                      setSelectedIndex={setSelectedIndex}
+                    />
+                  </div>
+                ))}
+              {!results.length && (
+                <div className="h-full flex flex-col items-center justify-center items-center">
+                  <h1 color="text-gray-400">{t('search_bar.empty_state')}</h1>
+                  <Action
+                    action={{
+                      label: t('actions.create'),
+                      keyboardKeys: ['Meta', 'KeyR'], // Use KeyN once it has icon
+                      callback: (): void => navigate('/create')
+                    }}
                   />
                 </div>
-              ))}
+              )}
             </div>
             {showCode && results.length + 1 >= selectedIndex && (
               <SearchBarCode
@@ -166,6 +185,9 @@ function SearchBar(): JSX.Element {
             )}
           </div>
         </>
+      )}
+      {deleteModalOpen && (
+        <DeleteModal onClose={() => setDeleteModalOpen(false)} onDelete={() => {}} />
       )}
     </Layout>
   )

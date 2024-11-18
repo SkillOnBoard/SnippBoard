@@ -1,6 +1,7 @@
 {
   "actions": {
     "back": "to go back",
+    "create": "new snippet",
     "copy": "to copy",
     "edit": "to edit",
     "delete": "to delete",
@@ -9,6 +10,7 @@
     "save": "to save"
   },
   "search_bar": {
+    "empty_state": "No results found",
     "placeholder": "Search for saved snippets"
   },
   "create": {

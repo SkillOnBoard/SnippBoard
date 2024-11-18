@@ -8,6 +8,8 @@ import ChevronUp from './icons/ChevronUp'
 import Command from './icons/Command'
 import Enter from './icons/Enter'
 import KeyC from './icons/KeyC'
+import KeyD from './icons/KeyD'
+import KeyR from './icons/KeyR'
 import Search from './icons/Search'
 import Slash from './icons/Slash'
 
@@ -22,6 +24,8 @@ export type IconType =
   | 'command'
   | 'enter'
   | 'key-c'
+  | 'key-d'
+  | 'key-r'
   | 'slash'
   | 'search'
 
@@ -40,6 +44,8 @@ const Components = {
   command: <Command />,
   enter: <Enter />,
   'key-c': <KeyC />,
+  'key-d': <KeyD />,
+  'key-r': <KeyR />,
   search: <Search />,
   slash: <Slash />
 }
