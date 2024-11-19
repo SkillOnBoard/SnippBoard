@@ -35,5 +35,5 @@ export const up = async (queryInterface: QueryInterface) => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const down = async (queryInterface: QueryInterface) => {
-  await queryInterface.dropTable('users')
+  await queryInterface.dropTable('snippets')
 }
