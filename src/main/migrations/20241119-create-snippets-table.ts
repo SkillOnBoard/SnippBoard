@@ -2,7 +2,7 @@ import { QueryInterface, DataTypes } from 'sequelize'
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const up = async (queryInterface: QueryInterface) => {
-  await queryInterface.createTable('users', {
+  await queryInterface.createTable('snippets', {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
