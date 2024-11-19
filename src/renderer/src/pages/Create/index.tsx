@@ -9,6 +9,7 @@ import Layout from '@renderer/components/Layout'
 import Button from '@renderer/components/atoms/Button'
 import { useListTags } from '@renderer/hooks/useListTags'
 import { useCreateTag } from '@renderer/hooks/useCreateTag'
+import { useNotifications } from '../../contexts/NotificationsContext'
 
 type CreateForm = {
   title: string
@@ -21,13 +22,17 @@ function Create(): JSX.Element {
   const [form, setForm] = useState<CreateForm>({ title: '', description: '', labels: [] })
   const { t } = useTranslation()
   const { data: predefinedTags } = useListTags()
+  const { addNotification } = useNotifications()
 
   useEffect(() => {
     window.electron?.ipcRenderer.send('resize-window', 'big')
   }, [])
 
   const [createSnippet] = useCreateSnippet({
-    onSuccess: () => navigate('/'),
+    onSuccess: () => {
+      addNotification({ type: 'success', description: 'Test snippet Cami' })
+      navigate('/')
+    },
     onFailure: (error) => console.log('error', error)
   })
 

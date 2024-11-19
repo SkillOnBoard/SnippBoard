@@ -7,6 +7,7 @@ import SearchBarHeader from '@renderer/components/SearchBarHeader'
 import Layout from '@renderer/components/Layout'
 import { ActionType } from '@renderer/components/Footer/Action'
 import { useTranslation } from 'react-i18next'
+import { useNotifications } from '@renderer/contexts/NotificationsContext'
 
 type Data = {
   title: string
@@ -22,6 +23,7 @@ function SearchBar(): JSX.Element {
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const rowRefs = useRef<(HTMLDivElement | null)[]>([])
   const { t } = useTranslation()
+  const { addNotification } = useNotifications()
 
   const { data } = useListSnippets()
 
@@ -81,6 +83,7 @@ function SearchBar(): JSX.Element {
         navigate('/create')
         break
       default:
+        addNotification({ type: 'success', description: 'Test snippet Cami' })
         filteredData.length > 0 ? setSelectedIndex(0) : setSelectedIndex(-1)
         window.electron.ipcRenderer.send('resize-window', 'big')
     }

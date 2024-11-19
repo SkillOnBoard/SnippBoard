@@ -1,4 +1,6 @@
+import { useNotifications } from '../../contexts/NotificationsContext'
 import Action, { ActionType } from './Action'
+import Notification from './Notification'
 import { useActionKeyBindings } from './useActionKeyBindings'
 
 type Props = {
@@ -9,6 +11,7 @@ const Footer = ({ actions }: Props): JSX.Element => {
   const validActions = actions.filter((action) => !action.hidden)
   const leftActions = validActions.filter((action) => action.position === 'left')
   const rightActions = validActions.filter((action) => !leftActions.includes(action))
+  const { notification } = useNotifications()
   useActionKeyBindings(actions)
 
   return (
@@ -16,6 +19,11 @@ const Footer = ({ actions }: Props): JSX.Element => {
       <hr className="border-gray-700" />
       <div className="grid grid-cols-2 place-content-between py-1 px-6">
         <div className="flex flex-row gap-2 place-content-start">
+          {notification && (
+            <div className="absolute ">
+              <Notification notification={notification} />
+            </div>
+          )}
           {leftActions.map((action, index) => (
             <Action key={index} action={action} />
           ))}
