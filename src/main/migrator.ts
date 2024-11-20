@@ -4,7 +4,7 @@ import sequelize from './database'
 
 const migrator = new Umzug({
   migrations: {
-    glob: path.join(__dirname, 'migrations/*.js')
+    glob: path.join(__dirname, '../migrations/*.js')
   },
   context: sequelize.getQueryInterface(),
   storage: new SequelizeStorage({ sequelize }),
