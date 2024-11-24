@@ -17,7 +17,7 @@ const StyledTextArea = ({
   disabled = false,
   numOfLines = 4
 }: Props): JSX.Element => {
-  console.log("value", value)
+  console.log('value', value)
   const textAreaRef = useRef<HTMLTextAreaElement>(null)
   const lineCount = useMemo(() => value.split('\n').length, [value])
   const [activeLine, setActiveLine] = React.useState(0)

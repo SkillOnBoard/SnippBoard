@@ -171,17 +171,16 @@ app.on('window-all-closed', () => {
 // code. You can also put them in separate files and require them here.
 
 ipcMain.on('list-snippets', async (event) => {
-  try {//JSON.parse(await fs.readFile(datafile, 'utf8'))
+  try {
     const snippets = await Snippet.findAll({
       include: [
         {
           model: Label,
-          as: 'labels' // Esto debe coincidir con el alias definido en la relación
+          as: 'labels'
         }
       ]
     })
-    const serializedData = snippets.map((snippet) => snippet.toJSON());
-    console.log(serializedData)
+    const serializedData = snippets.map((snippet) => snippet.toJSON())
     event.reply('list-snippets-response', { status: 'success', message: serializedData })
   } catch (error) {
     event.reply('list-snippets-response', { status: 'error', message: error })
@@ -195,19 +194,16 @@ ipcMain.on('create-snippet', async (event, snippetData) => {
     await fs.writeFile(datafile, '[]')
   }
   try {
-    // const data = JSON.parse(await fs.readFile(datafile, 'utf8'))
-    // data.push(snippet)
-    //await fs.writeFile(datafile, JSON.stringify(data, null, 2))
-    console.log("snippetData", snippetData)
+    console.log('snippetData', snippetData)
     const snippet = await Snippet.create(snippetData, {
       include: [
         {
           model: Label,
-          as: 'labels' // Alias definido en la relación
+          as: 'labels'
         }
       ]
     })
-    const serializedData = snippet.toJSON();
+    const serializedData = snippet.toJSON()
     event.reply('create-snippet-response', { status: 'success', message: serializedData })
   } catch (error) {
     event.reply('create-snippet-response', { status: 'error', message: error })
@@ -216,8 +212,9 @@ ipcMain.on('create-snippet', async (event, snippetData) => {
 
 ipcMain.on('list-tags', async (event) => {
   try {
-    const data = JSON.parse(await fs.readFile(tagsfile, 'utf8'))
-    event.reply('list-tags-response', { status: 'success', message: data })
+    const labels = await Label.findAll()
+    const serializedData = labels.map((snippet) => snippet.toJSON())
+    event.reply('list-tags-response', { status: 'success', message: serializedData })
   } catch (error) {
     event.reply('list-tags-response', { status: 'error', message: error })
   }
