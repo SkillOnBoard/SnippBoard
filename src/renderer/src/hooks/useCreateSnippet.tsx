@@ -1,15 +1,9 @@
 import { useState } from 'react'
 
 type ResponseType = {
-  data: SnippetDataType | null
+  data: Snippet | null
   error: string | null
   loading: boolean
-}
-
-type SnippetDataType = {
-  title: string
-  labels: string[]
-  description: string
 }
 
 type Props = {
@@ -20,14 +14,14 @@ type Props = {
 export const useCreateSnippet = ({
   onSuccess,
   onFailure
-}: Props): [(data: SnippetDataType) => void, ResponseType] => {
+}: Props): [(data: any) => void, ResponseType] => {
   const [response, setResponse] = useState<ResponseType>({
     data: null,
     error: null,
     loading: false
   })
 
-  const createSnippet = (form: SnippetDataType): void => {
+  const createSnippet = (form: Snippet): void => {
     setResponse({ ...response, loading: true })
 
     try {

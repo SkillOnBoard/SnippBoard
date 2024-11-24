@@ -7,6 +7,8 @@ import trayIcon from '../../resources/logo.png?asset'
 import * as fs from 'node:fs/promises'
 import * as path from 'path'
 import { runMigrations } from './migrator'
+import Snippet from './models/snippet'
+import Label from './models/label'
 
 const userDataPath = app.getPath('userData')
 const datafile = path.join(userDataPath, 'data.json')
@@ -169,25 +171,44 @@ app.on('window-all-closed', () => {
 // code. You can also put them in separate files and require them here.
 
 ipcMain.on('list-snippets', async (event) => {
-  try {
-    const data = JSON.parse(await fs.readFile(datafile, 'utf8'))
-    event.reply('list-snippets-response', { status: 'success', message: data })
+  try {//JSON.parse(await fs.readFile(datafile, 'utf8'))
+    const snippets = await Snippet.findAll({
+      include: [
+        {
+          model: Label,
+          as: 'labels' // Esto debe coincidir con el alias definido en la relación
+        }
+      ]
+    })
+    const serializedData = snippets.map((snippet) => snippet.toJSON());
+    console.log(serializedData)
+    event.reply('list-snippets-response', { status: 'success', message: serializedData })
   } catch (error) {
     event.reply('list-snippets-response', { status: 'error', message: error })
   }
 })
 
-ipcMain.on('create-snippet', async (event, snippet) => {
+ipcMain.on('create-snippet', async (event, snippetData) => {
   try {
     await fs.access(datafile)
   } catch {
     await fs.writeFile(datafile, '[]')
   }
   try {
-    const data = JSON.parse(await fs.readFile(datafile, 'utf8'))
-    data.push(snippet)
-    await fs.writeFile(datafile, JSON.stringify(data, null, 2))
-    event.reply('create-snippet-response', { status: 'success', message: data })
+    // const data = JSON.parse(await fs.readFile(datafile, 'utf8'))
+    // data.push(snippet)
+    //await fs.writeFile(datafile, JSON.stringify(data, null, 2))
+    console.log("snippetData", snippetData)
+    const snippet = await Snippet.create(snippetData, {
+      include: [
+        {
+          model: Label,
+          as: 'labels' // Alias definido en la relación
+        }
+      ]
+    })
+    const serializedData = snippet.toJSON();
+    event.reply('create-snippet-response', { status: 'success', message: serializedData })
   } catch (error) {
     event.reply('create-snippet-response', { status: 'error', message: error })
   }

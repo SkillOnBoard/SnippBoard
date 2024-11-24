@@ -2,10 +2,8 @@ import { DataTypes, Model } from 'sequelize'
 import sequelize from '../database'
 
 class Snippet extends Model {
-  public id!: number
-  public name!: string
-  public label!: string
-  public description!: string
+  public title!: string
+  public content!: string
 }
 
 Snippet.init(
@@ -15,17 +13,19 @@ Snippet.init(
       autoIncrement: true,
       primaryKey: true
     },
-    name: {
+    title: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    label: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    description: {
+    content: {
       type: DataTypes.TEXT,
       allowNull: true
+    },
+    createdAt: {
+      type: DataTypes.DATE
+    },
+    updatedAt: {
+      type: DataTypes.DATE
     }
   },
   {
