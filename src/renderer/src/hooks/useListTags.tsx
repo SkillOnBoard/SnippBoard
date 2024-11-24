@@ -19,7 +19,11 @@ export const useListTags = (): ResponseType => {
 
       window.api.listTagsResponse((_event: any, responseData: any) => {
         if (responseData.status === 'success') {
-          setResponse({ ...response, data: responseData.message || [], loading: false })
+          setResponse({
+            ...response,
+            data: responseData.message?.map((label) => label.title) || [],
+            loading: false
+          })
         } else {
           setResponse({
             ...response,

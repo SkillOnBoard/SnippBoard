@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next'
 import { useCreateSnippet } from '@renderer/hooks/useCreateSnippet'
 import Layout from '@renderer/components/Layout'
 import { useListTags } from '@renderer/hooks/useListTags'
-import { title } from 'process'
 // import { useCreateTag } from '@renderer/hooks/useCreateTag'
 
 type CreateForm = {
@@ -40,7 +39,13 @@ function Create(): JSX.Element {
     //   if (!predefinedTags?.includes(label)) createTag(label)
     // })
     //createTag(form.label)
-    createSnippet({ title: form.title, content: form.content, labels: form.labels?.map((title) => { return { title: title } }) })
+    createSnippet({
+      title: form.title,
+      content: form.content,
+      labels: form.labels?.map((title) => {
+        return { title: title }
+      })
+    })
   }
 
   return (

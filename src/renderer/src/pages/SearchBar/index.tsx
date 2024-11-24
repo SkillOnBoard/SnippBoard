@@ -130,9 +130,9 @@ function SearchBar(): JSX.Element {
                 <div key={index} ref={(el) => (rowRefs.current[index] = el)}>
                   <SearchBarRow
                     key={index}
-                    index={result.id}
+                    index={index}
                     title={result.title}
-                    labels={["hola"]}//result.labels.length == 0 ? [] : [result.labels[0].title]}
+                    labels={result.labels?.length > 0 ? [result.labels[0]?.title] : []}
                     selectedIndex={selectedIndex}
                     showCode={showCode}
                     setShowCode={setShowCode}
@@ -142,12 +142,11 @@ function SearchBar(): JSX.Element {
               ))}
             </div>
             {showCode && results.length + 1 >= selectedIndex && (
-             
               <SearchBarCode
-                labels={ []
-                  // results[selectedIndex]?.labels.length > 0
-                  //   ? [results[selectedIndex]?.labels[0]]
-                  //   : []
+                labels={
+                  results[selectedIndex]?.labels?.length > 0
+                    ? [results[selectedIndex]?.labels[0]]
+                    : []
                 }
                 code={results[selectedIndex]?.content}
               />
