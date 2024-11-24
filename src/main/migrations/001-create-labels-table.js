@@ -1,39 +1,40 @@
 const { Sequelize } = require('sequelize')
 
 async function up({ context: queryInterface }) {
-  await queryInterface.createTable('snippets', {
+  await queryInterface.createTable('labels', {
     id: {
       type: Sequelize.INTEGER,
       autoIncrement: true,
       primaryKey: true
     },
-    name: {
+    title: {
       type: Sequelize.STRING,
       allowNull: false
     },
-    label: {
-      type: Sequelize.STRING,
-      allowNull: false
-    },
-    description: {
-      type: Sequelize.TEXT,
-      allowNull: false
+    snippetId: {
+      type: Sequelize.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'snippets',
+        key: 'id'
+      },
+      onDelete: 'SET NULL'
     },
     createdAt: {
       type: Sequelize.DATE,
       allowNull: false,
-      defaultValue: Sequelize.now
+      defaultValue: Sequelize.NOW
     },
     updatedAt: {
       type: Sequelize.DATE,
       allowNull: false,
-      defaultValue: Sequelize.now
+      defaultValue: Sequelize.NOW
     }
   })
 }
 
 async function down({ context: queryInterface }) {
-  await queryInterface.dropTable('snippets')
+  await queryInterface.dropTable('labels')
 }
 
 module.exports = { up, down }
