@@ -30,15 +30,8 @@ function Create(): JSX.Element {
     onFailure: (error) => console.log('error', error)
   })
 
-  // const [createTag] = useCreateTag({
-  //   onFailure: (error) => console.log('error', error)
-  // })
 
   const submit = (): void => {
-    // form.labels.forEach((label) => {
-    //   if (!predefinedTags?.includes(label)) createTag(label)
-    // })
-    //createTag(form.label)
     createSnippet({
       title: form.title,
       content: form.content,

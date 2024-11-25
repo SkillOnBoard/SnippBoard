@@ -7,8 +7,6 @@ interface Props {
 }
 
 const SearchBarCode = ({ labels, code }: Props): JSX.Element => {
-  console.log(labels)
-  console.log(code)
   return (
     <div className="flex flex-col gap-4 bg-gray-900 w-full h-full p-4">
       {!!labels.length && (
