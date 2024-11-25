@@ -14,30 +14,25 @@ export default defineConfig({
       externalizeDepsPlugin(),
       {
         name: 'copy-migrations',
-        // Copiar archivos .js a la carpeta temporal
         // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         async buildEnd() {
-          const src = resolve(__dirname, 'src/main/migrations') // Carpeta de origen de migraciones
-          const dest = resolve(__dirname, 'out/migrations') // Carpeta temporal para las migraciones
+          const src = resolve(__dirname, 'src/main/migrations')
+          const dest = resolve(__dirname, 'out/migrations')
 
           try {
-            // Crear la carpeta de destino si no existe
             await mkdir(dest, { recursive: true })
-
-            // Leer los archivos de migraciones
             const files = await readdir(src)
 
-            // Copiar los archivos .js a la carpeta temporal
             for (const file of files) {
               if (file.endsWith('.js')) {
                 await copyFile(resolve(src, file), resolve(dest, file))
-                console.log(`[copy-migrations] Copiado archivo .js a la carpeta temporal: ${file}`)
+                console.log(`[copy-migrations] copied file .js to the temporary folder: ${file}`)
               }
             }
 
-            console.log(`[copy-migrations] Migraciones copiadas a ${dest}`)
+            console.log(`[copy-migrations] Copying migrations to ${dest}`)
           } catch (err) {
-            console.error('[copy-migrations] Error al copiar migraciones:', err)
+            console.error('[copy-migrations] Error copying migrations:', err)
           }
         }
       }

@@ -4,15 +4,9 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import trayIcon from '../../resources/logo.png?asset'
 
-import * as fs from 'node:fs/promises'
-import * as path from 'path'
 import { runMigrations } from './migrator'
 import Snippet from './models/snippet'
 import Label from './models/label'
-
-const userDataPath = app.getPath('userData')
-const datafile = path.join(userDataPath, 'data.json')
-const tagsfile = path.join(userDataPath, 'tags.json')
 
 let tray: Tray | null = null
 
@@ -189,12 +183,6 @@ ipcMain.on('list-snippets', async (event) => {
 
 ipcMain.on('create-snippet', async (event, snippetData) => {
   try {
-    await fs.access(datafile)
-  } catch {
-    await fs.writeFile(datafile, '[]')
-  }
-  try {
-    console.log('snippetData', snippetData)
     const snippet = await Snippet.create(snippetData, {
       include: [
         {
@@ -217,21 +205,5 @@ ipcMain.on('list-tags', async (event) => {
     event.reply('list-tags-response', { status: 'success', message: serializedData })
   } catch (error) {
     event.reply('list-tags-response', { status: 'error', message: error })
-  }
-})
-
-ipcMain.on('create-tag', async (event, tag) => {
-  try {
-    await fs.access(tagsfile)
-  } catch {
-    await fs.writeFile(tagsfile, '[]')
-  }
-  try {
-    const data = JSON.parse(await fs.readFile(tagsfile, 'utf8'))
-    data.push(tag)
-    await fs.writeFile(tagsfile, JSON.stringify(data, null, 2))
-    event.reply('create-tag-response', { status: 'success', message: data })
-  } catch (error) {
-    event.reply('create-tag-response', { status: 'error', message: error })
   }
 })
