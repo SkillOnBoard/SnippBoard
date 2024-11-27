@@ -1,6 +1,6 @@
 {
   "name": "snippboard",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "An application to store and manage code snippets",
   "main": "./out/main/index.js",
   "author": "SnippBoard",
