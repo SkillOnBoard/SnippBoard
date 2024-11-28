@@ -30,13 +30,12 @@ function Create(): JSX.Element {
     onFailure: (error) => console.log('error', error)
   })
 
-
   const submit = (): void => {
     createSnippet({
       title: form.title,
       content: form.content,
       labels: form.labels?.map((title) => {
-        return { title: title }
+        return { id: 1, title: title }
       })
     })
   }

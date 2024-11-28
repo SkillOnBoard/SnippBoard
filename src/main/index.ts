@@ -5,8 +5,7 @@ import icon from '../../resources/icon.png?asset'
 import trayIcon from '../../resources/logo.png?asset'
 
 import { runMigrations } from './migrator'
-import Snippet from './models/snippet'
-import Label from './models/label'
+import { Snippet, Label } from './models'
 
 let tray: Tray | null = null
 
@@ -182,16 +181,25 @@ ipcMain.on('list-snippets', async (event) => {
 })
 
 ipcMain.on('create-snippet', async (event, snippetData) => {
+  console.log('snippetData1', snippetData)
   try {
-    const snippet = await Snippet.create(snippetData, {
-      include: [
-        {
-          model: Label,
-          as: 'labels'
-        }
-      ]
+    // const snippet = await Snippet.create(data.snippet)
+    const promiseLabels = snippetData.labels.map(async (label) => {
+      if (label.id == null || label.id == undefined) {
+        return Label.create(label)
+      } else {
+        return Label.findByPk(label.id)
+      }
     })
-    const serializedData = snippet.toJSON()
+
+    const labels = await Promise.all(promiseLabels);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const newSnippet: any = await Snippet.create({title: snippetData.title, content: snippetData.content})
+
+    newSnippet.addLabels(labels)
+
+    const serializedData = newSnippet.toJSON()
     event.reply('create-snippet-response', { status: 'success', message: serializedData })
   } catch (error) {
     event.reply('create-snippet-response', { status: 'error', message: error })
@@ -201,7 +209,7 @@ ipcMain.on('create-snippet', async (event, snippetData) => {
 ipcMain.on('list-tags', async (event) => {
   try {
     const labels = await Label.findAll()
-    const serializedData = labels.map((snippet) => snippet.toJSON())
+    const serializedData = labels.map((label) => label.toJSON())
     event.reply('list-tags-response', { status: 'success', message: serializedData })
   } catch (error) {
     event.reply('list-tags-response', { status: 'error', message: error })

@@ -1,15 +1,24 @@
 const { Sequelize } = require('sequelize')
 
 async function up({ context: queryInterface }) {
-  await queryInterface.createTable('labels', {
-    id: {
+  await queryInterface.createTable('snippet_label', {
+    snippetId: {
       type: Sequelize.INTEGER,
-      autoIncrement: true,
-      primaryKey: true
+      allowNull: false,
+      references: {
+        model: 'snippets',
+        key: 'id'
+      },
+      onDelete: 'CASCADE'
     },
-    title: {
-      type: Sequelize.STRING,
-      allowNull: false
+    labelId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'labels',
+        key: 'id'
+      },
+      onDelete: 'CASCADE'
     },
     createdAt: {
       type: Sequelize.DATE,
@@ -25,7 +34,7 @@ async function up({ context: queryInterface }) {
 }
 
 async function down({ context: queryInterface }) {
-  await queryInterface.dropTable('labels')
+  await queryInterface.dropTable('snippet_label')
 }
 
 module.exports = { up, down }

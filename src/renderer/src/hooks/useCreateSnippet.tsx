@@ -14,6 +14,7 @@ type Props = {
 export const useCreateSnippet = ({
   onSuccess,
   onFailure
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }: Props): [(data: any) => void, ResponseType] => {
   const [response, setResponse] = useState<ResponseType>({
     data: null,
@@ -27,6 +28,7 @@ export const useCreateSnippet = ({
     try {
       window.electron.ipcRenderer.send('create-snippet', form)
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       window.api.createSnippetResponse((_event: any, response: any) => {
         if (response.status === 'success') {
           setResponse({ ...response, loading: true })
