@@ -21,9 +21,14 @@ const createTrayMenu = (mainWindow: BrowserWindow): void => {
       label: 'Commands',
       submenu: [
         {
-          label: 'Open/Hide SnippBoard',
+          label: 'Open searchbar',
           accelerator: 'Control+Space',
           click: (): void => mainWindow.show()
+        },
+        {
+          label: 'Hide searchbar',
+          accelerator: 'Control+Space',
+          click: (): void => mainWindow.hide()
         },
         {
           label: 'Quit',
