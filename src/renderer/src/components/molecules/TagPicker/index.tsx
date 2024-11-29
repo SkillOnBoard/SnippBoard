@@ -2,14 +2,14 @@ import { createRef, useEffect, useState } from 'react'
 import Dropdown from '@renderer/components/Dropdown'
 import Tag from '@renderer/components/atoms/Tag'
 import Icon from '@renderer/components/atoms/Icon'
-import Label from '@renderer/components/atoms/Label'
+import LabelComp from '@renderer/components/atoms/Label'
 
 type Props = {
   label: string
   placeholder: string
-  values: string[]
-  onChange: (value: string[]) => void
-  predefinedTags?: string[]
+  values: Label[]
+  onChange: (value: Label[]) => void
+  predefinedTags?: Label[]
 }
 
 const TagPicker = ({
@@ -23,12 +23,14 @@ const TagPicker = ({
   const [inputValue, setInputValue] = useState<string>('')
   const hasTags = !!values.length
   const inputRef = createRef<HTMLInputElement>()
-  const filteredOptions = predefinedTags.filter((tag) => tag.includes(inputValue))
-  const options = inputValue ? filteredOptions.concat(inputValue) : filteredOptions
+  const filteredOptions = predefinedTags.filter((tag) => tag.title.includes(inputValue))
+  const options = inputValue
+    ? filteredOptions.concat({ title: inputValue } as Label)
+    : filteredOptions
   let timeout: NodeJS.Timeout | null = null
 
-  const addTag = (tagText: string): void => {
-    onChange([tagText]) // Only allows 1 item, otherwise [...selectedTags, tagText]
+  const addTag = (label: Label): void => {
+    onChange([label]) // Only allows 1 item, otherwise [...selectedTags, label]
     cleanInput()
     setIsDropdownOpen(false)
   }
@@ -59,13 +61,13 @@ const TagPicker = ({
   return (
     <div>
       <div className="grid gap-1">
-        <Label>{label}</Label>
+        <LabelComp>{label}</LabelComp>
         <div className="flex flex-row justify-between items-center bg-gray-700 border border-gray-600 text-sm rounded-lg block w-full px-4 py-1 outline-none gap-2 min-h-10 overflow-x-hidden">
           {hasTags && (
             <div className="flex flex-row flex-wrap align-middle gap-2">
-              {values.slice(0, 2).map((tag, index) => (
+              {values.slice(0, 2).map((label, index) => (
                 <Tag key={index} onClose={() => removeTag(index)}>
-                  {tag}
+                  {label.title}
                 </Tag>
               ))}
               {values.length > 2 && <Tag key="plus">+{values.length - 2}</Tag>}

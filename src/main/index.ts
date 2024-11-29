@@ -181,9 +181,7 @@ ipcMain.on('list-snippets', async (event) => {
 })
 
 ipcMain.on('create-snippet', async (event, snippetData) => {
-  console.log('snippetData1', snippetData)
   try {
-    // const snippet = await Snippet.create(data.snippet)
     const promiseLabels = snippetData.labels.map(async (label) => {
       if (label.id == null || label.id == undefined) {
         return Label.create(label)
@@ -192,10 +190,14 @@ ipcMain.on('create-snippet', async (event, snippetData) => {
       }
     })
 
-    const labels = await Promise.all(promiseLabels);
+    const labels = await Promise.all(promiseLabels)
 
+    // This any is because .addLabels() is not typed
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const newSnippet: any = await Snippet.create({title: snippetData.title, content: snippetData.content})
+    const newSnippet: any = await Snippet.create({
+      title: snippetData.title,
+      content: snippetData.content
+    })
 
     newSnippet.addLabels(labels)
 

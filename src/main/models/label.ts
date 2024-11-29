@@ -2,6 +2,7 @@ import { DataTypes, Model } from 'sequelize'
 import sequelize from '../database'
 
 class Label extends Model {
+  public id!: number
   public title!: string
 }
 
