@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 type Props = {
-  onSelect: (value: string) => void
-  options: string[]
+  onSelect: (value: Label) => void
+  options: Label[]
 }
 
 const Dropdown = ({ onSelect, options }: Props): JSX.Element => {
@@ -42,7 +42,7 @@ const Dropdown = ({ onSelect, options }: Props): JSX.Element => {
   return (
     <div className="z-10 bg-gray-700 rounded-lg shadow min-w-60 max-w-xs dark:bg-gray-700 absolute border border-gray-600 mt-2">
       <ul className="grid gap-1 p-1 overflow-hidden max-h-48">
-        {options.map((tag, index) => (
+        {options.map((label, index) => (
           <li
             key={index}
             ref={(el) => (rowRefs.current[index] = el)}
@@ -53,7 +53,7 @@ const Dropdown = ({ onSelect, options }: Props): JSX.Element => {
             onClick={() => onSelect(options[selectedIndex])}
             onMouseOver={() => setSelectedIndex(index)}
           >
-            <span className={'flex justify-between items-center p-2'}>{tag}</span>
+            <span className={'flex justify-between items-center p-2'}>{label.title}</span>
           </li>
         ))}
       </ul>

@@ -9,16 +9,10 @@ import { ActionType } from '@renderer/components/Footer/Action'
 import { useTranslation } from 'react-i18next'
 import { useNotifications } from '@renderer/contexts/NotificationsContext'
 
-type Data = {
-  title: string
-  labels: string[]
-  description: string
-}
-
 function SearchBar(): JSX.Element {
   const navigate = useNavigate()
   const [query, setQuery] = useState<string>('')
-  const [results, setResults] = useState<Data[]>([])
+  const [results, setResults] = useState<Snippet[]>([])
   const [showCode, setShowCode] = useState<boolean>(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const rowRefs = useRef<(HTMLDivElement | null)[]>([])
@@ -31,15 +25,15 @@ function SearchBar(): JSX.Element {
     window.electron.ipcRenderer.send('resize-window', 'small')
   }, [])
 
-  const filterData = (): Data[] => {
+  const filterData = (): Snippet[] => {
     return data
       ? // TODO: Explore how to filter faster and properly
         data.filter((obj) => {
           const value = query.trim().toLowerCase()
           return (
             obj.title.toLowerCase().includes(value) ||
-            obj.description.toLowerCase().includes(value) ||
-            obj.labels.join(' ').toLowerCase().includes(value)
+            obj.content.toLowerCase().includes(value) ||
+            obj.labels?.some((label) => label.title.toLowerCase().includes(value))
           )
         })
       : []
@@ -59,7 +53,7 @@ function SearchBar(): JSX.Element {
 
   const handleCopy = (): void => {
     if (selectedIndex >= 0) {
-      navigator.clipboard.writeText(results[selectedIndex]?.description)
+      navigator.clipboard.writeText(results[selectedIndex]?.content)
     }
   }
 
@@ -127,7 +121,6 @@ function SearchBar(): JSX.Element {
           callback: handleEnter
         }
       ]
-
   return (
     <Layout footerActions={actions}>
       <SearchBarHeader query={query} setQuery={setQuery} />
@@ -142,7 +135,7 @@ function SearchBar(): JSX.Element {
                     key={index}
                     index={index}
                     title={result.title}
-                    labels={result.labels}
+                    labels={result.labels?.length > 0 ? [result.labels[0]?.title] : []}
                     selectedIndex={selectedIndex}
                     showCode={showCode}
                     setShowCode={setShowCode}
@@ -153,8 +146,12 @@ function SearchBar(): JSX.Element {
             </div>
             {showCode && results.length + 1 >= selectedIndex && (
               <SearchBarCode
-                labels={results[selectedIndex]?.labels || []}
-                code={results[selectedIndex]?.description}
+                labels={
+                  results[selectedIndex]?.labels?.length > 0
+                    ? [results[selectedIndex]?.labels[0]]
+                    : []
+                }
+                code={results[selectedIndex]?.content}
               />
             )}
           </div>

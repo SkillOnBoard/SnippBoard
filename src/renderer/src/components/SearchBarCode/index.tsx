@@ -2,7 +2,7 @@ import Tag from '@renderer/components/atoms/Tag'
 import StyledTextArea from '../atoms/StyledTextArea'
 
 interface Props {
-  labels: string[]
+  labels: Label[]
   code: string
 }
 
@@ -14,7 +14,7 @@ const SearchBarCode = ({ labels, code }: Props): JSX.Element => {
           {labels.map((label, index) => {
             return (
               <Tag key={index} defaultColor="blue">
-                {label}
+                {label.title}
               </Tag>
             )
           })}
