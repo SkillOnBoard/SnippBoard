@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain, globalShortcut, Tray, Menu } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, globalShortcut, Tray, Menu, dialog } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -9,15 +9,36 @@ import { Snippet, Label } from './models'
 
 let tray: Tray | null = null
 
-const createTrayMenu = (): void => {
+const createTrayMenu = (mainWindow: BrowserWindow): void => {
   tray = new Tray(trayIcon)
 
   const contextMenu = Menu.buildFromTemplate([
     {
+      label: 'Commands',
+      submenu: [
+        {
+          label: 'Open searchbar',
+          accelerator: 'Control+Space',
+          click: (): void => mainWindow.show()
+        },
+        {
+          label: 'Hide searchbar',
+          accelerator: 'Control+Space',
+          click: (): void => mainWindow.hide()
+        },
+        {
+          label: 'Quit',
+          accelerator: 'CmdOrCtrl+Q',
+          click: (): void => app.exit()
+        }
+      ]
+    },
+    {
+      type: 'separator'
+    },
+    {
       label: 'About SnippBoard',
-      click: (): void => {
-        console.log('About SnippBoard clicked')
-      }
+      role: 'about'
     },
     {
       label: 'Check for Updates',
@@ -116,7 +137,7 @@ function createWindow(): void {
     }
   })
 
-  createTrayMenu()
+  createTrayMenu(mainWindow)
 }
 
 // This method will be called when Electron has finished
