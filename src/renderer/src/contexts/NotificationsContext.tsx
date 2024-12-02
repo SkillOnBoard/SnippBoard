@@ -25,7 +25,7 @@ export const NotificationsProvider = ({ children }: { children: JSX.Element }): 
   const [notification, setNotification] = useState<NotificationType | null>(null)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
 
-  // Añade un nuevo mensaje a la cola
+  // Add new notification to the queue
   const addNotification = useCallback((newNotification: NotificationType) => {
     setQueue((prevQueue) => [...prevQueue, newNotification])
   }, [])
