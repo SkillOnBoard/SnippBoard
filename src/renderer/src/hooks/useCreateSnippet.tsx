@@ -1,15 +1,9 @@
 import { useState } from 'react'
 
 type ResponseType = {
-  data: SnippetDataType | null
+  data: Snippet | null
   error: string | null
   loading: boolean
-}
-
-type SnippetDataType = {
-  title: string
-  labels: string[]
-  description: string
 }
 
 type Props = {
@@ -20,19 +14,21 @@ type Props = {
 export const useCreateSnippet = ({
   onSuccess,
   onFailure
-}: Props): [(data: SnippetDataType) => void, ResponseType] => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+}: Props): [(data: any) => void, ResponseType] => {
   const [response, setResponse] = useState<ResponseType>({
     data: null,
     error: null,
     loading: false
   })
 
-  const createSnippet = (form: SnippetDataType): void => {
+  const createSnippet = (form: Snippet): void => {
     setResponse({ ...response, loading: true })
 
     try {
       window.electron.ipcRenderer.send('create-snippet', form)
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       window.api.createSnippetResponse((_event: any, response: any) => {
         if (response.status === 'success') {
           setResponse({ ...response, loading: true })

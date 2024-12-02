@@ -6,19 +6,17 @@ import StyledLabeledTextArea from '@renderer/components/molecules/StyledLabeledT
 import { useTranslation } from 'react-i18next'
 import { useCreateSnippet } from '@renderer/hooks/useCreateSnippet'
 import Layout from '@renderer/components/Layout'
-import Button from '@renderer/components/atoms/Button'
 import { useListTags } from '@renderer/hooks/useListTags'
-import { useCreateTag } from '@renderer/hooks/useCreateTag'
 
 type CreateForm = {
   title: string
-  description: string
-  labels: string[]
+  content: string
+  labels: Label[]
 }
 
 function Create(): JSX.Element {
   const navigate = useNavigate()
-  const [form, setForm] = useState<CreateForm>({ title: '', description: '', labels: [] })
+  const [form, setForm] = useState<CreateForm>({ title: '', content: '', labels: [] })
   const { t } = useTranslation()
   const { data: predefinedTags } = useListTags()
 
@@ -31,15 +29,14 @@ function Create(): JSX.Element {
     onFailure: (error) => console.log('error', error)
   })
 
-  const [createTag] = useCreateTag({
-    onFailure: (error) => console.log('error', error)
-  })
-
   const submit = (): void => {
-    form.labels.forEach((label) => {
-      if (!predefinedTags?.includes(label)) createTag(label)
+    createSnippet({
+      title: form.title,
+      content: form.content,
+      labels: form.labels?.map((label) => {
+        return { id: label.id, title: label.title }
+      })
     })
-    createSnippet(form)
   }
 
   return (
@@ -84,9 +81,9 @@ function Create(): JSX.Element {
             <StyledLabeledTextArea
               label={t('create.fields.code.label')}
               placeholder={t('create.fields.code.placeholder')}
-              value={form.description}
+              value={form.content}
               numOfLines={6}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              onChange={(e) => setForm({ ...form, content: e.target.value })}
             />
           </div>
         </form>

@@ -1,15 +1,9 @@
 import { useEffect, useState } from 'react'
 
 type ResponseType = {
-  data: DataType[] | null
+  data: Snippet[] | null
   error: string | null
   loading: boolean
-}
-
-type DataType = {
-  title: string
-  labels: string[]
-  description: string
 }
 
 export const useListSnippets = (): ResponseType => {
@@ -25,7 +19,7 @@ export const useListSnippets = (): ResponseType => {
 
       window.api.listSnippetsResponse((_event: any, responseData: any) => {
         if (responseData.status === 'success') {
-          setResponse({ ...response, data: responseData.message as DataType[], loading: false })
+          setResponse({ ...response, data: responseData.message as Snippet[], loading: false })
         } else {
           setResponse({
             ...response,
