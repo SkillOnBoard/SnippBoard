@@ -92,9 +92,9 @@ function createWindow(): void {
     app.exit()
   })
 
-  // mainWindow.on('blur', () => {
-  //   mainWindow.hide()
-  // })
+  mainWindow.on('blur', () => {
+    mainWindow.hide()
+  })
 
   ipcMain.on('hide-window', () => {
     mainWindow.hide()

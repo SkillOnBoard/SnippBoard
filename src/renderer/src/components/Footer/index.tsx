@@ -19,14 +19,9 @@ const Footer = ({ actions }: Props): JSX.Element => {
       <hr className="border-gray-700" />
       <div className="grid grid-cols-2 place-content-between py-1 px-6">
         <div className="flex flex-row gap-2 place-content-start">
-          {notification && (
-            <div className="absolute ">
-              <Notification notification={notification} />
-            </div>
-          )}
-          {leftActions.map((action, index) => (
-            <Action key={index} action={action} />
-          ))}
+          {notification && <Notification notification={notification} />}
+          {!notification &&
+            leftActions.map((action, index) => <Action key={index} action={action} />)}
         </div>
         <div className="flex flex-row gap-2 place-content-end">
           {rightActions.map((action, index) => (

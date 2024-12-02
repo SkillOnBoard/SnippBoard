@@ -28,10 +28,13 @@ function Create(): JSX.Element {
 
   const [createSnippet] = useCreateSnippet({
     onSuccess: () => {
-      addNotification({ type: 'success', description: 'Test snippet Jorge' })
+      addNotification({ type: 'success', description: t('create.notifications.success') })
       navigate('/')
     },
-    onFailure: (error) => console.log('error', error)
+    onFailure: (error) => {
+      addNotification({ type: 'error', description: t('create.notifications.error', { error }) })
+      console.log('error', error)
+    }
   })
 
   const submit = (): void => {

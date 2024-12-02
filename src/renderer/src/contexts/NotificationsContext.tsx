@@ -1,10 +1,15 @@
-import { createContext, useState, useContext, useCallback, useEffect } from 'react'
+import { createContext, useState, useContext, useCallback, useEffect, useRef } from 'react'
 
 type Types = 'success' | 'error' | 'warning'
 
 export type NotificationType = {
   type: Types
   description: string
+}
+
+type ReturnType = {
+  notification: NotificationType | null
+  addNotification: (newNotification: NotificationType) => void
 }
 
 const NotificationsContext = createContext<{
@@ -15,37 +20,36 @@ const NotificationsContext = createContext<{
   addNotification: () => {}
 })
 
-export const NotificationsProvider = ({ children }: { children: JSX.Element }) => {
+export const NotificationsProvider = ({ children }: { children: JSX.Element }): JSX.Element => {
   const [queue, setQueue] = useState<NotificationType[]>([])
   const [notification, setNotification] = useState<NotificationType | null>(null)
-  let timer: NodeJS.Timeout | null = null
+  const timerRef = useRef<NodeJS.Timeout | null>(null)
 
   // Añade un nuevo mensaje a la cola
   const addNotification = useCallback((newNotification: NotificationType) => {
     setQueue((prevQueue) => [...prevQueue, newNotification])
   }, [])
 
-  // Muestra y elimina los mensajes
-  useEffect((): void => {
+  // Show and hide the toast messages
+  useEffect(() => {
     if (!notification && queue.length > 0) {
       const nextNotification = queue[0]
       setNotification(nextNotification)
       setQueue((prevQueue) => prevQueue.slice(1))
 
-      // Oculta el toast tras 1 segundo
-      timer = setTimeout(() => {
-        console.log('timeout')
+      // Hide the toast message after 3 seconds
+      timerRef.current = setTimeout(() => {
         setNotification(null)
-      }, 1000)
+      }, 3000)
+    }
+
+    return (): void => {
+      if (!queue.length && timerRef.current) {
+        clearTimeout(timerRef.current)
+        timerRef.current = null
+      }
     }
   }, [notification, queue])
-
-  useEffect(() => {
-    return (): void => {
-      console.log('clear timeout')
-      timer && clearTimeout(timer)
-    }
-  }, [timer])
 
   return (
     <NotificationsContext.Provider value={{ notification, addNotification }}>
@@ -54,5 +58,4 @@ export const NotificationsProvider = ({ children }: { children: JSX.Element }) =
   )
 }
 
-// Hook para usar el contexto
-export const useNotifications = () => useContext(NotificationsContext)
+export const useNotifications = (): ReturnType => useContext(NotificationsContext)
