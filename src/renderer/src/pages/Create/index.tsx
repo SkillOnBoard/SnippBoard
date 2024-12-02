@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { useCreateSnippet } from '@renderer/hooks/useCreateSnippet'
 import Layout from '@renderer/components/Layout'
 import { useListTags } from '@renderer/hooks/useListTags'
+import { useNotifications } from '@renderer/contexts/NotificationsContext'
 
 type CreateForm = {
   title: string
@@ -19,14 +20,21 @@ function Create(): JSX.Element {
   const [form, setForm] = useState<CreateForm>({ title: '', content: '', labels: [] })
   const { t } = useTranslation()
   const { data: predefinedTags } = useListTags()
+  const { addNotification } = useNotifications()
 
   useEffect(() => {
     window.electron?.ipcRenderer.send('resize-window', 'big')
   }, [])
 
   const [createSnippet] = useCreateSnippet({
-    onSuccess: () => navigate('/'),
-    onFailure: (error) => console.log('error', error)
+    onSuccess: () => {
+      addNotification({ type: 'success', description: t('create.notifications.success') })
+      navigate('/')
+    },
+    onFailure: (error) => {
+      addNotification({ type: 'error', description: t('create.notifications.error', { error }) })
+      console.log('error', error)
+    }
   })
 
   const submit = (): void => {
