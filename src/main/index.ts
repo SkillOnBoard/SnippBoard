@@ -183,7 +183,7 @@ ipcMain.on('list-snippets', async (event) => {
 ipcMain.on('create-snippet', async (event, snippetData) => {
   try {
     const promiseLabels = snippetData.labels.map(async (label) => {
-      if (label.id == null || label.id == undefined) {
+      if (label.id === null || label.id === undefined) {
         return Label.create(label)
       } else {
         return Label.findByPk(label.id)
