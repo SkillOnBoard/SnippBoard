@@ -1,8 +1,8 @@
-import { app, shell, BrowserWindow, ipcMain, globalShortcut, Tray, Menu, dialog } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, globalShortcut, Tray, Menu } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import trayIcon from '../../resources/logo.png?asset'
+import trayIcon from '../../resources/trayIcon.png?asset'
 
 import { runMigrations } from './migrator'
 import { Snippet, Label } from './models'
@@ -73,7 +73,7 @@ function createWindow(): void {
     show: false,
     frame: false,
     resizable: false,
-    ...(process.platform === 'linux' ? { icon } : {}),
+    icon: icon,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -146,6 +146,8 @@ function createWindow(): void {
 app.whenReady().then(async () => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
+
+  app.dock.setIcon(icon)
 
   await runMigrations()
 
