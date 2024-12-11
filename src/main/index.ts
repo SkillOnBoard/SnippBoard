@@ -229,6 +229,54 @@ ipcMain.on('create-snippet', async (event, snippetData) => {
   }
 })
 
+ipcMain.on('update-snippet', async (event, snippetData) => {
+  try {
+    const snippet = await Snippet.findByPk(snippetData.id)
+    if (snippet) {
+      const promiseLabels = snippetData.labels.map(async (label) => {
+        if (label.id === null || label.id === undefined) {
+          return Label.create(label)
+        } else {
+          return Label.findByPk(label.id)
+        }
+      })
+  
+      const labels = await Promise.all(promiseLabels)
+  
+      // This any is because .addLabels() is not typed
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const newSnippet: any = await snippet.update({
+        title: snippetData.title,
+        content: snippetData.content
+      })
+
+      //TODO: Update labels
+      //newSnippet.addLabels(labels) if not exist
+
+      const serializedData = newSnippet.toJSON()
+      event.reply('update-snippet-response', { status: 'success', message: serializedData })
+    } else {
+      throw new Error('Snippet not found')
+    }
+  } catch (error) {
+    event.reply('update-snippet-response', { status: 'error', message: error })
+  }
+})
+
+ipcMain.on('delete-snippet', async (event, snippetId) => {
+  try {
+    const snippet = await Snippet.findByPk(snippetId)
+    if (snippet) {
+      await snippet.destroy()
+    } else {
+      throw new Error('Snippet not found')
+    }
+    event.reply('delete-snippet-response', { status: 'success', message: 'Snippet deleted' })
+  } catch (error) {
+    event.reply('delete-snippet-response', { status: 'error', message: error })
+  }
+})
+
 ipcMain.on('list-tags', async (event) => {
   try {
     const labels = await Label.findAll()
