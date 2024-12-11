@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 type ResponseType = {
-  data: string[]
+  data: Label[]
   error: string | null
   loading: boolean
 }
@@ -19,7 +19,14 @@ export const useListTags = (): ResponseType => {
 
       window.api.listTagsResponse((_event: any, responseData: any) => {
         if (responseData.status === 'success') {
-          setResponse({ ...response, data: responseData.message || [], loading: false })
+          setResponse({
+            ...response,
+            data:
+              responseData.message?.map((label) => {
+                return { id: label.id, title: label.title } as Label
+              }) || [],
+            loading: false
+          })
         } else {
           setResponse({
             ...response,

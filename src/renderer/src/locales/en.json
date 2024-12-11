@@ -14,6 +14,10 @@
     "placeholder": "Search for saved snippets"
   },
   "create": {
+    "notifications": {
+      "success": "Snippet saved successfully",
+      "error": "An error occurred: {{error}}"
+    },
     "header": "Save code",
     "fields": {
       "name": {

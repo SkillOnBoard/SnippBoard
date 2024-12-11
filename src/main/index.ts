@@ -1,27 +1,44 @@
-import { app, shell, BrowserWindow, ipcMain, globalShortcut, Tray, Menu } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, globalShortcut, Tray, Menu, dialog } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import trayIcon from '../../resources/logo.png?asset'
 
-import * as fs from 'node:fs/promises'
-import * as path from 'path'
-
-const userDataPath = app.getPath('userData')
-const datafile = path.join(userDataPath, 'data.json')
-const tagsfile = path.join(userDataPath, 'tags.json')
+import { runMigrations } from './migrator'
+import { Snippet, Label } from './models'
 
 let tray: Tray | null = null
 
-const createTrayMenu = (): void => {
+const createTrayMenu = (mainWindow: BrowserWindow): void => {
   tray = new Tray(trayIcon)
 
   const contextMenu = Menu.buildFromTemplate([
     {
+      label: 'Commands',
+      submenu: [
+        {
+          label: 'Open searchbar',
+          accelerator: 'Control+Space',
+          click: (): void => mainWindow.show()
+        },
+        {
+          label: 'Hide searchbar',
+          accelerator: 'Control+Space',
+          click: (): void => mainWindow.hide()
+        },
+        {
+          label: 'Quit',
+          accelerator: 'CmdOrCtrl+Q',
+          click: (): void => app.exit()
+        }
+      ]
+    },
+    {
+      type: 'separator'
+    },
+    {
       label: 'About SnippBoard',
-      click: (): void => {
-        console.log('About SnippBoard clicked')
-      }
+      role: 'about'
     },
     {
       label: 'Check for Updates',
@@ -120,15 +137,17 @@ function createWindow(): void {
     }
   })
 
-  createTrayMenu()
+  createTrayMenu(mainWindow)
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
+
+  await runMigrations()
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
@@ -167,24 +186,44 @@ app.on('window-all-closed', () => {
 
 ipcMain.on('list-snippets', async (event) => {
   try {
-    const data = JSON.parse(await fs.readFile(datafile, 'utf8'))
-    event.reply('list-snippets-response', { status: 'success', message: data })
+    const snippets = await Snippet.findAll({
+      include: [
+        {
+          model: Label,
+          as: 'labels'
+        }
+      ]
+    })
+    const serializedData = snippets.map((snippet) => snippet.toJSON())
+    event.reply('list-snippets-response', { status: 'success', message: serializedData })
   } catch (error) {
     event.reply('list-snippets-response', { status: 'error', message: error })
   }
 })
 
-ipcMain.on('create-snippet', async (event, snippet) => {
+ipcMain.on('create-snippet', async (event, snippetData) => {
   try {
-    await fs.access(datafile)
-  } catch {
-    await fs.writeFile(datafile, '[]')
-  }
-  try {
-    const data = JSON.parse(await fs.readFile(datafile, 'utf8'))
-    data.push(snippet)
-    await fs.writeFile(datafile, JSON.stringify(data, null, 2))
-    event.reply('create-snippet-response', { status: 'success', message: data })
+    const promiseLabels = snippetData.labels.map(async (label) => {
+      if (label.id === null || label.id === undefined) {
+        return Label.create(label)
+      } else {
+        return Label.findByPk(label.id)
+      }
+    })
+
+    const labels = await Promise.all(promiseLabels)
+
+    // This any is because .addLabels() is not typed
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const newSnippet: any = await Snippet.create({
+      title: snippetData.title,
+      content: snippetData.content
+    })
+
+    newSnippet.addLabels(labels)
+
+    const serializedData = newSnippet.toJSON()
+    event.reply('create-snippet-response', { status: 'success', message: serializedData })
   } catch (error) {
     event.reply('create-snippet-response', { status: 'error', message: error })
   }
@@ -192,25 +231,10 @@ ipcMain.on('create-snippet', async (event, snippet) => {
 
 ipcMain.on('list-tags', async (event) => {
   try {
-    const data = JSON.parse(await fs.readFile(tagsfile, 'utf8'))
-    event.reply('list-tags-response', { status: 'success', message: data })
+    const labels = await Label.findAll()
+    const serializedData = labels.map((label) => label.toJSON())
+    event.reply('list-tags-response', { status: 'success', message: serializedData })
   } catch (error) {
     event.reply('list-tags-response', { status: 'error', message: error })
-  }
-})
-
-ipcMain.on('create-tag', async (event, tag) => {
-  try {
-    await fs.access(tagsfile)
-  } catch {
-    await fs.writeFile(tagsfile, '[]')
-  }
-  try {
-    const data = JSON.parse(await fs.readFile(tagsfile, 'utf8'))
-    data.push(tag)
-    await fs.writeFile(tagsfile, JSON.stringify(data, null, 2))
-    event.reply('create-tag-response', { status: 'success', message: data })
-  } catch (error) {
-    event.reply('create-tag-response', { status: 'error', message: error })
   }
 })
