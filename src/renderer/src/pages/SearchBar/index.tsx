@@ -7,9 +7,9 @@ import SearchBarHeader from '@renderer/components/SearchBarHeader'
 import Layout from '@renderer/components/Layout'
 import Action, { ActionType } from '@renderer/components/Footer/Action'
 import { useTranslation } from 'react-i18next'
-import Icon from '@renderer/components/atoms/Icon'
-import Label from '@renderer/components/atoms/Label'
 import DeleteModal from '@renderer/components/DeleteModal'
+import { useDeleteSnippet } from '@renderer/hooks/useDeleteSnippet'
+import { useNotifications } from '@renderer/contexts/NotificationsContext'
 
 function SearchBar(): JSX.Element {
   const navigate = useNavigate()
@@ -20,14 +20,32 @@ function SearchBar(): JSX.Element {
   const rowRefs = useRef<(HTMLDivElement | null)[]>([])
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const { t } = useTranslation()
+  const { addNotification } = useNotifications()
 
-  const { data } = useListSnippets()
+  const { data, refetch } = useListSnippets()
+  const [deleteSnippet] = useDeleteSnippet({
+    onSuccess: () => {
+      addNotification({ type: 'success', description: t('delete.notifications.success') })
+      refetch()
+      setDeleteModalOpen(false)
+    },
+    onFailure: (error) => {
+      addNotification({ type: 'error', description: t('delete.notifications.error', { error }) })
+      console.log('error', error)
+    }
+  })
+
+  const onDelete = (): void => {
+    deleteSnippet(results[selectedIndex].id)
+  }
 
   useEffect(() => {
     window.electron.ipcRenderer.send('resize-window', 'small')
   }, [])
 
   const filterData = (): Snippet[] => {
+    console.log('filteredData')
+    console.log({data})
     return data
       ? // TODO: Explore how to filter faster and properly
         data.filter((obj) => {
@@ -54,8 +72,6 @@ function SearchBar(): JSX.Element {
   }
 
   const handleDelete = (): void => {
-    console.log('delete')
-    // window.electron.ipcRenderer.send('delete-snippet', results[selectedIndex].title)
     setDeleteModalOpen(true)
   }
 
@@ -73,6 +89,7 @@ function SearchBar(): JSX.Element {
 
   useEffect(() => {
     const filteredData = filterData()
+    console.log({filteredData})
     setResults(filteredData)
 
     if (query) {
@@ -83,7 +100,7 @@ function SearchBar(): JSX.Element {
       setSelectedIndex(-1)
       window.electron.ipcRenderer.send('resize-window', 'small')
     }
-  }, [query])
+  }, [query, data])
 
   const actions: ActionType[] = !query
     ? [
@@ -184,7 +201,7 @@ function SearchBar(): JSX.Element {
         </>
       )}
       {deleteModalOpen && (
-        <DeleteModal onClose={() => setDeleteModalOpen(false)} onDelete={() => {}} />
+        <DeleteModal onClose={() => setDeleteModalOpen(false)} onDelete={onDelete} />
       )}
     </Layout>
   )

@@ -34,5 +34,11 @@
       }
     },
     "submit": "Create"
+  },
+  "delete": {
+    "notifications": {
+      "success": "Snippet deleted successfully",
+      "error": "An error occurred: {{error}}"
+    }
   }
 }
