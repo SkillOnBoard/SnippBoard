@@ -36,6 +36,11 @@
     "submit": "Create"
   },
   "delete": {
+    "modal": {
+      "cancel": "No, cancel",
+      "confirm": "Yes, delete it",
+      "content": "Are you sure you want to delete this snippet?"
+    },
     "notifications": {
       "success": "Snippet deleted successfully",
       "error": "An error occurred: {{error}}"

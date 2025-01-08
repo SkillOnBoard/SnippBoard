@@ -8,11 +8,12 @@ type Props = {
 }
 
 const Footer = ({ actions }: Props): JSX.Element => {
-  const validActions = actions.filter((action) => !action.hidden)
-  const leftActions = validActions.filter((action) => action.position === 'left')
-  const rightActions = validActions.filter((action) => !leftActions.includes(action))
+  const validActions = actions.filter((action) => !action.disabled)
+  const visibleActions = validActions.filter((action) => !action.hidden)
+  const leftActions = visibleActions.filter((action) => action.position === 'left')
+  const rightActions = visibleActions.filter((action) => !leftActions.includes(action))
   const { notification } = useNotifications()
-  useActionKeyBindings(actions)
+  useActionKeyBindings(validActions)
 
   return (
     <div className="fixed bottom-0 w-full left-0 bg-gray-800 draggable">

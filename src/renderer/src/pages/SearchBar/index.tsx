@@ -21,6 +21,7 @@ function SearchBar(): JSX.Element {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const { t } = useTranslation()
   const { addNotification } = useNotifications()
+  const showEmptyState = results.length === 0
 
   const { data, refetch } = useListSnippets()
   const [deleteSnippet] = useDeleteSnippet({
@@ -44,8 +45,6 @@ function SearchBar(): JSX.Element {
   }, [])
 
   const filterData = (): Snippet[] => {
-    console.log('filteredData')
-    console.log({data})
     return data
       ? // TODO: Explore how to filter faster and properly
         data.filter((obj) => {
@@ -59,6 +58,14 @@ function SearchBar(): JSX.Element {
       : []
   }
 
+  const handleEscape = (): void => {
+    if (deleteModalOpen) {
+      setDeleteModalOpen(false)
+    } else {
+      window.electron.ipcRenderer.send('h<ide-window')
+    }
+  }
+
   const handleArrowDown = (): void => {
     setSelectedIndex((prevIndex) => (prevIndex < results.length - 1 ? prevIndex + 1 : prevIndex))
   }
@@ -68,7 +75,12 @@ function SearchBar(): JSX.Element {
   }
 
   const handleEnter = (): void => {
-    if (selectedIndex >= 0) setShowCode((prev) => !prev)
+    if (deleteModalOpen) {
+      setShowCode(false)
+      onDelete()
+    } else {
+      if (selectedIndex >= 0) setShowCode((prev) => !prev)
+    }
   }
 
   const handleDelete = (): void => {
@@ -89,7 +101,6 @@ function SearchBar(): JSX.Element {
 
   useEffect(() => {
     const filteredData = filterData()
-    console.log({filteredData})
     setResults(filteredData)
 
     if (query) {
@@ -102,55 +113,51 @@ function SearchBar(): JSX.Element {
     }
   }, [query, data])
 
-  const actions: ActionType[] = !query
-    ? [
-        {
-          label: '',
-          keyboardKeys: ['Escape'],
-          hidden: true,
-          callback: (): void => window.electron.ipcRenderer.send('hide-window')
-        },
-        {
-          label: t('actions.create'),
-          keyboardKeys: ['Meta', 'KeyR'], // Use KeyN once it has icon
-          callback: (): void => navigate('/create')
-        }
-      ]
-    : [
-        {
-          label: t('actions.create'),
-          hidden: true,
-          keyboardKeys: ['Meta', 'KeyR'], // Use KeyN once it has icon
-          callback: (): void => navigate('/create')
-        },
-        {
-          label: t('actions.navigate'),
-          hidden: true,
-          keyboardKeys: ['ArrowDown'],
-          callback: handleArrowDown
-        },
-        {
-          hidden: true,
-          label: t('actions.navigate'),
-          keyboardKeys: ['ArrowUp'],
-          callback: handleArrowUp
-        },
-        {
-          label: t('actions.delete'),
-          keyboardKeys: ['Meta', 'KeyD'],
-          callback: handleDelete
-        },
-        {
-          label: t('actions.copy'),
-          keyboardKeys: ['Meta', 'KeyC'],
-          callback: handleCopy
-        },
-        {
-          label: t('actions.edit'),
-          keyboardKeys: ['Enter'],
-          callback: handleEnter
-        }
-      ]
+  const actions: ActionType[] = [
+    {
+      label: '',
+      keyboardKeys: ['Escape'],
+      hidden: true,
+      callback: handleEscape
+    },
+    {
+      label: t('actions.create'),
+      hidden: !!query && !showEmptyState,
+      keyboardKeys: ['Meta', 'KeyR'], // Use KeyN once it has icon
+      callback: (): void => navigate('/create')
+    },
+    {
+      label: t('actions.navigate'),
+      hidden: true,
+      keyboardKeys: ['ArrowDown'],
+      callback: handleArrowDown
+    },
+    {
+      hidden: true,
+      label: t('actions.navigate'),
+      keyboardKeys: ['ArrowUp'],
+      callback: handleArrowUp
+    },
+    {
+      label: t('actions.delete'),
+      keyboardKeys: ['Meta', 'KeyD'],
+      callback: handleDelete,
+      disabled: showEmptyState || !query
+    },
+    {
+      label: t('actions.copy'),
+      keyboardKeys: ['Meta', 'KeyC'],
+      callback: handleCopy,
+      disabled: showEmptyState || !query
+    },
+    {
+      label: t('actions.edit'),
+      keyboardKeys: ['Enter'],
+      callback: handleEnter,
+      disabled: showEmptyState || !query
+    }
+  ]
+
   return (
     <Layout footerActions={actions}>
       <SearchBarHeader query={query} setQuery={setQuery} />
@@ -159,7 +166,7 @@ function SearchBar(): JSX.Element {
           <hr className="border-gray-700" />
           <div className={`w-full h-[301px] text-gray-300 ${showCode ? 'grid grid-cols-2' : ''}`}>
             <div className="mt-2 h-[301px] overflow-y-scroll no-scrollbar">
-              {!!results.length &&
+              {!showEmptyState &&
                 results.map((result, index) => (
                   <div key={index} ref={(el) => (rowRefs.current[index] = el)}>
                     <SearchBarRow
@@ -174,7 +181,7 @@ function SearchBar(): JSX.Element {
                     />
                   </div>
                 ))}
-              {!results.length && (
+              {showEmptyState && (
                 <div className="h-full flex flex-col items-center justify-center items-center">
                   <h1 color="text-gray-400">{t('search_bar.empty_state')}</h1>
                   <Action

@@ -22,6 +22,7 @@ export type ActionType = {
   callback?: () => void
   hidden?: boolean
   position?: 'left' | 'right'
+  disabled?: boolean
 }
 
 const Action = ({ action }: { action: ActionType }): JSX.Element => {
