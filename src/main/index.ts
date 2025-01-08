@@ -2,7 +2,7 @@ import { app, shell, BrowserWindow, ipcMain, globalShortcut, Tray, Menu } from '
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import trayIcon from '../../resources/trayIcon.png?asset'
+import trayIcon from '../../resources/icon.ico?asset'
 
 import { runMigrations } from './migrator'
 import { Snippet, Label } from './models'
@@ -148,6 +148,7 @@ app.whenReady().then(async () => {
   electronApp.setAppUserModelId('com.electron')
 
   app.dock.setIcon(icon)
+  app.dock.hide()
 
   await runMigrations()
 
@@ -170,7 +171,13 @@ app.whenReady().then(async () => {
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow()
+    } else {
+      BrowserWindow.getAllWindows().forEach((win) => {
+        win.show()
+      })
+    }
   })
 })
 
