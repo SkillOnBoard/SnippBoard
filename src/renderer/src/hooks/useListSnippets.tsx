@@ -12,14 +12,14 @@ type SearchDataType = {
   ids?: number[]
 }
 
-export const useListSnippets = (): ReturnType => {
+export const useListSnippets = (searchData: SearchDataType = {}): ReturnType => {
   const [response, setResponse] = useState<ResponseType>({
     data: null,
     error: null,
     loading: true
   })
 
-  const fetchData = (searchData: SearchDataType = {}): void => {
+  const fetchData = (): void => {
     try {
       window.electron.ipcRenderer.send('list-snippets', searchData)
 

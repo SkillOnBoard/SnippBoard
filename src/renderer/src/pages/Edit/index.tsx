@@ -10,7 +10,8 @@ import { useUpdateSnippet } from '@renderer/hooks/useUpdateSnippet'
 const Edit = (): JSX.Element | null => {
   const navigate = useNavigate()
   const { id } = useParams()
-  const { data, loading } = useListSnippets({ ids: [id] })
+  const ids: number[] = id ? [+id] : []
+  const { data, loading } = useListSnippets({ ids })
   const snippet = data?.[0]
 
   const [form, setForm] = useState<SnippetFormType>({ title: '', content: '', labels: [] })
