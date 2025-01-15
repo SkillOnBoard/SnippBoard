@@ -67,6 +67,14 @@ function SearchBar(): JSX.Element {
     }
   }
 
+  const handleCreate = (): void => {
+    navigate('/snippets/new')
+  }
+
+  const handleEdit = (): void => {
+    navigate(`/snippets/${results[selectedIndex].id}/edit`)
+  }
+
   const handleArrowDown = (): void => {
     setSelectedIndex((prevIndex) => (prevIndex < results.length - 1 ? prevIndex + 1 : prevIndex))
   }
@@ -125,7 +133,7 @@ function SearchBar(): JSX.Element {
       label: t('actions.create'),
       hidden: !!query && !showEmptyState,
       keyboardKeys: ['Meta', 'KeyR'], // Use KeyN once it has icon
-      callback: (): void => navigate('/create')
+      callback: handleCreate
     },
     {
       label: t('actions.navigate'),
@@ -152,9 +160,16 @@ function SearchBar(): JSX.Element {
       disabled: showEmptyState || !query
     },
     {
-      label: t('actions.edit'),
+      label: '',
       keyboardKeys: ['Enter'],
+      hidden: true,
       callback: handleEnter,
+      disabled: showEmptyState || !query
+    },
+    {
+      label: t('actions.edit'),
+      keyboardKeys: ['Meta', 'KeyE'],
+      callback: handleEdit,
       disabled: showEmptyState || !query
     }
   ]
@@ -189,7 +204,7 @@ function SearchBar(): JSX.Element {
                     action={{
                       label: t('actions.create'),
                       keyboardKeys: ['Meta', 'KeyR'], // Use KeyN once it has icon
-                      callback: (): void => navigate('/create')
+                      callback: handleCreate
                     }}
                   />
                 </div>

@@ -2,6 +2,7 @@
 import { HashRouter as Router, Route, Routes } from 'react-router-dom'
 import SearchBar from './pages/SearchBar'
 import Create from './pages/Create'
+import Edit from './pages/Edit'
 
 function App(): JSX.Element {
   return (
@@ -9,7 +10,8 @@ function App(): JSX.Element {
       <Router>
         <Routes>
           <Route path="/" element={<SearchBar />} />
-          <Route path="/create" element={<Create />} />
+          <Route path="/snippets/new" element={<Create />} />
+          <Route path="/snippets/:id/edit" element={<Edit />} />
         </Routes>
       </Router>
       {/* {isLoading && (

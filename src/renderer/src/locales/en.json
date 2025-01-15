@@ -45,5 +45,11 @@
       "success": "Snippet deleted successfully",
       "error": "An error occurred: {{error}}"
     }
+  },
+  "updated": {
+    "notifications": {
+      "success": "Snippet updated successfully",
+      "error": "An error occurred: {{error}}"
+    }
   }
 }
