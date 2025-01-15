@@ -240,20 +240,19 @@ ipcMain.on('update-snippet', async (event, snippetData) => {
           return Label.findByPk(label.id)
         }
       })
-  
+
       const labels = await Promise.all(promiseLabels)
-  
-      // This any is because .addLabels() is not typed
+
+      // This any is because .setLabels() is not typed
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const newSnippet: any = await snippet.update({
         title: snippetData.title,
         content: snippetData.content
       })
 
-      //TODO: Update labels
-      //newSnippet.addLabels(labels) if not exist
+      await newSnippet.setLabels(labels)
 
-      const serializedData = snippet.toJSON()
+      const serializedData = newSnippet.toJSON()
       event.reply('update-snippet-response', { status: 'success', message: serializedData })
     } else {
       throw new Error('Snippet not found')

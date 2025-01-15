@@ -58,6 +58,9 @@ const TagPicker = ({
     }
   }, [timeout])
 
+  const dropdownIcon = isDropdownOpen ? <Icon name="chevron-up" /> : <Icon name="chevron-down" />
+  const existOptions = options.length !== 0
+
   return (
     <div>
       <div className="grid gap-1">
@@ -80,7 +83,10 @@ const TagPicker = ({
             onChange={handleSearch}
             onFocus={() => setIsDropdownOpen(true)}
             // Using setTimeout to prevent the dropdown from closing when clicking on it (blur event)
-            onBlur={() => (timeout = setTimeout(() => setIsDropdownOpen(false), 500))}
+            onBlur={() => {
+              timeout = setTimeout(() => setIsDropdownOpen(false), 500)
+              addTag({ title: inputValue } as Label)
+            }}
             required
             className="bg-inherit outline-none w-full placeholder:text-gray-50 min-w-0.5"
           />
@@ -89,12 +95,12 @@ const TagPicker = ({
             className="cursor-pointer top-1/2"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
-            {isDropdownOpen ? <Icon name="chevron-up" /> : <Icon name="chevron-down" />}
+            {existOptions ? dropdownIcon : null}
           </div>
         </div>
       </div>
 
-      {isDropdownOpen && <Dropdown onSelect={addTag} options={options} />}
+      {isDropdownOpen && existOptions && <Dropdown onSelect={addTag} options={options} />}
     </div>
   )
 }
