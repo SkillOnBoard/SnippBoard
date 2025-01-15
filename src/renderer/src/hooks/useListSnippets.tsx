@@ -8,6 +8,10 @@ type ResponseType = {
   loading: boolean
 }
 
+type SearchDataType = {
+  ids?: number[]
+}
+
 export const useListSnippets = (): ReturnType => {
   const [response, setResponse] = useState<ResponseType>({
     data: null,
@@ -15,9 +19,9 @@ export const useListSnippets = (): ReturnType => {
     loading: true
   })
 
-  const fetchData = (): void => {
+  const fetchData = (searchData: SearchDataType = {}): void => {
     try {
-      window.electron.ipcRenderer.send('list-snippets')
+      window.electron.ipcRenderer.send('list-snippets', searchData)
 
       window.api.listSnippetsResponse((_event: any, responseData: any) => {
         if (responseData.status === 'success') {
