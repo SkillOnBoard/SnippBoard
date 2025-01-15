@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain, globalShortcut, Tray, Menu, dialog } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, globalShortcut, Tray, Menu } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -184,9 +184,11 @@ app.on('window-all-closed', () => {
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
 
-ipcMain.on('list-snippets', async (event) => {
+ipcMain.on('list-snippets', async (event, searchData) => {
   try {
+    const ids = searchData?.ids
     const snippets = await Snippet.findAll({
+      where: ids && ids.length > 0 ? { id: ids } : undefined,
       include: [
         {
           model: Label,
