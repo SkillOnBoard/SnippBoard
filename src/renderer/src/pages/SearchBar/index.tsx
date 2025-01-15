@@ -5,19 +5,41 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import SearchBarHeader from '@renderer/components/SearchBarHeader'
 import Layout from '@renderer/components/Layout'
-import { ActionType } from '@renderer/components/Footer/Action'
+import Action, { ActionType } from '@renderer/components/Footer/Action'
 import { useTranslation } from 'react-i18next'
+import DeleteModal from '@renderer/components/DeleteModal'
+import { useDeleteSnippet } from '@renderer/hooks/useDeleteSnippet'
+import { useNotifications } from '@renderer/contexts/NotificationsContext'
 
 function SearchBar(): JSX.Element {
   const navigate = useNavigate()
   const [query, setQuery] = useState<string>('')
   const [results, setResults] = useState<Snippet[]>([])
-  const [showCode, setShowCode] = useState<boolean>(false)
+  const [codeOpen, setCodeOpen] = useState<boolean>(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const rowRefs = useRef<(HTMLDivElement | null)[]>([])
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const { t } = useTranslation()
+  const { addNotification } = useNotifications()
+  const showEmptyState = results.length === 0
+  const showCode = codeOpen && !showEmptyState && results.length + 1 >= selectedIndex
 
-  const { data } = useListSnippets()
+  const { data, refetch } = useListSnippets()
+  const [deleteSnippet] = useDeleteSnippet({
+    onSuccess: () => {
+      addNotification({ type: 'success', description: t('delete.notifications.success') })
+      refetch()
+      setDeleteModalOpen(false)
+    },
+    onFailure: (error) => {
+      addNotification({ type: 'error', description: t('delete.notifications.error', { error }) })
+      console.log('error', error)
+    }
+  })
+
+  const onDelete = (): void => {
+    deleteSnippet(results[selectedIndex].id)
+  }
 
   useEffect(() => {
     window.electron.ipcRenderer.send('resize-window', 'small')
@@ -37,6 +59,14 @@ function SearchBar(): JSX.Element {
       : []
   }
 
+  const handleEscape = (): void => {
+    if (deleteModalOpen) {
+      setDeleteModalOpen(false)
+    } else {
+      window.electron.ipcRenderer.send('h<ide-window')
+    }
+  }
+
   const handleArrowDown = (): void => {
     setSelectedIndex((prevIndex) => (prevIndex < results.length - 1 ? prevIndex + 1 : prevIndex))
   }
@@ -46,7 +76,16 @@ function SearchBar(): JSX.Element {
   }
 
   const handleEnter = (): void => {
-    if (selectedIndex >= 0) setShowCode((prev) => !prev)
+    if (deleteModalOpen) {
+      setCodeOpen(false)
+      onDelete()
+    } else {
+      if (selectedIndex >= 0) setCodeOpen((prev) => !prev)
+    }
+  }
+
+  const handleDelete = (): void => {
+    setDeleteModalOpen(true)
   }
 
   const handleCopy = (): void => {
@@ -65,59 +104,61 @@ function SearchBar(): JSX.Element {
     const filteredData = filterData()
     setResults(filteredData)
 
-    switch (query) {
-      case '':
-        setShowCode(false)
-        setSelectedIndex(-1)
-        window.electron.ipcRenderer.send('resize-window', 'small')
-        break
-      case '/':
-        navigate('/create')
-        break
-      default:
-        filteredData.length > 0 ? setSelectedIndex(0) : setSelectedIndex(-1)
-        window.electron.ipcRenderer.send('resize-window', 'big')
+    if (query) {
+      filteredData.length > 0 ? setSelectedIndex(0) : setSelectedIndex(-1)
+      window.electron.ipcRenderer.send('resize-window', 'big')
+    } else {
+      setCodeOpen(false)
+      setSelectedIndex(-1)
+      window.electron.ipcRenderer.send('resize-window', 'small')
     }
-  }, [query])
+  }, [query, data])
 
-  const actions: ActionType[] = !query
-    ? [
-        {
-          label: '',
-          keyboardKeys: ['Escape'],
-          hidden: true,
-          callback: (): void => window.electron.ipcRenderer.send('hide-window')
-        },
-        {
-          label: t('actions.for_actions'),
-          keyboardKeys: ['Slash'],
-          callback: (): void => setQuery('/')
-        }
-      ]
-    : [
-        {
-          label: t('actions.navigate'),
-          hidden: true,
-          keyboardKeys: ['ArrowDown'],
-          callback: handleArrowDown
-        },
-        {
-          hidden: true,
-          label: t('actions.navigate'),
-          keyboardKeys: ['ArrowUp'],
-          callback: handleArrowUp
-        },
-        {
-          label: t('actions.copy'),
-          keyboardKeys: ['Meta', 'KeyC'],
-          callback: handleCopy
-        },
-        {
-          label: t('actions.edit'),
-          keyboardKeys: ['Enter'],
-          callback: handleEnter
-        }
-      ]
+  const actions: ActionType[] = [
+    {
+      label: '',
+      keyboardKeys: ['Escape'],
+      hidden: true,
+      callback: handleEscape
+    },
+    {
+      label: t('actions.create'),
+      hidden: !!query && !showEmptyState,
+      keyboardKeys: ['Meta', 'KeyR'], // Use KeyN once it has icon
+      callback: (): void => navigate('/create')
+    },
+    {
+      label: t('actions.navigate'),
+      hidden: true,
+      keyboardKeys: ['ArrowDown'],
+      callback: handleArrowDown
+    },
+    {
+      hidden: true,
+      label: t('actions.navigate'),
+      keyboardKeys: ['ArrowUp'],
+      callback: handleArrowUp
+    },
+    {
+      label: t('actions.delete'),
+      keyboardKeys: ['Meta', 'KeyD'],
+      callback: handleDelete,
+      disabled: showEmptyState || !query
+    },
+    {
+      label: t('actions.copy'),
+      keyboardKeys: ['Meta', 'KeyC'],
+      callback: handleCopy,
+      disabled: showEmptyState || !query
+    },
+    {
+      label: t('actions.edit'),
+      keyboardKeys: ['Enter'],
+      callback: handleEnter,
+      disabled: showEmptyState || !query
+    }
+  ]
+
   return (
     <Layout footerActions={actions}>
       <SearchBarHeader query={query} setQuery={setQuery} />
@@ -126,22 +167,35 @@ function SearchBar(): JSX.Element {
           <hr className="border-gray-700" />
           <div className={`w-full h-[301px] text-gray-300 ${showCode ? 'grid grid-cols-2' : ''}`}>
             <div className="mt-2 h-[301px] overflow-y-scroll no-scrollbar">
-              {results.map((result, index) => (
-                <div key={index} ref={(el) => (rowRefs.current[index] = el)}>
-                  <SearchBarRow
-                    key={index}
-                    index={index}
-                    title={result.title}
-                    labels={result.labels?.length > 0 ? [result.labels[0]?.title] : []}
-                    selectedIndex={selectedIndex}
-                    showCode={showCode}
-                    setShowCode={setShowCode}
-                    setSelectedIndex={setSelectedIndex}
+              {!showEmptyState &&
+                results.map((result, index) => (
+                  <div key={index} ref={(el) => (rowRefs.current[index] = el)}>
+                    <SearchBarRow
+                      key={index}
+                      index={index}
+                      title={result.title}
+                      labels={result.labels?.length > 0 ? [result.labels[0]?.title] : []}
+                      selectedIndex={selectedIndex}
+                      showCode={showCode}
+                      setShowCode={setCodeOpen}
+                      setSelectedIndex={setSelectedIndex}
+                    />
+                  </div>
+                ))}
+              {showEmptyState && (
+                <div className="h-full flex flex-col items-center justify-center items-center">
+                  <h1 color="text-gray-400">{t('search_bar.empty_state')}</h1>
+                  <Action
+                    action={{
+                      label: t('actions.create'),
+                      keyboardKeys: ['Meta', 'KeyR'], // Use KeyN once it has icon
+                      callback: (): void => navigate('/create')
+                    }}
                   />
                 </div>
-              ))}
+              )}
             </div>
-            {showCode && results.length + 1 >= selectedIndex && (
+            {showCode && (
               <SearchBarCode
                 labels={
                   results[selectedIndex]?.labels?.length > 0
@@ -153,6 +207,9 @@ function SearchBar(): JSX.Element {
             )}
           </div>
         </>
+      )}
+      {deleteModalOpen && (
+        <DeleteModal onClose={() => setDeleteModalOpen(false)} onDelete={onDelete} />
       )}
     </Layout>
   )

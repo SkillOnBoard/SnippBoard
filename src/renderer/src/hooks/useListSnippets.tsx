@@ -1,19 +1,21 @@
 import { useEffect, useState } from 'react'
 
+type ReturnType = ResponseType & { refetch: () => void }
+
 type ResponseType = {
   data: Snippet[] | null
   error: string | null
   loading: boolean
 }
 
-export const useListSnippets = (): ResponseType => {
+export const useListSnippets = (): ReturnType => {
   const [response, setResponse] = useState<ResponseType>({
     data: null,
     error: null,
     loading: true
   })
 
-  useEffect(() => {
+  const fetchData = (): void => {
     try {
       window.electron.ipcRenderer.send('list-snippets')
 
@@ -35,7 +37,14 @@ export const useListSnippets = (): ResponseType => {
         loading: false
       })
     }
+  }
+
+  useEffect(() => {
+    fetchData()
   }, [])
 
-  return response
+  return {
+    ...response,
+    refetch: fetchData
+  }
 }
