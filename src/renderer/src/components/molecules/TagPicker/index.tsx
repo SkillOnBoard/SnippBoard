@@ -85,7 +85,7 @@ const TagPicker = ({
             // Using setTimeout to prevent the dropdown from closing when clicking on it (blur event)
             onBlur={() => {
               timeout = setTimeout(() => setIsDropdownOpen(false), 500)
-              if (inputValue) addTag({ title: inputValue } as Label)
+              if (inputValue && options.length === 0) addTag({ title: inputValue } as Label)
             }}
             required
             className="bg-inherit outline-none w-full placeholder:text-gray-50 min-w-0.5"
