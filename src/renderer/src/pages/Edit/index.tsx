@@ -16,7 +16,6 @@ const Edit = (): JSX.Element | null => {
 
   const [form, setForm] = useState<SnippetFormType>({ title: '', content: '', labels: [] })
 
-  console.log({ id, data })
   const { t } = useTranslation()
   const { addNotification } = useNotifications()
   const [updateSnippet] = useUpdateSnippet({
