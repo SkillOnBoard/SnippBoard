@@ -3,9 +3,10 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import Layout from '@renderer/components/Layout'
 import { useNotifications } from '@renderer/contexts/NotificationsContext'
-import SnippetForm, { SnippetFormType } from '@renderer/components/SnippetForm'
+import SnippetForm from '@renderer/components/SnippetForm'
 import { useListSnippets } from '@renderer/hooks/useListSnippets'
 import { useUpdateSnippet } from '@renderer/hooks/useUpdateSnippet'
+import Snippet from '@renderer/components/forms/Snippet'
 
 const Edit = (): JSX.Element | null => {
   const navigate = useNavigate()
@@ -13,8 +14,7 @@ const Edit = (): JSX.Element | null => {
   const ids: number[] = id ? [+id] : []
   const { data, loading } = useListSnippets({ ids })
   const snippet = data?.[0]
-
-  const [form, setForm] = useState<SnippetFormType>({ title: '', content: '', labels: [] })
+  const [form, setForm] = useState<Snippet>(new Snippet())
 
   const { t } = useTranslation()
   const { addNotification } = useNotifications()
@@ -35,19 +35,21 @@ const Edit = (): JSX.Element | null => {
 
   useEffect(() => {
     if (snippet) {
-      setForm({
-        id: snippet.id,
-        title: snippet.title,
-        content: snippet.content,
-        labels: snippet.labels
-      })
+      setForm(
+        new Snippet({
+          id: snippet.id,
+          title: snippet.title,
+          content: snippet.content,
+          labels: snippet.labels
+        })
+      )
     }
   }, [snippet])
 
   const submit = (): void => {
     updateSnippet({
-      ...form,
-      labels: form.labels?.map((label) => {
+      ...form.getValues(),
+      labels: form.get('labels').value?.map((label) => {
         return { id: label.id, title: label.title }
       })
     })

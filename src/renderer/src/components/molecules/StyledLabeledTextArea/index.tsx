@@ -7,6 +7,7 @@ type Props = {
   value: string
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
   numOfLines?: number
+  error?: string | null
 }
 
 const StyledLabeledTextArea = ({
@@ -14,7 +15,8 @@ const StyledLabeledTextArea = ({
   placeholder,
   onChange,
   value,
-  numOfLines
+  numOfLines,
+  error
 }: Props): JSX.Element => {
   return (
     <div className="grid gap-1">
@@ -26,6 +28,7 @@ const StyledLabeledTextArea = ({
           onChange={onChange}
           numOfLines={numOfLines}
           required
+          error={error}
         />
       </div>
     </div>

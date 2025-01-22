@@ -9,6 +9,7 @@ type Props = {
   placeholder: string
   values: Label[]
   onChange: (value: Label[]) => void
+  error?: string | null
   predefinedTags?: Label[]
 }
 
@@ -17,6 +18,7 @@ const TagPicker = ({
   placeholder,
   onChange,
   values,
+  error,
   predefinedTags = []
 }: Props): JSX.Element => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false)
@@ -65,7 +67,12 @@ const TagPicker = ({
     <div>
       <div className="grid gap-1">
         <LabelComp>{label}</LabelComp>
-        <div className="flex flex-row justify-between items-center bg-gray-700 border border-gray-600 text-sm rounded-lg block w-full px-4 py-1 outline-none gap-2 min-h-10 overflow-x-hidden">
+        <div
+          className={
+            'flex flex-row justify-between items-center bg-gray-700 border text-sm rounded-lg block w-full px-4 py-1 outline-none gap-2 min-h-10 overflow-x-hidden ' +
+            (error ? 'border-red-500' : 'border-gray-500')
+          }
+        >
           {hasTags && (
             <div className="flex flex-row flex-wrap align-middle gap-2">
               {values.slice(0, 2).map((label, index) => (

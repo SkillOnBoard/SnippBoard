@@ -4,11 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { useCreateSnippet } from '@renderer/hooks/useCreateSnippet'
 import Layout from '@renderer/components/Layout'
 import { useNotifications } from '@renderer/contexts/NotificationsContext'
-import SnippetForm, { CreateForm } from '@renderer/components/SnippetForm'
+import SnippetForm from '@renderer/components/SnippetForm'
+import Snippet from '@renderer/components/forms/Snippet'
 
 function Create(): JSX.Element {
   const navigate = useNavigate()
-  const [form, setForm] = useState<CreateForm>({ title: '', content: '', labels: [] })
+  const [form, setForm] = useState<Snippet>(new Snippet())
   const { t } = useTranslation()
   const { addNotification } = useNotifications()
 
@@ -28,10 +29,11 @@ function Create(): JSX.Element {
   })
 
   const submit = (): void => {
+    const data = form
     createSnippet({
-      title: form.title,
-      content: form.content,
-      labels: form.labels?.map((label) => {
+      title: data.get('title').value,
+      content: data.get('content').value,
+      labels: data.get('labels').value?.map((label) => {
         return { id: label.id, title: label.title }
       })
     })

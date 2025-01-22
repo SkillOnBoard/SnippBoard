@@ -8,6 +8,7 @@ type Props = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   autofocus?: boolean
   required?: boolean
+  error?: string | null
 }
 
 const LabeledInput = ({
@@ -16,7 +17,8 @@ const LabeledInput = ({
   onChange,
   value,
   autofocus,
-  required
+  required,
+  error
 }: Props): JSX.Element => {
   return (
     <div className="grid gap-1">
@@ -27,6 +29,7 @@ const LabeledInput = ({
         onChange={onChange}
         autofocus={autofocus}
         required={required}
+        error={error}
       />
     </div>
   )
