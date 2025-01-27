@@ -1,7 +1,7 @@
 import SearchBarCode from '@renderer/components/SearchBarCode'
 import SearchBarRow from '@renderer/components/SearchBarRow'
 import { useListSnippets } from '@renderer/hooks/useListSnippets'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import SearchBarHeader from '@renderer/components/SearchBarHeader'
 import Layout from '@renderer/components/Layout'
@@ -41,7 +41,7 @@ function SearchBar(): JSX.Element {
     deleteSnippet(results[selectedIndex].id)
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     window.electron.ipcRenderer.send('resize-window', 'small')
   }, [])
 
@@ -116,9 +116,9 @@ function SearchBar(): JSX.Element {
       filteredData.length > 0 ? setSelectedIndex(0) : setSelectedIndex(-1)
       window.electron.ipcRenderer.send('resize-window', 'big')
     } else {
+      window.electron.ipcRenderer.send('resize-window', 'small')
       setCodeOpen(false)
       setSelectedIndex(-1)
-      window.electron.ipcRenderer.send('resize-window', 'small')
     }
   }, [query, data])
 

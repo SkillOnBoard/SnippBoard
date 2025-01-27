@@ -25,13 +25,7 @@ const SnippetForm = ({ form, setForm, onSubmit }: Props): JSX.Element => {
               placeholder={t('create.fields.name.label')}
               value={form.get('title').value}
               onChange={(e) => {
-                const field = form.get('title')
-                field.setValue(e.target.value)
-                form.setField('title', field)
-                console.log('value', e.target.value)
-                console.log('test', field.value)
-                console.log('form', form)
-                setForm(form)
+                setForm(new Snippet({ ...form.getValues(), title: e.target.value }))
               }}
               error={form.get('title').error}
               autofocus
@@ -41,7 +35,9 @@ const SnippetForm = ({ form, setForm, onSubmit }: Props): JSX.Element => {
               label={t('create.fields.label.label')}
               placeholder={t('create.fields.label.placeholder')}
               values={form.get('labels').value}
-              onChange={(values) => form.get('labels').setValue(values)}
+              onChange={(values) => {
+                setForm(new Snippet({ ...form.getValues(), labels: values }))
+              }}
               error={form.get('labels').error}
               predefinedTags={predefinedTags}
             />
@@ -52,7 +48,9 @@ const SnippetForm = ({ form, setForm, onSubmit }: Props): JSX.Element => {
             placeholder={t('create.fields.code.placeholder')}
             numOfLines={6}
             value={form.get('content').value}
-            onChange={(e) => form.get('content').setValue(e.target.value)}
+            onChange={(e) => {
+              setForm(new Snippet({ ...form.getValues(), content: e.target.value }))
+            }}
             error={form.get('content').error}
           />
         </div>

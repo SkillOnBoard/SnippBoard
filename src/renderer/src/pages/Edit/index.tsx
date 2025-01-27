@@ -14,7 +14,8 @@ const Edit = (): JSX.Element | null => {
   const ids: number[] = id ? [+id] : []
   const { data, loading } = useListSnippets({ ids })
   const snippet = data?.[0]
-  const [form, setForm] = useState<Snippet>(new Snippet())
+  const snippetForm = new Snippet(snippet)
+  const [form, setForm] = useState<Snippet>(snippetForm)
 
   const { t } = useTranslation()
   const { addNotification } = useNotifications()
@@ -34,16 +35,7 @@ const Edit = (): JSX.Element | null => {
   }, [])
 
   useEffect(() => {
-    if (snippet) {
-      setForm(
-        new Snippet({
-          id: snippet.id,
-          title: snippet.title,
-          content: snippet.content,
-          labels: snippet.labels
-        })
-      )
-    }
+    if (snippet) setForm(snippetForm)
   }, [snippet])
 
   const submit = (): void => {

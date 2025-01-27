@@ -1,6 +1,6 @@
 import { Field } from './Field'
 
-export class Form {
+export class Form<T = any> {
   private fields: Record<string, Field>
 
   constructor(fields: Record<string, Field>) {
@@ -11,8 +11,14 @@ export class Form {
     return this.fields[fieldName]
   }
 
-  setField(fieldName: string, field: Field): void {
-    this.fields[fieldName] = field
+  setField(fieldName: string, value: T): void {
+    this.fields[fieldName] = new Field(value)
+  }
+
+  setFields(fields: Record<string, T>): void {
+    Object.keys(fields).forEach((fieldName) => {
+      this.setField(fieldName, fields[fieldName])
+    })
   }
 
   getValues(): Record<string, unknown> {

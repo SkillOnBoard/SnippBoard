@@ -29,6 +29,8 @@ function Create(): JSX.Element {
   })
 
   const submit = (): void => {
+    const valid = form.validate()
+    if (!valid) return
     const data = form
     createSnippet({
       title: data.get('title').value,
