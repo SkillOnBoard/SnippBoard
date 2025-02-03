@@ -6,7 +6,7 @@ import { useNotifications } from '@renderer/contexts/NotificationsContext'
 import SnippetForm from '@renderer/components/SnippetForm'
 import { useListSnippets } from '@renderer/hooks/useListSnippets'
 import { useUpdateSnippet } from '@renderer/hooks/useUpdateSnippet'
-import Snippet from '@renderer/components/forms/Snippet'
+import Snippet, { Errors } from '@renderer/components/forms/Snippet'
 
 const Edit = (): JSX.Element | null => {
   const navigate = useNavigate()
@@ -16,6 +16,7 @@ const Edit = (): JSX.Element | null => {
   const snippet = data?.[0]
   const snippetForm = new Snippet(snippet)
   const [form, setForm] = useState<Snippet>(snippetForm)
+  const [errors, setErrors] = useState<Errors>({})
 
   const { t } = useTranslation()
   const { addNotification } = useNotifications()
@@ -39,6 +40,9 @@ const Edit = (): JSX.Element | null => {
   }, [snippet])
 
   const submit = (): void => {
+    const errors = form.validate()
+    if (Object.keys(errors).length) return setErrors(errors)
+
     updateSnippet({
       ...form.getValues(),
       labels: form.get('labels').value?.map((label) => {
@@ -68,7 +72,7 @@ const Edit = (): JSX.Element | null => {
         }
       ]}
     >
-      <SnippetForm form={form} setForm={setForm} onSubmit={submit} />
+      <SnippetForm form={form} setForm={setForm} onSubmit={submit} errors={errors} />
     </Layout>
   )
 }

@@ -5,11 +5,12 @@ import { useCreateSnippet } from '@renderer/hooks/useCreateSnippet'
 import Layout from '@renderer/components/Layout'
 import { useNotifications } from '@renderer/contexts/NotificationsContext'
 import SnippetForm from '@renderer/components/SnippetForm'
-import Snippet from '@renderer/components/forms/Snippet'
+import Snippet, { Errors } from '@renderer/components/forms/Snippet'
 
 function Create(): JSX.Element {
   const navigate = useNavigate()
   const [form, setForm] = useState<Snippet>(new Snippet())
+  const [errors, setErrors] = useState<Errors>({})
   const { t } = useTranslation()
   const { addNotification } = useNotifications()
 
@@ -29,13 +30,13 @@ function Create(): JSX.Element {
   })
 
   const submit = (): void => {
-    const valid = form.validate()
-    if (!valid) return
-    const data = form
+    const errors = form.validate()
+    if (Object.keys(errors).length) return setErrors(errors)
+
     createSnippet({
-      title: data.get('title').value,
-      content: data.get('content').value,
-      labels: data.get('labels').value?.map((label) => {
+      title: form.get('title').value,
+      content: form.get('content').value,
+      labels: form.get('labels').value.map((label) => {
         return { id: label.id, title: label.title }
       })
     })
@@ -59,7 +60,7 @@ function Create(): JSX.Element {
         }
       ]}
     >
-      <SnippetForm form={form} setForm={setForm} onSubmit={submit} />
+      <SnippetForm form={form} setForm={setForm} onSubmit={submit} errors={errors} />
     </Layout>
   )
 }

@@ -8,6 +8,12 @@ interface SnippetFields {
   labels?: Label[]
 }
 
+export interface Errors {
+  title?: string
+  content?: string
+  labels?: string
+}
+
 export default class Snippet extends Form {
   constructor(fields: SnippetFields = {}) {
     super({
@@ -19,25 +25,13 @@ export default class Snippet extends Form {
   }
 
   // Validación personalizada para MyForm
-  validate(): boolean {
-    let hasError = false
+  validate(): Record<string, string> {
+    const errors = {}
 
-    const titleField = this.get('title')
-    if (titleField && !titleField.value) {
-      titleField.setError('Title is required.')
-      hasError = true
-    } else if (titleField) {
-      titleField.setError(null)
-    }
+    // TODO: Add i18n translations
+    if (!this.get('title').value) errors['title'] = 'Title is required.'
+    if (!this.get('content').value) errors['content'] = 'Content is required.'
 
-    const contentField = this.get('content')
-    if (contentField && !contentField.value) {
-      contentField.setError('Content is required.')
-      hasError = true
-    } else if (contentField) {
-      contentField.setError(null)
-    }
-
-    return !hasError
+    return errors
   }
 }

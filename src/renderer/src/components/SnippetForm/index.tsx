@@ -1,5 +1,5 @@
 import LabeledInput from '@renderer/components/molecules/LabeledInput'
-import Snippet from '@renderer/components/forms/Snippet'
+import Snippet, { Errors } from '@renderer/components/forms/Snippet'
 import TagPicker from '@renderer/components/molecules/TagPicker'
 import StyledLabeledTextArea from '@renderer/components/molecules/StyledLabeledTextArea'
 import { useTranslation } from 'react-i18next'
@@ -9,9 +9,10 @@ type Props = {
   form: Snippet
   setForm: (form: Snippet) => void
   onSubmit: () => void
+  errors: Errors
 }
 
-const SnippetForm = ({ form, setForm, onSubmit }: Props): JSX.Element => {
+const SnippetForm = ({ form, setForm, onSubmit, errors }: Props): JSX.Element => {
   const { t } = useTranslation()
   const { data: predefinedTags } = useListTags()
 
@@ -27,7 +28,7 @@ const SnippetForm = ({ form, setForm, onSubmit }: Props): JSX.Element => {
               onChange={(e) => {
                 setForm(new Snippet({ ...form.getValues(), title: e.target.value }))
               }}
-              error={form.get('title').error}
+              error={errors.title}
               autofocus
             />
 
@@ -38,7 +39,7 @@ const SnippetForm = ({ form, setForm, onSubmit }: Props): JSX.Element => {
               onChange={(values) => {
                 setForm(new Snippet({ ...form.getValues(), labels: values }))
               }}
-              error={form.get('labels').error}
+              error={errors.labels}
               predefinedTags={predefinedTags}
             />
           </div>
@@ -51,7 +52,7 @@ const SnippetForm = ({ form, setForm, onSubmit }: Props): JSX.Element => {
             onChange={(e) => {
               setForm(new Snippet({ ...form.getValues(), content: e.target.value }))
             }}
-            error={form.get('content').error}
+            error={errors.content}
           />
         </div>
       </form>
