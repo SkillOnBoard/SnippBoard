@@ -11,6 +11,8 @@ const icons = {
   Escape: 'back',
   KeyC: 'key-c', // Use KeyC: 'key-c'
   KeyD: 'key-d', // Use KeyD: 'key-d'
+  KeyE: 'key-e',
+  KeyN: 'key-n',
   KeyR: 'key-r',
   Meta: 'command',
   Slash: 'slash' // Use Slash: 'slash'

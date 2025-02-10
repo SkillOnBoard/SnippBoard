@@ -40,18 +40,18 @@ const createTrayMenu = (mainWindow: BrowserWindow): void => {
       label: 'About SnippBoard',
       role: 'about'
     },
-    {
-      label: 'Check for Updates',
-      click: (): void => {
-        console.log('Check for Updates clicked')
-      }
-    },
-    {
-      label: 'Settings',
-      click: (): void => {
-        console.log('Settings clicked')
-      }
-    },
+    // {
+    //   label: 'Check for Updates',
+    //   click: (): void => {
+    //     console.log('Check for Updates clicked')
+    //   }
+    // },
+    // {
+    //   label: 'Settings',
+    //   click: (): void => {
+    //     console.log('Settings clicked')
+    //   }
+    // },
     {
       label: 'Quit',
       click: (): void => {
@@ -114,7 +114,7 @@ function createWindow(): void {
   })
 
   mainWindow.on('blur', () => {
-    mainWindow.hide()
+    if (!is.dev) mainWindow.hide()
   })
 
   ipcMain.on('hide-window', () => {

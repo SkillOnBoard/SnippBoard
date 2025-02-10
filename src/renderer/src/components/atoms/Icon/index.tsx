@@ -11,6 +11,8 @@ import Enter from './icons/Enter'
 import Error from './icons/Error'
 import KeyC from './icons/KeyC'
 import KeyD from './icons/KeyD'
+import KeyE from './icons/KeyE'
+import KeyN from './icons/KeyN'
 import KeyR from './icons/KeyR'
 import Search from './icons/Search'
 import Slash from './icons/Slash'
@@ -30,6 +32,7 @@ export type IconType =
   | 'error'
   | 'key-c'
   | 'key-d'
+  | 'key-n'
   | 'key-r'
   | 'slash'
   | 'search'
@@ -53,6 +56,8 @@ const Components = {
   error: <Error />,
   'key-c': <KeyC />,
   'key-d': <KeyD />,
+  'key-e': <KeyE />,
+  'key-n': <KeyN />,
   'key-r': <KeyR />,
   search: <Search />,
   slash: <Slash />,
