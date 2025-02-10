@@ -4,6 +4,7 @@ type Props = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   required?: boolean
   autofocus?: boolean
+  error?: string | null
 }
 
 const LabeledInput = ({
@@ -11,18 +12,24 @@ const LabeledInput = ({
   placeholder,
   onChange,
   required = false,
-  autofocus = false
+  autofocus = false,
+  error
 }: Props): JSX.Element => {
   return (
-    <input
-      type="text"
-      className="bg-gray-700 border border-gray-600 text-sm rounded-lg block w-full p-2.5 outline-none placeholder:text-gray-300"
-      placeholder={placeholder}
-      value={value}
-      onChange={onChange}
-      required={required}
-      autoFocus={autofocus}
-    />
+    <div>
+      <input
+        type="text"
+        className={
+          'bg-gray-700 border text-sm rounded-lg block w-full p-2.5 outline-none placeholder:text-gray-300 ' +
+          (error ? 'border-red-500' : 'border-gray-500')
+        }
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        required={required}
+        autoFocus={autofocus}
+      />
+    </div>
   )
 }
 

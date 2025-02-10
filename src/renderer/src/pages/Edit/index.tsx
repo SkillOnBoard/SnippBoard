@@ -3,9 +3,10 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import Layout from '@renderer/components/Layout'
 import { useNotifications } from '@renderer/contexts/NotificationsContext'
-import SnippetForm, { SnippetFormType } from '@renderer/components/SnippetForm'
+import SnippetForm from '@renderer/components/SnippetForm'
 import { useListSnippets } from '@renderer/hooks/useListSnippets'
 import { useUpdateSnippet } from '@renderer/hooks/useUpdateSnippet'
+import Snippet, { Errors } from '@renderer/components/forms/Snippet'
 
 const Edit = (): JSX.Element | null => {
   const navigate = useNavigate()
@@ -13,8 +14,9 @@ const Edit = (): JSX.Element | null => {
   const ids: number[] = id ? [+id] : []
   const { data, loading } = useListSnippets({ ids })
   const snippet = data?.[0]
-
-  const [form, setForm] = useState<SnippetFormType>({ title: '', content: '', labels: [] })
+  const snippetForm = new Snippet(snippet)
+  const [form, setForm] = useState<Snippet>(snippetForm)
+  const [errors, setErrors] = useState<Errors>({})
 
   const { t } = useTranslation()
   const { addNotification } = useNotifications()
@@ -34,20 +36,16 @@ const Edit = (): JSX.Element | null => {
   }, [])
 
   useEffect(() => {
-    if (snippet) {
-      setForm({
-        id: snippet.id,
-        title: snippet.title,
-        content: snippet.content,
-        labels: snippet.labels
-      })
-    }
+    if (snippet) setForm(snippetForm)
   }, [snippet])
 
   const submit = (): void => {
+    const errors = form.validate()
+    if (Object.keys(errors).length) return setErrors(errors)
+
     updateSnippet({
-      ...form,
-      labels: form.labels?.map((label) => {
+      ...form.getValues(),
+      labels: form.get('labels').value?.map((label) => {
         return { id: label.id, title: label.title }
       })
     })
@@ -74,7 +72,7 @@ const Edit = (): JSX.Element | null => {
         }
       ]}
     >
-      <SnippetForm form={form} setForm={setForm} onSubmit={submit} />
+      <SnippetForm form={form} setForm={setForm} onSubmit={submit} errors={errors} />
     </Layout>
   )
 }

@@ -1,23 +1,18 @@
 import LabeledInput from '@renderer/components/molecules/LabeledInput'
+import Snippet, { Errors } from '@renderer/components/forms/Snippet'
 import TagPicker from '@renderer/components/molecules/TagPicker'
 import StyledLabeledTextArea from '@renderer/components/molecules/StyledLabeledTextArea'
 import { useTranslation } from 'react-i18next'
 import { useListTags } from '@renderer/hooks/useListTags'
 
-export type SnippetFormType = {
-  id?: number
-  title: string
-  content: string
-  labels: Label[]
-}
-
 type Props = {
-  form: SnippetFormType
-  setForm: (form: SnippetFormType) => void
+  form: Snippet
+  setForm: (form: Snippet) => void
   onSubmit: () => void
+  errors: Errors
 }
 
-const SnippetForm = ({ form, setForm, onSubmit }: Props): JSX.Element => {
+const SnippetForm = ({ form, setForm, onSubmit, errors }: Props): JSX.Element => {
   const { t } = useTranslation()
   const { data: predefinedTags } = useListTags()
 
@@ -29,16 +24,22 @@ const SnippetForm = ({ form, setForm, onSubmit }: Props): JSX.Element => {
             <LabeledInput
               label={t('create.fields.name.label')}
               placeholder={t('create.fields.name.label')}
-              value={form.title}
-              onChange={(e) => setForm({ ...form, title: e.target.value })}
+              value={form.get('title').value}
+              onChange={(e) => {
+                setForm(new Snippet({ ...form.getValues(), title: e.target.value }))
+              }}
+              error={errors.title}
               autofocus
             />
 
             <TagPicker
               label={t('create.fields.label.label')}
               placeholder={t('create.fields.label.placeholder')}
-              values={form.labels}
-              onChange={(values) => setForm({ ...form, labels: values })}
+              values={form.get('labels').value}
+              onChange={(values) => {
+                setForm(new Snippet({ ...form.getValues(), labels: values }))
+              }}
+              error={errors.labels}
               predefinedTags={predefinedTags}
             />
           </div>
@@ -46,9 +47,12 @@ const SnippetForm = ({ form, setForm, onSubmit }: Props): JSX.Element => {
           <StyledLabeledTextArea
             label={t('create.fields.code.label')}
             placeholder={t('create.fields.code.placeholder')}
-            value={form.content}
             numOfLines={6}
-            onChange={(e) => setForm({ ...form, content: e.target.value })}
+            value={form.get('content').value}
+            onChange={(e) => {
+              setForm(new Snippet({ ...form.getValues(), content: e.target.value }))
+            }}
+            error={errors.content}
           />
         </div>
       </form>
