@@ -42,13 +42,6 @@ export const NotificationsProvider = ({ children }: { children: JSX.Element }): 
         setNotification(null)
       }, 3000)
     }
-
-    return (): void => {
-      if (!queue.length && timerRef.current) {
-        clearTimeout(timerRef.current)
-        timerRef.current = null
-      }
-    }
   }, [notification, queue])
 
   return (

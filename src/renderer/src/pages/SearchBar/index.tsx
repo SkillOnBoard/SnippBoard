@@ -63,7 +63,7 @@ function SearchBar(): JSX.Element {
     if (deleteModalOpen) {
       setDeleteModalOpen(false)
     } else {
-      window.electron?.ipcRenderer.send('h<ide-window')
+      window.electron?.ipcRenderer.send('hide-window')
     }
   }
 
@@ -99,6 +99,7 @@ function SearchBar(): JSX.Element {
   const handleCopy = (): void => {
     if (selectedIndex >= 0) {
       navigator.clipboard.writeText(results[selectedIndex]?.content)
+      addNotification({ type: 'success', description: t('copy.notifications.success') })
     }
   }
 

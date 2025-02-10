@@ -35,6 +35,11 @@
     },
     "submit": "Create"
   },
+  "copy": {
+    "notifications": {
+      "success": "Copied!"
+    }
+  },
   "delete": {
     "modal": {
       "cancel": "No, cancel",
