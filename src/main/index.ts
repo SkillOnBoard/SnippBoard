@@ -114,7 +114,7 @@ function createWindow(): void {
   })
 
   mainWindow.on('blur', () => {
-    mainWindow.hide()
+    if (!is.dev) mainWindow.hide()
   })
 
   ipcMain.on('hide-window', () => {
