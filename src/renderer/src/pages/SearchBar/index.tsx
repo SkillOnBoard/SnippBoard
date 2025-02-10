@@ -42,7 +42,7 @@ function SearchBar(): JSX.Element {
   }
 
   useLayoutEffect(() => {
-    window.electron.ipcRenderer.send('resize-window', 'small')
+    window.electron?.ipcRenderer.send('resize-window', 'small')
   }, [])
 
   const filterData = (): Snippet[] => {
@@ -63,7 +63,7 @@ function SearchBar(): JSX.Element {
     if (deleteModalOpen) {
       setDeleteModalOpen(false)
     } else {
-      window.electron.ipcRenderer.send('h<ide-window')
+      window.electron?.ipcRenderer.send('h<ide-window')
     }
   }
 
@@ -114,9 +114,9 @@ function SearchBar(): JSX.Element {
 
     if (query) {
       filteredData.length > 0 ? setSelectedIndex(0) : setSelectedIndex(-1)
-      window.electron.ipcRenderer.send('resize-window', 'big')
+      window.electron?.ipcRenderer.send('resize-window', 'big')
     } else {
-      window.electron.ipcRenderer.send('resize-window', 'small')
+      window.electron?.ipcRenderer.send('resize-window', 'small')
       setCodeOpen(false)
       setSelectedIndex(-1)
     }
@@ -132,7 +132,7 @@ function SearchBar(): JSX.Element {
     {
       label: t('actions.create'),
       hidden: !!query && !showEmptyState,
-      keyboardKeys: ['Meta', 'KeyR'], // Use KeyN once it has icon
+      keyboardKeys: ['Meta', 'KeyN'],
       callback: handleCreate
     },
     {
@@ -203,7 +203,7 @@ function SearchBar(): JSX.Element {
                   <Action
                     action={{
                       label: t('actions.create'),
-                      keyboardKeys: ['Meta', 'KeyR'], // Use KeyN once it has icon
+                      keyboardKeys: ['Meta', 'KeyN'],
                       callback: handleCreate
                     }}
                   />
