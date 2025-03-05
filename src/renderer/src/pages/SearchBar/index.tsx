@@ -58,6 +58,18 @@ function SearchBar(): JSX.Element {
       : []
   }
 
+  const closeAppAndPasteClipboard = (): void => {
+    try {
+      console.log(1)
+      navigator.clipboard.writeText(results[selectedIndex]?.content)
+      console.log(2)
+      window.electron?.ipcRenderer.send('close-and-paste')
+      console.log(3)
+    } catch (error) {
+      console.error('Error al pegar el portapapeles:', error);
+    }
+  }
+
   const handleEscape = (): void => {
     if (deleteModalOpen) {
       setDeleteModalOpen(false)
@@ -85,6 +97,8 @@ function SearchBar(): JSX.Element {
   const handleEnter = (): void => {
     if (deleteModalOpen) {
       onDelete()
+    } else {
+      closeAppAndPasteClipboard()
     }
   }
 

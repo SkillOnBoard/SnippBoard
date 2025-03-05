@@ -1,13 +1,5 @@
-import {
-  app,
-  shell,
-  BrowserWindow,
-  ipcMain,
-  globalShortcut,
-  Tray,
-  Menu,
-  nativeImage
-} from 'electron'
+import { app, shell, BrowserWindow, ipcMain, globalShortcut, Tray, Menu, nativeImage } from 'electron'
+import { keyboard, Key } from '@nut-tree-fork/nut-js'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -203,6 +195,18 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
+
+ipcMain.on('close-and-paste', async () => {
+  console.log('llega')
+  const win = BrowserWindow.getFocusedWindow()
+  if (win) {
+    win.hide()
+    setTimeout(async () => {
+      await keyboard.pressKey(Key.LeftSuper, Key.V); // Super en Mac es Cmd
+      await keyboard.releaseKey(Key.LeftSuper, Key.V);
+    }, 300)
+  }
+})
 
 ipcMain.on('list-snippets', async (event, searchData) => {
   try {
