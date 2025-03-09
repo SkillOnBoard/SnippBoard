@@ -1,5 +1,14 @@
-import { app, shell, BrowserWindow, ipcMain, globalShortcut, Tray, Menu, nativeImage } from 'electron'
-import { keyboard, Key } from '@nut-tree-fork/nut-js'
+import {
+  app,
+  shell,
+  BrowserWindow,
+  ipcMain,
+  globalShortcut,
+  Tray,
+  Menu,
+  nativeImage
+} from 'electron'
+import { keyboard, Key, sleep } from '@nut-tree-fork/nut-js'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -7,6 +16,7 @@ import trayIcon from '../../resources/icon.ico?asset'
 
 import { runMigrations } from './migrator'
 import { Snippet, Label } from './models'
+import { exec } from 'child_process'
 
 let tray: Tray | null = null
 
@@ -197,14 +207,46 @@ app.on('window-all-closed', () => {
 // code. You can also put them in separate files and require them here.
 
 ipcMain.on('close-and-paste', async () => {
-  console.log('llega')
   const win = BrowserWindow.getFocusedWindow()
+  // if (win) {
+  //   win.hide();  // Ocultamos la ventana
+
+  //   await sleep(200);  // Damos un pequeño tiempo para procesar el cierre
+
+  //   // 🔹 Simulamos Cmd + Tab para activar la siguiente ventana
+  //   await keyboard.pressKey(Key.LeftSuper, Key.Tab);
+  //   await keyboard.releaseKey(Key.LeftSuper, Key.Tab);
+  //   // 🔹 Usamos AppleScript para enfocar la ventana anterior
+  //   // exec(`
+  //   //   osascript -e '
+  //   //     tell application "System Events"
+  //   //       set frontApp to name of first application process whose frontmost is true
+  //   //     end tell
+  //   //     delay 0.1
+  //   //     tell application frontApp to activate
+  //   //   '
+  //   // `);
+
+  //   await sleep(300);  // Pequeña pausa para asegurarnos de que la ventana se active
+
+  //   // 🔹 Ahora pegamos
+  //   await keyboard.pressKey(Key.LeftSuper, Key.V);
+  //   await keyboard.releaseKey(Key.LeftSuper, Key.V);
+  // }
   if (win) {
-    win.hide()
-    setTimeout(async () => {
-      await keyboard.pressKey(Key.LeftSuper, Key.V); // Super en Mac es Cmd
-      await keyboard.releaseKey(Key.LeftSuper, Key.V);
-    }, 300)
+    win.hide();  // 🔹 Ocultamos la ventana
+    exec(`osascript -e 'tell application "System Events" to key code 48 using {command down}'`);
+    await sleep(300);  // 🔹 Esperamos un poco para que macOS active la ventana anterior
+    // 🔹 Pegamos simulando que el usuario escribe el contenido
+    // 🔹 Leemos el texto del portapapeles con Electron
+    // const clipboardText = clipboard.readText();
+
+    // // 🔹 Simulamos la escritura del contenido del portapapeles
+    // await keyboard.type(clipboardText);
+    
+    // 🔹 Ahora pegamos
+    await keyboard.pressKey(Key.LeftSuper, Key.V);
+    await keyboard.releaseKey(Key.LeftSuper, Key.V);
   }
 })
 

@@ -19,12 +19,12 @@ nsis:
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
 mac:
-  icon: build/icon.icns
+  icon: build/icon.icns 
+  hardenedRuntime: true
+  entitlements: "build/entitlements.mac.plist"
   entitlementsInherit: build/entitlements.mac.plist
   extendInfo:
-    - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
-    - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
-  notarize: false
+    NSAccessibilityAccess: "Esta aplicación necesita control del ordenador para pegar."
 dmg:
   artifactName: ${name}-${version}.${ext}
 linux:
