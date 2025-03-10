@@ -211,11 +211,12 @@ ipcMain.on('close-and-paste', async () => {
   if (win) {
     win.hide()
     exec(`osascript -e 'tell application "System Events" to key code 48 using {command down}'`)
-    await sleep(300)
+    // await sleep(300)
     await keyboard.pressKey(Key.LeftSuper, Key.V)
     await keyboard.releaseKey(Key.LeftSuper, Key.V)
   }
 })
+
 
 ipcMain.on('list-snippets', async (event, searchData) => {
   try {
