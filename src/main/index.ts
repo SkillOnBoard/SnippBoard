@@ -1,8 +1,18 @@
-import { app, shell, BrowserWindow, ipcMain, globalShortcut, Tray, Menu } from 'electron'
+import {
+  app,
+  shell,
+  BrowserWindow,
+  ipcMain,
+  globalShortcut,
+  Tray,
+  Menu,
+  nativeTheme
+} from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import trayIcon from '../../resources/icon.ico?asset'
+import lightTrayIcon from '../../resources/icon.ico?asset'
+import darkTrayIcon from '../../resources/darkIcon.ico?asset' // TODO: update this to use 16x16
 
 import { runMigrations } from './migrator'
 import { Snippet, Label } from './models'
@@ -10,7 +20,7 @@ import { Snippet, Label } from './models'
 let tray: Tray | null = null
 
 const createTrayMenu = (mainWindow: BrowserWindow): void => {
-  tray = new Tray(trayIcon)
+  tray = new Tray(nativeTheme.shouldUseDarkColors ? lightTrayIcon : darkTrayIcon)
 
   const contextMenu = Menu.buildFromTemplate([
     {
