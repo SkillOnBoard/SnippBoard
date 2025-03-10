@@ -9,8 +9,6 @@ import { Snippet, Label } from './models'
 
 let tray: Tray | null = null
 
-app.dock.setIcon(icon)
-
 const createTrayMenu = (mainWindow: BrowserWindow): void => {
   tray = new Tray(trayIcon)
 
@@ -85,7 +83,6 @@ function createWindow(): void {
     }
   })
 
-
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })
@@ -151,7 +148,6 @@ app.whenReady().then(async () => {
   electronApp.setAppUserModelId('com.electron')
 
   app.dock.setIcon(icon)
-  // app.dock.hide()
 
   await runMigrations()
 
