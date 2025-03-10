@@ -42,18 +42,18 @@ const createTrayMenu = (mainWindow: BrowserWindow): void => {
       label: 'About SnippBoard',
       role: 'about'
     },
-    {
-      label: 'Check for Updates',
-      click: (): void => {
-        console.log('Check for Updates clicked')
-      }
-    },
-    {
-      label: 'Settings',
-      click: (): void => {
-        console.log('Settings clicked')
-      }
-    },
+    // {
+    //   label: 'Check for Updates',
+    //   click: (): void => {
+    //     console.log('Check for Updates clicked')
+    //   }
+    // },
+    // {
+    //   label: 'Settings',
+    //   click: (): void => {
+    //     console.log('Settings clicked')
+    //   }
+    // },
     {
       label: 'Quit',
       click: (): void => {
@@ -117,7 +117,7 @@ function createWindow(): void {
   })
 
   mainWindow.on('blur', () => {
-    mainWindow.hide()
+    if (!is.dev) mainWindow.hide()
   })
 
   ipcMain.on('hide-window', () => {
@@ -196,9 +196,11 @@ app.on('window-all-closed', () => {
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
 
-ipcMain.on('list-snippets', async (event) => {
+ipcMain.on('list-snippets', async (event, searchData) => {
   try {
+    const ids = searchData?.ids
     const snippets = await Snippet.findAll({
+      where: ids && ids.length > 0 ? { id: ids } : undefined,
       include: [
         {
           model: Label,
@@ -238,6 +240,53 @@ ipcMain.on('create-snippet', async (event, snippetData) => {
     event.reply('create-snippet-response', { status: 'success', message: serializedData })
   } catch (error) {
     event.reply('create-snippet-response', { status: 'error', message: error })
+  }
+})
+
+ipcMain.on('update-snippet', async (event, snippetData) => {
+  try {
+    const snippet = await Snippet.findByPk(snippetData.id)
+    if (snippet) {
+      const promiseLabels = snippetData.labels.map(async (label) => {
+        if (label.id === null || label.id === undefined) {
+          return Label.create(label)
+        } else {
+          return Label.findByPk(label.id)
+        }
+      })
+
+      const labels = await Promise.all(promiseLabels)
+
+      // This any is because .setLabels() is not typed
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const newSnippet: any = await snippet.update({
+        title: snippetData.title,
+        content: snippetData.content
+      })
+
+      await newSnippet.setLabels(labels)
+
+      const serializedData = newSnippet.toJSON()
+      event.reply('update-snippet-response', { status: 'success', message: serializedData })
+    } else {
+      throw new Error('Snippet not found')
+    }
+  } catch (error) {
+    event.reply('update-snippet-response', { status: 'error', message: error })
+  }
+})
+
+ipcMain.on('delete-snippet', async (event, snippetId) => {
+  try {
+    const snippet = await Snippet.findByPk(snippetId)
+    if (snippet) {
+      await snippet.destroy()
+    } else {
+      throw new Error('Snippet not found')
+    }
+    event.reply('delete-snippet-response', { status: 'success', message: 'Snippet deleted' })
+  } catch (error) {
+    event.reply('delete-snippet-response', { status: 'error', message: error })
   }
 })
 

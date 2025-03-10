@@ -6,9 +6,14 @@ import { KeyboardKeysType } from '@renderer/utils/keys'
 const icons = {
   ArrowDown: 'arrow-down',
   ArrowUp: 'arrow-up',
+  Backspace: 'back',
   Enter: 'enter',
   Escape: 'back',
   KeyC: 'key-c', // Use KeyC: 'key-c'
+  KeyD: 'key-d', // Use KeyD: 'key-d'
+  KeyE: 'key-e',
+  KeyN: 'key-n',
+  KeyR: 'key-r',
   Meta: 'command',
   Slash: 'slash' // Use Slash: 'slash'
 }
@@ -19,6 +24,7 @@ export type ActionType = {
   callback?: () => void
   hidden?: boolean
   position?: 'left' | 'right'
+  disabled?: boolean
 }
 
 const Action = ({ action }: { action: ActionType }): JSX.Element => {

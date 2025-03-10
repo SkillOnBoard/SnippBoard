@@ -2,14 +2,16 @@
 import { HashRouter as Router, Route, Routes } from 'react-router-dom'
 import SearchBar from './pages/SearchBar'
 import Create from './pages/Create'
+import Edit from './pages/Edit'
 
 function App(): JSX.Element {
   return (
-    <div className="bg-inherit top-5 left-0 w-full h-full px-4 ">
+    <div className="bg-gray-800 top-5 left-0 w-full h-full px-4 ">
       <Router>
         <Routes>
           <Route path="/" element={<SearchBar />} />
-          <Route path="/create" element={<Create />} />
+          <Route path="/snippets/new" element={<Create />} />
+          <Route path="/snippets/:id/edit" element={<Edit />} />
         </Routes>
       </Router>
       {/* {isLoading && (

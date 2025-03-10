@@ -4,15 +4,17 @@ type Props = {
   value: string
   placeholder?: string
   onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
+  error?: string | null
   required?: boolean
   disabled?: boolean
   numOfLines?: number
 }
 
 const StyledTextArea = ({
-  value,
+  value = '',
   placeholder,
   onChange,
+  error,
   required = false,
   disabled = false,
   numOfLines = 4
@@ -38,7 +40,12 @@ const StyledTextArea = ({
 
   // TODO: Add colors to the programming language
   return (
-    <div className="grid grid-cols-12 block w-full h-full bg-gray-700 border border-gray-600 text-sm rounded-lg p-2.5 outline-none placeholder:text-gray-300 overflow-y-scroll no-scrollbar">
+    <div
+      className={
+        'grid grid-cols-12 block w-full h-full bg-gray-700 border text-sm rounded-lg p-2.5 outline-none placeholder:text-gray-300 overflow-y-scroll no-scrollbar ' +
+        (error ? 'border-red-500' : 'border-gray-500')
+      }
+    >
       <div className="col-end-1 grid auto-rows-min px-1.5 py-1.5" ref={lineCounterRef}>
         {linesArr.map((line) => (
           <div className={` ${line === activeLine ? 'text-white' : 'text-gray-300'}`} key={line}>

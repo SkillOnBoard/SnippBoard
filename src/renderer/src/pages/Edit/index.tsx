@@ -1,46 +1,58 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useCreateSnippet } from '@renderer/hooks/useCreateSnippet'
 import Layout from '@renderer/components/Layout'
 import { useNotifications } from '@renderer/contexts/NotificationsContext'
 import SnippetForm from '@renderer/components/SnippetForm'
+import { useListSnippets } from '@renderer/hooks/useListSnippets'
+import { useUpdateSnippet } from '@renderer/hooks/useUpdateSnippet'
 import Snippet, { Errors } from '@renderer/components/forms/Snippet'
 
-function Create(): JSX.Element {
+const Edit = (): JSX.Element | null => {
   const navigate = useNavigate()
-  const [form, setForm] = useState<Snippet>(new Snippet())
+  const { id } = useParams()
+  const ids: number[] = id ? [+id] : []
+  const { data, loading } = useListSnippets({ ids })
+  const snippet = data?.[0]
+  const snippetForm = new Snippet(snippet)
+  const [form, setForm] = useState<Snippet>(snippetForm)
   const [errors, setErrors] = useState<Errors>({})
+
   const { t } = useTranslation()
   const { addNotification } = useNotifications()
+  const [updateSnippet] = useUpdateSnippet({
+    onSuccess: () => {
+      addNotification({ type: 'success', description: t('updated.notifications.success') })
+      navigate('/')
+    },
+    onFailure: (error) => {
+      addNotification({ type: 'error', description: t('updated.notifications.error', { error }) })
+      console.log('error', error)
+    }
+  })
 
   useEffect(() => {
     window.electron?.ipcRenderer.send('resize-window', 'big')
   }, [])
 
-  const [createSnippet] = useCreateSnippet({
-    onSuccess: () => {
-      addNotification({ type: 'success', description: t('create.notifications.success') })
-      navigate('/')
-    },
-    onFailure: (error) => {
-      addNotification({ type: 'error', description: t('create.notifications.error', { error }) })
-      console.log('error', error)
-    }
-  })
+  useEffect(() => {
+    if (snippet) setForm(snippetForm)
+  }, [snippet])
 
   const submit = (): void => {
     const errors = form.validate()
     if (Object.keys(errors).length) return setErrors(errors)
 
-    createSnippet({
-      title: form.get('title').value,
-      content: form.get('content').value,
-      labels: form.get('labels').value.map((label) => {
+    updateSnippet({
+      ...form.getValues(),
+      labels: form.get('labels').value?.map((label) => {
         return { id: label.id, title: label.title }
       })
     })
   }
+
+  // TODO: Show loading state
+  if (loading || !data) return null
 
   return (
     <Layout
@@ -65,4 +77,4 @@ function Create(): JSX.Element {
   )
 }
 
-export default Create
+export default Edit

@@ -5,6 +5,8 @@ import { electronAPI } from '@electron-toolkit/preload'
 const api = {
   listSnippetsResponse: (callback): unknown => ipcRenderer.on('list-snippets-response', callback),
   createSnippetResponse: (callback): unknown => ipcRenderer.on('create-snippet-response', callback),
+  updateSnippetResponse: (callback): unknown => ipcRenderer.on('update-snippet-response', callback),
+  deleteSnippetResponse: (callback): unknown => ipcRenderer.on('delete-snippet-response', callback),
   listTagsResponse: (callback): unknown => ipcRenderer.on('list-tags-response', callback)
 }
 

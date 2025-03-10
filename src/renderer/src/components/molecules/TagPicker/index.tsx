@@ -9,6 +9,7 @@ type Props = {
   placeholder: string
   values: Label[]
   onChange: (value: Label[]) => void
+  error?: string | null
   predefinedTags?: Label[]
 }
 
@@ -17,6 +18,7 @@ const TagPicker = ({
   placeholder,
   onChange,
   values,
+  error,
   predefinedTags = []
 }: Props): JSX.Element => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false)
@@ -58,11 +60,19 @@ const TagPicker = ({
     }
   }, [timeout])
 
+  const dropdownIcon = isDropdownOpen ? <Icon name="chevron-up" /> : <Icon name="chevron-down" />
+  const existOptions = options.length !== 0
+
   return (
     <div>
       <div className="grid gap-1">
         <LabelComp>{label}</LabelComp>
-        <div className="flex flex-row justify-between items-center bg-gray-700 border border-gray-600 text-sm rounded-lg block w-full px-4 py-1 outline-none gap-2 min-h-10 overflow-x-hidden">
+        <div
+          className={
+            'flex flex-row justify-between items-center bg-gray-700 border text-sm rounded-lg block w-full px-4 py-1 outline-none gap-2 min-h-10 overflow-x-hidden ' +
+            (error ? 'border-red-500' : 'border-gray-500')
+          }
+        >
           {hasTags && (
             <div className="flex flex-row flex-wrap align-middle gap-2">
               {values.slice(0, 2).map((label, index) => (
@@ -80,7 +90,10 @@ const TagPicker = ({
             onChange={handleSearch}
             onFocus={() => setIsDropdownOpen(true)}
             // Using setTimeout to prevent the dropdown from closing when clicking on it (blur event)
-            onBlur={() => (timeout = setTimeout(() => setIsDropdownOpen(false), 500))}
+            onBlur={() => {
+              timeout = setTimeout(() => setIsDropdownOpen(false), 500)
+              if (inputValue && options.length === 0) addTag({ title: inputValue } as Label)
+            }}
             required
             className="bg-inherit outline-none w-full placeholder:text-gray-50 min-w-0.5"
           />
@@ -89,12 +102,12 @@ const TagPicker = ({
             className="cursor-pointer top-1/2"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
-            {isDropdownOpen ? <Icon name="chevron-up" /> : <Icon name="chevron-down" />}
+            {existOptions ? dropdownIcon : null}
           </div>
         </div>
       </div>
 
-      {isDropdownOpen && <Dropdown onSelect={addTag} options={options} />}
+      {isDropdownOpen && existOptions && <Dropdown onSelect={addTag} options={options} />}
     </div>
   )
 }

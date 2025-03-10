@@ -1,13 +1,16 @@
 {
   "actions": {
     "back": "to go back",
+    "create": "new snippet",
     "copy": "to copy",
     "edit": "to edit",
+    "delete": "to delete",
     "for_actions": "for actions",
     "navigate": "to navigate",
     "save": "to save"
   },
   "search_bar": {
+    "empty_state": "No results found",
     "placeholder": "Search for saved snippets"
   },
   "create": {
@@ -31,5 +34,27 @@
       }
     },
     "submit": "Create"
+  },
+  "copy": {
+    "notifications": {
+      "success": "Copied!"
+    }
+  },
+  "delete": {
+    "modal": {
+      "cancel": "No, cancel",
+      "confirm": "Yes, delete it",
+      "content": "Are you sure you want to delete this snippet?"
+    },
+    "notifications": {
+      "success": "Snippet deleted successfully",
+      "error": "An error occurred: {{error}}"
+    }
+  },
+  "updated": {
+    "notifications": {
+      "success": "Snippet updated successfully",
+      "error": "An error occurred: {{error}}"
+    }
   }
 }
