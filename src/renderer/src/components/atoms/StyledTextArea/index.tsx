@@ -11,7 +11,7 @@ type Props = {
 }
 
 const StyledTextArea = ({
-  value,
+  value = '',
   placeholder,
   onChange,
   error,

@@ -15,14 +15,13 @@ function SearchBar(): JSX.Element {
   const navigate = useNavigate()
   const [query, setQuery] = useState<string>('')
   const [results, setResults] = useState<Snippet[]>([])
-  const [codeOpen, setCodeOpen] = useState<boolean>(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const rowRefs = useRef<(HTMLDivElement | null)[]>([])
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const { t } = useTranslation()
   const { addNotification } = useNotifications()
   const showEmptyState = results.length === 0
-  const showCode = codeOpen && !showEmptyState && results.length + 1 >= selectedIndex
+  const showCode = !showEmptyState && results.length + 1 >= selectedIndex
 
   const { data, refetch } = useListSnippets()
   const [deleteSnippet] = useDeleteSnippet({
@@ -85,10 +84,7 @@ function SearchBar(): JSX.Element {
 
   const handleEnter = (): void => {
     if (deleteModalOpen) {
-      setCodeOpen(false)
       onDelete()
-    } else {
-      if (selectedIndex >= 0) setCodeOpen((prev) => !prev)
     }
   }
 
@@ -118,7 +114,6 @@ function SearchBar(): JSX.Element {
       window.electron?.ipcRenderer.send('resize-window', 'big')
     } else {
       window.electron?.ipcRenderer.send('resize-window', 'small')
-      setCodeOpen(false)
       setSelectedIndex(-1)
     }
   }, [query, data])
@@ -193,7 +188,6 @@ function SearchBar(): JSX.Element {
                       labels={result.labels?.length > 0 ? [result.labels[0]?.title] : []}
                       selectedIndex={selectedIndex}
                       showCode={showCode}
-                      setShowCode={setCodeOpen}
                       setSelectedIndex={setSelectedIndex}
                     />
                   </div>
