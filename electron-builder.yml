@@ -24,7 +24,7 @@ mac:
   entitlements: "build/entitlements.mac.plist"
   entitlementsInherit: build/entitlements.mac.plist
   extendInfo:
-    NSAccessibilityAccess: "Esta aplicación necesita control del ordenador para pegar."
+    NSAccessibilityAccess: 'Esta aplicación necesita control del ordenador para pegar.'
 dmg:
   artifactName: ${name}-${version}.${ext}
 linux:

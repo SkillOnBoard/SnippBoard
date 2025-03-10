@@ -208,45 +208,12 @@ app.on('window-all-closed', () => {
 
 ipcMain.on('close-and-paste', async () => {
   const win = BrowserWindow.getFocusedWindow()
-  // if (win) {
-  //   win.hide();  // Ocultamos la ventana
-
-  //   await sleep(200);  // Damos un pequeño tiempo para procesar el cierre
-
-  //   // 🔹 Simulamos Cmd + Tab para activar la siguiente ventana
-  //   await keyboard.pressKey(Key.LeftSuper, Key.Tab);
-  //   await keyboard.releaseKey(Key.LeftSuper, Key.Tab);
-  //   // 🔹 Usamos AppleScript para enfocar la ventana anterior
-  //   // exec(`
-  //   //   osascript -e '
-  //   //     tell application "System Events"
-  //   //       set frontApp to name of first application process whose frontmost is true
-  //   //     end tell
-  //   //     delay 0.1
-  //   //     tell application frontApp to activate
-  //   //   '
-  //   // `);
-
-  //   await sleep(300);  // Pequeña pausa para asegurarnos de que la ventana se active
-
-  //   // 🔹 Ahora pegamos
-  //   await keyboard.pressKey(Key.LeftSuper, Key.V);
-  //   await keyboard.releaseKey(Key.LeftSuper, Key.V);
-  // }
   if (win) {
-    win.hide();  // 🔹 Ocultamos la ventana
-    exec(`osascript -e 'tell application "System Events" to key code 48 using {command down}'`);
-    await sleep(300);  // 🔹 Esperamos un poco para que macOS active la ventana anterior
-    // 🔹 Pegamos simulando que el usuario escribe el contenido
-    // 🔹 Leemos el texto del portapapeles con Electron
-    // const clipboardText = clipboard.readText();
-
-    // // 🔹 Simulamos la escritura del contenido del portapapeles
-    // await keyboard.type(clipboardText);
-    
-    // 🔹 Ahora pegamos
-    await keyboard.pressKey(Key.LeftSuper, Key.V);
-    await keyboard.releaseKey(Key.LeftSuper, Key.V);
+    win.hide()
+    exec(`osascript -e 'tell application "System Events" to key code 48 using {command down}'`)
+    await sleep(300)
+    await keyboard.pressKey(Key.LeftSuper, Key.V)
+    await keyboard.releaseKey(Key.LeftSuper, Key.V)
   }
 })
 
