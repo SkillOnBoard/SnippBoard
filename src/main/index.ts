@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain, globalShortcut, Tray, Menu } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, globalShortcut, Tray, Menu, screen } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -64,7 +64,7 @@ const createTrayMenu = (mainWindow: BrowserWindow): void => {
   tray.setContextMenu(contextMenu)
 }
 
-function createWindow(): void {
+function createWindow(): BrowserWindow {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     alwaysOnTop: true,
@@ -83,8 +83,21 @@ function createWindow(): void {
     }
   })
 
-  mainWindow.on('ready-to-show', () => {
+  mainWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
+
+  const showWindow = (): void => {
+    const { x, y } = screen.getCursorScreenPoint()
+    // Find the display where the mouse cursor will be
+    const currentDisplay = screen.getDisplayNearestPoint({ x, y })
+    // Set window position to that display coordinates
+    mainWindow.setPosition(currentDisplay.workArea.x, currentDisplay.workArea.y)
+    // Center window relatively to that display
+    mainWindow.center()
     mainWindow.show()
+  }
+
+  mainWindow.on('ready-to-show', () => {
+    showWindow()
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -101,7 +114,7 @@ function createWindow(): void {
   }
 
   const openShortcut = globalShortcut.register('Control+Space', () => {
-    mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show()
+    mainWindow.isVisible() ? mainWindow.hide() : showWindow()
   })
 
   if (!openShortcut) {
@@ -138,6 +151,7 @@ function createWindow(): void {
   })
 
   createTrayMenu(mainWindow)
+  return mainWindow
 }
 
 // This method will be called when Electron has finished
