@@ -6,7 +6,6 @@ interface Props {
   labels: string[]
   selectedIndex: number
   showCode: boolean
-  setShowCode: (value: boolean) => void
   setSelectedIndex: (value: number) => void
 }
 
@@ -16,16 +15,12 @@ const SearchBarRow = ({
   labels,
   selectedIndex,
   showCode,
-  setShowCode,
   setSelectedIndex
 }: Props): JSX.Element => {
   return (
     <div
       key={index}
       className={`flex justify-between items-center cursor-pointer mx-4 px-4 py-2 rounded-lg ${selectedIndex == index ? 'bg-gray-700' : ''}`}
-      onClick={() => {
-        if (selectedIndex >= 0) setShowCode(!showCode)
-      }}
       onMouseOver={() => setSelectedIndex(index)}
     >
       <div className={`flex text-white teitems-center space-x-2 my-1`}>
