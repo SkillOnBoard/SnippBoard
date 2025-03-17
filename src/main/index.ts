@@ -217,7 +217,6 @@ ipcMain.on('close-and-paste', async () => {
   }
 })
 
-
 ipcMain.on('list-snippets', async (event, searchData) => {
   try {
     const ids = searchData?.ids
@@ -321,5 +320,3 @@ ipcMain.on('list-tags', async (event) => {
     event.reply('list-tags-response', { status: 'error', message: error })
   }
 })
-
-
