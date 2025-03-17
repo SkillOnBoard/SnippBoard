@@ -63,7 +63,7 @@ function SearchBar(): JSX.Element {
       navigator.clipboard.writeText(results[selectedIndex]?.content)
       window.electron?.ipcRenderer.send('close-and-paste')
     } catch (error) {
-      console.error('Error al pegar el portapapeles:', error)
+      console.error('Error:', error)
     }
   }
 
