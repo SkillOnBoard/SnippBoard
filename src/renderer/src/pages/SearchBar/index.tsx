@@ -58,6 +58,15 @@ function SearchBar(): JSX.Element {
       : []
   }
 
+  const closeAppAndPasteClipboard = (): void => {
+    try {
+      navigator.clipboard.writeText(results[selectedIndex]?.content)
+      window.electron?.ipcRenderer.send('close-and-paste')
+    } catch (error) {
+      console.error('Error:', error)
+    }
+  }
+
   const handleEscape = (): void => {
     if (deleteModalOpen) {
       setDeleteModalOpen(false)
@@ -85,6 +94,8 @@ function SearchBar(): JSX.Element {
   const handleEnter = (): void => {
     if (deleteModalOpen) {
       onDelete()
+    } else {
+      closeAppAndPasteClipboard()
     }
   }
 
@@ -152,13 +163,13 @@ function SearchBar(): JSX.Element {
     {
       label: t('actions.copy'),
       keyboardKeys: ['Meta', 'KeyC'],
+      hidden: true,
       callback: handleCopy,
       disabled: showEmptyState || !query
     },
     {
-      label: '',
+      label: t('actions.close_and_paste'),
       keyboardKeys: ['Enter'],
-      hidden: true,
       callback: handleEnter,
       disabled: showEmptyState || !query
     },

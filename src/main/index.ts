@@ -8,6 +8,7 @@ import {
   Menu,
   nativeImage
 } from 'electron'
+import { keyboard, Key, sleep } from '@nut-tree-fork/nut-js'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -15,6 +16,7 @@ import trayIcon from '../../resources/icon.ico?asset'
 
 import { runMigrations } from './migrator'
 import { Snippet, Label } from './models'
+import { exec } from 'child_process'
 
 let tray: Tray | null = null
 
@@ -204,6 +206,18 @@ app.on('window-all-closed', () => {
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
 
+ipcMain.on('close-and-paste', async () => {
+  const win = BrowserWindow.getFocusedWindow()
+  if (win) {
+    win.hide()
+    exec(`osascript -e 'tell application "System Events" to key code 48 using {command down}'`)
+    await sleep(300)
+    await keyboard.pressKey(Key.LeftSuper, Key.V)
+    await keyboard.releaseKey(Key.LeftSuper, Key.V)
+  }
+})
+
+
 ipcMain.on('list-snippets', async (event, searchData) => {
   try {
     const ids = searchData?.ids
@@ -307,3 +321,5 @@ ipcMain.on('list-tags', async (event) => {
     event.reply('list-tags-response', { status: 'error', message: error })
   }
 })
+
+
