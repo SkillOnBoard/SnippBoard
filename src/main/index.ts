@@ -97,6 +97,12 @@ function createWindow(): void {
     }
   })
 
+  const child = new BrowserWindow({ parent: mainWindow, modal: true, show: false })
+  child.loadFile(join(__dirname, '../renderer/index.html'))
+  child.once('ready-to-show', () => {
+    child.show()
+  })
+
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })
@@ -116,6 +122,10 @@ function createWindow(): void {
 
   const openShortcut = globalShortcut.register('Control+Space', () => {
     mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show()
+  })
+
+  globalShortcut.register('Control+X', () => {
+    child.isVisible() ? child.hide() : child.show()
   })
 
   if (!openShortcut) {
