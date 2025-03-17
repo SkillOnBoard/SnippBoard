@@ -1,8 +1,17 @@
-import { app, shell, BrowserWindow, ipcMain, globalShortcut, Tray, Menu } from 'electron'
+import {
+  app,
+  shell,
+  BrowserWindow,
+  ipcMain,
+  globalShortcut,
+  Tray,
+  Menu,
+  nativeImage
+} from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import trayIcon from '../../resources/logo.png?asset'
+import trayIcon from '../../resources/icon.ico?asset'
 
 import { runMigrations } from './migrator'
 import { Snippet, Label } from './models'
@@ -10,7 +19,10 @@ import { Snippet, Label } from './models'
 let tray: Tray | null = null
 
 const createTrayMenu = (mainWindow: BrowserWindow): void => {
-  tray = new Tray(trayIcon)
+  const image = nativeImage.createFromPath(trayIcon)
+  const resizedImage = image.resize({ width: 16 })
+  resizedImage.setTemplateImage(true)
+  tray = new Tray(resizedImage)
 
   const contextMenu = Menu.buildFromTemplate([
     {
@@ -73,7 +85,7 @@ function createWindow(): void {
     show: false,
     frame: false,
     resizable: false,
-    ...(process.platform === 'linux' ? { icon } : {}),
+    icon: icon,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -147,6 +159,8 @@ app.whenReady().then(async () => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
 
+  app.dock.setIcon(icon)
+
   await runMigrations()
 
   // Default open or close DevTools by F12 in development
@@ -168,7 +182,13 @@ app.whenReady().then(async () => {
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow()
+    } else {
+      BrowserWindow.getAllWindows().forEach((win) => {
+        win.show()
+      })
+    }
   })
 })
 
