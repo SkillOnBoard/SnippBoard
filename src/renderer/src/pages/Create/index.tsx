@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useCreateSnippet } from '@renderer/hooks/useCreateSnippet'
 import Layout from '@renderer/components/Layout'
@@ -9,6 +9,7 @@ import Snippet, { Errors } from '@renderer/components/forms/Snippet'
 
 function Create(): JSX.Element {
   const navigate = useNavigate()
+  const [content] = useSearchParams()
   const [form, setForm] = useState<Snippet>(new Snippet())
   const [errors, setErrors] = useState<Errors>({})
   const { t } = useTranslation()
@@ -41,6 +42,12 @@ function Create(): JSX.Element {
       })
     })
   }
+
+  useEffect(() => {
+    if (content.get('content')) {
+      setForm(new Snippet({ content: content.get('content') }))
+    }
+  }, [content])
 
   return (
     <Layout

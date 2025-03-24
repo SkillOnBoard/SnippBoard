@@ -4,7 +4,7 @@ import { Field } from './Field'
 interface SnippetFields {
   id?: number
   title?: string
-  content?: string
+  content?: string | null
   labels?: Label[]
 }
 
