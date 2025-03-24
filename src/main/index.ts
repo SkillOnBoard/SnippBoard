@@ -6,7 +6,8 @@ import {
   globalShortcut,
   Tray,
   Menu,
-  nativeImage
+  nativeImage,
+  dialog
 } from 'electron'
 import { keyboard, Key, sleep } from '@nut-tree-fork/nut-js'
 import { join } from 'path'
@@ -17,6 +18,7 @@ import trayIcon from '../../resources/icon.ico?asset'
 import { runMigrations } from './migrator'
 import { Snippet, Label } from './models'
 import { exec } from 'child_process'
+import { autoUpdater } from 'electron-updater'
 
 let tray: Tray | null = null
 
@@ -152,6 +154,8 @@ function createWindow(): void {
   })
 
   createTrayMenu(mainWindow)
+
+  autoUpdater.checkForUpdatesAndNotify();
 }
 
 // This method will be called when Electron has finished
@@ -193,6 +197,39 @@ app.whenReady().then(async () => {
     }
   })
 })
+
+// Evento cuando hay una actualización disponible
+autoUpdater.on('update-available', () => {
+  dialog.showMessageBox({
+    type: 'info',
+    title: 'Actualización disponible',
+    message: 'Hay una nueva versión disponible. Se descargará en segundo plano.',
+  });
+});
+
+// Evento cuando la actualización se ha descargado
+autoUpdater.on('update-downloaded', () => {
+  dialog
+    .showMessageBox({
+      type: 'info',
+      title: 'Actualización lista',
+      message: 'La nueva versión está lista.'
+    })
+    .then(() => {  
+        autoUpdater.quitAndInstall();
+      }
+    );
+});
+
+autoUpdater.on('download-progress', (progressObj) => {
+  const log_message = `Descargando actualización... ${progressObj.percent.toFixed(2)}%`;
+  console.log(log_message);
+  
+  const win = BrowserWindow.getFocusedWindow()
+  if (win) {
+    win.setTitle(log_message); // O actualizar la UI de la app
+  }
+});
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
