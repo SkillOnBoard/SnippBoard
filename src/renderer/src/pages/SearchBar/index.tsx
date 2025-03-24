@@ -107,6 +107,8 @@ function SearchBar(): JSX.Element {
     if (selectedIndex >= 0) {
       navigator.clipboard.writeText(results[selectedIndex]?.content)
       addNotification({ type: 'success', description: t('copy.notifications.success') })
+      // Adding timeout to see the notification in a smooth way.
+      setTimeout(() => window.electron?.ipcRenderer.send('hide-window'), 500)
     }
   }
 
@@ -163,7 +165,6 @@ function SearchBar(): JSX.Element {
     {
       label: t('actions.copy'),
       keyboardKeys: ['Meta', 'KeyC'],
-      hidden: true,
       callback: handleCopy,
       disabled: showEmptyState || !query
     },
