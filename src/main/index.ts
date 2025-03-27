@@ -1,16 +1,30 @@
-import { app, shell, BrowserWindow, ipcMain, globalShortcut, Tray, Menu, screen } from 'electron'
+import {
+  app,
+  shell,
+  BrowserWindow,
+  ipcMain,
+  globalShortcut,
+  Tray,
+  Menu,
+  nativeImage
+} from 'electron'
+import { keyboard, Key, sleep } from '@nut-tree-fork/nut-js'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import trayIcon from '../../resources/logo.png?asset'
+import trayIcon from '../../resources/icon.ico?asset'
 
 import { runMigrations } from './migrator'
 import { Snippet, Label } from './models'
+import { exec } from 'child_process'
 
 let tray: Tray | null = null
 
 const createTrayMenu = (mainWindow: BrowserWindow): void => {
-  tray = new Tray(trayIcon)
+  const image = nativeImage.createFromPath(trayIcon)
+  const resizedImage = image.resize({ width: 16 })
+  resizedImage.setTemplateImage(true)
+  tray = new Tray(resizedImage)
 
   const contextMenu = Menu.buildFromTemplate([
     {
@@ -73,7 +87,7 @@ function createWindow(): BrowserWindow {
     show: false,
     frame: false,
     resizable: false,
-    ...(process.platform === 'linux' ? { icon } : {}),
+    icon: icon,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -161,6 +175,8 @@ app.whenReady().then(async () => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
 
+  app.dock.setIcon(icon)
+
   await runMigrations()
 
   // Default open or close DevTools by F12 in development
@@ -182,7 +198,13 @@ app.whenReady().then(async () => {
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow()
+    } else {
+      BrowserWindow.getAllWindows().forEach((win) => {
+        win.show()
+      })
+    }
   })
 })
 
@@ -197,6 +219,17 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
+
+ipcMain.on('close-and-paste', async () => {
+  const win = BrowserWindow.getFocusedWindow()
+  if (win) {
+    win.hide()
+    exec(`osascript -e 'tell application "System Events" to key code 48 using {command down}'`)
+    await sleep(300)
+    await keyboard.pressKey(Key.LeftSuper, Key.V)
+    await keyboard.releaseKey(Key.LeftSuper, Key.V)
+  }
+})
 
 ipcMain.on('list-snippets', async (event, searchData) => {
   try {

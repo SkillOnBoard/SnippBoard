@@ -58,6 +58,15 @@ function SearchBar(): JSX.Element {
       : []
   }
 
+  const closeAppAndPasteClipboard = (): void => {
+    try {
+      navigator.clipboard.writeText(results[selectedIndex]?.content)
+      window.electron?.ipcRenderer.send('close-and-paste')
+    } catch (error) {
+      console.error('Error:', error)
+    }
+  }
+
   const handleEscape = (): void => {
     if (deleteModalOpen) {
       setDeleteModalOpen(false)
@@ -85,6 +94,8 @@ function SearchBar(): JSX.Element {
   const handleEnter = (): void => {
     if (deleteModalOpen) {
       onDelete()
+    } else {
+      closeAppAndPasteClipboard()
     }
   }
 
@@ -96,6 +107,8 @@ function SearchBar(): JSX.Element {
     if (selectedIndex >= 0) {
       navigator.clipboard.writeText(results[selectedIndex]?.content)
       addNotification({ type: 'success', description: t('copy.notifications.success') })
+      // Adding timeout to see the notification in a smooth way.
+      setTimeout(() => window.electron?.ipcRenderer.send('hide-window'), 500)
     }
   }
 
@@ -156,9 +169,8 @@ function SearchBar(): JSX.Element {
       disabled: showEmptyState || !query
     },
     {
-      label: '',
+      label: t('actions.close_and_paste'),
       keyboardKeys: ['Enter'],
-      hidden: true,
       callback: handleEnter,
       disabled: showEmptyState || !query
     },
