@@ -6,7 +6,8 @@ import {
   globalShortcut,
   Tray,
   Menu,
-  nativeImage
+  nativeImage,
+  screen
 } from 'electron'
 import { keyboard, Key, sleep } from '@nut-tree-fork/nut-js'
 import { join } from 'path'
