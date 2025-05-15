@@ -1,5 +1,6 @@
 import {
   app,
+  clipboard,
   shell,
   BrowserWindow,
   ipcMain,
@@ -19,8 +20,14 @@ import { runMigrations } from './migrator'
 import { Snippet, Label } from './models'
 import { exec } from 'child_process'
 
-let tray: Tray | null = null
+type SnippetFields = {
+  title: string
+  content: string
+  labels: Label[]
+}
 
+let tray: Tray | null = null
+let toastWindow: BrowserWindow | null = null
 const createTrayMenu = (mainWindow: BrowserWindow): void => {
   const image = nativeImage.createFromPath(trayIcon)
   const resizedImage = image.resize({ width: 16 })
@@ -79,6 +86,57 @@ const createTrayMenu = (mainWindow: BrowserWindow): void => {
   tray.setContextMenu(contextMenu)
 }
 
+function createToast(message: string): void {
+  // If toast already exists, destroy it
+  if (toastWindow) {
+    toastWindow.close()
+    toastWindow = null
+  }
+
+  // Get position near tray icon
+  const { bounds } = screen.getPrimaryDisplay()
+  const x = bounds.width - 300 - 20 // Right margin
+  const y = 40 // Top margin (can adjust)
+
+  toastWindow = new BrowserWindow({
+    width: 300,
+    height: 60,
+    x,
+    y,
+    frame: false,
+    alwaysOnTop: true,
+    skipTaskbar: true,
+    transparent: true,
+    resizable: false,
+    show: false,
+    focusable: false,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false
+    }
+  })
+
+  toastWindow.loadURL(
+    `data:text/html;charset=utf-8,${encodeURIComponent(`
+    <html>
+      <body style="margin:0;padding:0;font-family:sans-serif;background:rgba(30,30,30,0.85);color:white;display:flex;align-items:center;justify-content:center;height:100%;border-radius:8px;">
+        <div>${message}</div>
+      </body>
+    </html>
+  `)}`
+  )
+
+  toastWindow.once('ready-to-show', () => {
+    toastWindow?.show()
+  })
+
+  // Auto-hide after 10 seconds
+  setTimeout(() => {
+    toastWindow?.close()
+    toastWindow = null
+  }, 10000)
+}
+
 function createWindow(): BrowserWindow {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -130,6 +188,23 @@ function createWindow(): BrowserWindow {
 
   const openShortcut = globalShortcut.register('Control+Space', () => {
     mainWindow.isVisible() ? mainWindow.hide() : showWindow()
+  })
+
+  globalShortcut.register('Control+Shift+C', async () => {
+    // Simulate Cmd+C in the active app
+    await keyboard.pressKey(Key.LeftSuper, Key.C)
+    await keyboard.releaseKey(Key.LeftSuper, Key.C)
+
+    const copiedText = clipboard.readText('selection')
+
+    const snippetData = {
+      title: 'Untitled snippet ' + new Date().toISOString(),
+      content: copiedText,
+      labels: [] // TODO: Add labels using AI
+    }
+    await createSnippet(snippetData).then(() => {
+      createToast(`✅ Snippet was saved!`)
+    })
   })
 
   if (!openShortcut) {
@@ -251,28 +326,32 @@ ipcMain.on('list-snippets', async (event, searchData) => {
   }
 })
 
+const createSnippet = async (snippetData: SnippetFields): Promise<Snippet> => {
+  const promiseLabels = snippetData.labels.map(async (label) => {
+    if (label.id === null || label.id === undefined) {
+      return Label.create({ title: label.title })
+    } else {
+      return Label.findByPk(label.id)
+    }
+  })
+
+  const labels = await Promise.all(promiseLabels)
+
+  // This any is because .addLabels() is not typed
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const newSnippet: any = await Snippet.create({
+    title: snippetData.title,
+    content: snippetData.content
+  })
+
+  newSnippet.addLabels(labels)
+
+  return newSnippet.toJSON()
+}
+
 ipcMain.on('create-snippet', async (event, snippetData) => {
   try {
-    const promiseLabels = snippetData.labels.map(async (label) => {
-      if (label.id === null || label.id === undefined) {
-        return Label.create(label)
-      } else {
-        return Label.findByPk(label.id)
-      }
-    })
-
-    const labels = await Promise.all(promiseLabels)
-
-    // This any is because .addLabels() is not typed
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const newSnippet: any = await Snippet.create({
-      title: snippetData.title,
-      content: snippetData.content
-    })
-
-    newSnippet.addLabels(labels)
-
-    const serializedData = newSnippet.toJSON()
+    const serializedData = await createSnippet(snippetData)
     event.reply('create-snippet-response', { status: 'success', message: serializedData })
   } catch (error) {
     event.reply('create-snippet-response', { status: 'error', message: error })
