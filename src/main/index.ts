@@ -155,7 +155,7 @@ function createWindow(): void {
 
   createTrayMenu(mainWindow)
 
-  autoUpdater.checkForUpdatesAndNotify();
+  autoUpdater.checkForUpdatesAndNotify()
 }
 
 // This method will be called when Electron has finished
@@ -203,9 +203,9 @@ autoUpdater.on('update-available', () => {
   dialog.showMessageBox({
     type: 'info',
     title: 'Actualización disponible',
-    message: 'Hay una nueva versión disponible. Se descargará en segundo plano.',
-  });
-});
+    message: 'Hay una nueva versión disponible. Se descargará en segundo plano.'
+  })
+})
 
 // Evento cuando la actualización se ha descargado
 autoUpdater.on('update-downloaded', () => {
@@ -215,21 +215,20 @@ autoUpdater.on('update-downloaded', () => {
       title: 'Actualización lista',
       message: 'La nueva versión está lista.'
     })
-    .then(() => {  
-        autoUpdater.quitAndInstall();
-      }
-    );
-});
+    .then(() => {
+      autoUpdater.quitAndInstall()
+    })
+})
 
 autoUpdater.on('download-progress', (progressObj) => {
-  const log_message = `Descargando actualización... ${progressObj.percent.toFixed(2)}%`;
-  console.log(log_message);
-  
+  const log_message = `Descargando actualización... ${progressObj.percent.toFixed(2)}%`
+  console.log(log_message)
+
   const win = BrowserWindow.getFocusedWindow()
   if (win) {
-    win.setTitle(log_message); // O actualizar la UI de la app
+    win.setTitle(log_message) // O actualizar la UI de la app
   }
-});
+})
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
@@ -253,7 +252,6 @@ ipcMain.on('close-and-paste', async () => {
     await keyboard.releaseKey(Key.LeftSuper, Key.V)
   }
 })
-
 
 ipcMain.on('list-snippets', async (event, searchData) => {
   try {
@@ -358,5 +356,3 @@ ipcMain.on('list-tags', async (event) => {
     event.reply('list-tags-response', { status: 'error', message: error })
   }
 })
-
-
