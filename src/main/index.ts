@@ -156,8 +156,21 @@ function createWindow(): BrowserWindow {
     }
   })
 
-  mainWindow.on('ready-to-show', () => {
+  mainWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
+
+  const showWindow = (): void => {
+    const { x, y } = screen.getCursorScreenPoint()
+    // Find the display where the mouse cursor will be
+    const currentDisplay = screen.getDisplayNearestPoint({ x, y })
+    // Set window position to that display coordinates
+    mainWindow.setPosition(currentDisplay.workArea.x, currentDisplay.workArea.y)
+    // Center window relatively to that display
+    mainWindow.center()
     mainWindow.show()
+  }
+
+  mainWindow.on('ready-to-show', () => {
+    showWindow()
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -174,7 +187,7 @@ function createWindow(): BrowserWindow {
   }
 
   const openShortcut = globalShortcut.register('Control+Space', () => {
-    mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show()
+    mainWindow.isVisible() ? mainWindow.hide() : showWindow()
   })
 
   globalShortcut.register('Control+Shift+C', async () => {
@@ -228,6 +241,7 @@ function createWindow(): BrowserWindow {
   })
 
   createTrayMenu(mainWindow)
+  return mainWindow
 }
 
 // This method will be called when Electron has finished
