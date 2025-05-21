@@ -45,8 +45,14 @@ export const useListSnippets = (searchData: SearchDataType = {}): ReturnType => 
   }
 
   useEffect(() => {
-    fetchData()
-  }, [searchData])
+    if (searchData.searchText !== '' || searchData.ids !== undefined) {
+      fetchData()
+    } else {
+      setResponse({ data: null, error: null, loading: false })
+    }
+    console.log('searchData', searchData)
+    console.log('response', response)
+  }, [searchData.searchText])
 
   return {
     ...response,
