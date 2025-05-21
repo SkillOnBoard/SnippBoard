@@ -26,6 +26,7 @@
   "dependencies": {
     "@electron-toolkit/preload": "3.0.1",
     "@electron-toolkit/utils": "3.0.0",
+    "@google/generative-ai": "^0.24.1",
     "@nut-tree-fork/nut-js": "^4.2.4",
     "autoprefixer": "10.4.20",
     "electron-updater": "6.3.9",

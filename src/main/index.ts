@@ -19,6 +19,7 @@ import trayIcon from '../../resources/icon.ico?asset'
 import { runMigrations } from './migrator'
 import { Snippet, Label } from './models'
 import { exec } from 'child_process'
+import { askGemini } from './ai/gemini'
 
 type SnippetFields = {
   title: string
@@ -184,10 +185,12 @@ function createWindow(): BrowserWindow {
 
     const copiedText = clipboard.readText('selection')
 
-    const snippetData = {
-      title: 'Untitled snippet ' + new Date().toISOString(),
+    const aiResponse = await askGemini(copiedText)
+
+    const snippetData: SnippetFields = {
+      title: aiResponse?.title ?? 'Untitled snippet ' + new Date().toISOString(),
       content: copiedText,
-      labels: [] // TODO: Add labels using AI
+      labels: aiResponse?.tag ? [new Label({ title: aiResponse.tag })] : []
     }
     await createSnippet(snippetData).then(() => {
       createToast(`✅ Snippet was saved!`)
@@ -228,6 +231,8 @@ function createWindow(): BrowserWindow {
   })
 
   createTrayMenu(mainWindow)
+
+  return mainWindow;
 }
 
 // This method will be called when Electron has finished

@@ -7,7 +7,8 @@ const api = {
   createSnippetResponse: (callback): unknown => ipcRenderer.on('create-snippet-response', callback),
   updateSnippetResponse: (callback): unknown => ipcRenderer.on('update-snippet-response', callback),
   deleteSnippetResponse: (callback): unknown => ipcRenderer.on('delete-snippet-response', callback),
-  listTagsResponse: (callback): unknown => ipcRenderer.on('list-tags-response', callback)
+  listTagsResponse: (callback): unknown => ipcRenderer.on('list-tags-response', callback),
+  askAIResponse: (callback): unknown => ipcRenderer.invoke('ask-ai-response', callback)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
