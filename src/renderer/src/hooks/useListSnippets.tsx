@@ -50,8 +50,6 @@ export const useListSnippets = (searchData: SearchDataType = {}): ReturnType => 
     } else {
       setResponse({ data: null, error: null, loading: false })
     }
-    console.log('searchData', searchData)
-    console.log('response', response)
   }, [searchData.searchText])
 
   return {
