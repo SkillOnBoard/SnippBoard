@@ -23,7 +23,7 @@ function SearchBar(): JSX.Element {
   const showEmptyState = results.length === 0
   const showCode = !showEmptyState && results.length + 1 >= selectedIndex
 
-  const { data, refetch } = useListSnippets()
+  const { data, refetch } = useListSnippets({ searchText: query })
   const [deleteSnippet] = useDeleteSnippet({
     onSuccess: () => {
       addNotification({ type: 'success', description: t('delete.notifications.success') })
@@ -43,20 +43,6 @@ function SearchBar(): JSX.Element {
   useLayoutEffect(() => {
     window.electron?.ipcRenderer.send('resize-window', 'small')
   }, [])
-
-  const filterData = (): Snippet[] => {
-    return data
-      ? // TODO: Explore how to filter faster and properly
-        data.filter((obj) => {
-          const value = query.trim().toLowerCase()
-          return (
-            obj.title.toLowerCase().includes(value) ||
-            obj.content.toLowerCase().includes(value) ||
-            obj.labels?.some((label) => label.title.toLowerCase().includes(value))
-          )
-        })
-      : []
-  }
 
   const closeAppAndPasteClipboard = (): void => {
     try {
@@ -107,6 +93,8 @@ function SearchBar(): JSX.Element {
     if (selectedIndex >= 0) {
       navigator.clipboard.writeText(results[selectedIndex]?.content)
       addNotification({ type: 'success', description: t('copy.notifications.success') })
+      // Adding timeout to see the notification in a smooth way.
+      setTimeout(() => window.electron?.ipcRenderer.send('hide-window'), 500)
     }
   }
 
@@ -117,7 +105,7 @@ function SearchBar(): JSX.Element {
   }, [selectedIndex])
 
   useEffect(() => {
-    const filteredData = filterData()
+    const filteredData = data || []
     setResults(filteredData)
 
     if (query) {
@@ -163,7 +151,6 @@ function SearchBar(): JSX.Element {
     {
       label: t('actions.copy'),
       keyboardKeys: ['Meta', 'KeyC'],
-      hidden: true,
       callback: handleCopy,
       disabled: showEmptyState || !query
     },

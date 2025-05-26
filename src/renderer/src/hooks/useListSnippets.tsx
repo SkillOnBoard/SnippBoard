@@ -10,6 +10,7 @@ type ResponseType = {
 
 type SearchDataType = {
   ids?: number[]
+  searchText?: string
 }
 
 export const useListSnippets = (searchData: SearchDataType = {}): ReturnType => {
@@ -44,8 +45,12 @@ export const useListSnippets = (searchData: SearchDataType = {}): ReturnType => 
   }
 
   useEffect(() => {
-    fetchData()
-  }, [])
+    if (searchData.searchText !== '' || searchData.ids !== undefined) {
+      fetchData()
+    } else {
+      setResponse({ data: null, error: null, loading: false })
+    }
+  }, [searchData.searchText])
 
   return {
     ...response,
