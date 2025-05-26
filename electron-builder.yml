@@ -19,9 +19,9 @@ nsis:
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
 mac:
-  icon: build/icon.icns 
+  icon: build/icon.icns
   hardenedRuntime: true
-  entitlements: "build/entitlements.mac.plist"
+  entitlements: 'build/entitlements.mac.plist'
   entitlementsInherit: build/entitlements.mac.plist
   extendInfo:
     NSAccessibilityAccess: 'Esta aplicación necesita control del ordenador para pegar.'

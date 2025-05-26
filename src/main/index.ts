@@ -15,6 +15,7 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import trayIcon from '../../resources/icon.ico?asset'
+import { Op } from 'sequelize'
 
 import { runMigrations } from './migrator'
 import { Snippet, Label } from './models'
@@ -309,9 +310,26 @@ ipcMain.on('close-and-paste', async () => {
 
 ipcMain.on('list-snippets', async (event, searchData) => {
   try {
-    const ids = searchData?.ids
+    const { ids, searchText } = searchData
+    const whereClause = {
+      [Op.and]: [
+        ids && ids.length > 0 ? { id: ids } : {},
+        searchText
+          ? {
+              [Op.or]: [
+                { title: { [Op.like]: `%${searchText}%` } },
+                { content: { [Op.like]: `%${searchText}%` } },
+                {
+                  '$labels.title$': { [Op.like]: `%${searchText}%` }
+                }
+              ]
+            }
+          : {}
+      ]
+    }
+
     const snippets = await Snippet.findAll({
-      where: ids && ids.length > 0 ? { id: ids } : undefined,
+      where: whereClause,
       include: [
         {
           model: Label,
@@ -319,6 +337,7 @@ ipcMain.on('list-snippets', async (event, searchData) => {
         }
       ]
     })
+
     const serializedData = snippets.map((snippet) => snippet.toJSON())
     event.reply('list-snippets-response', { status: 'success', message: serializedData })
   } catch (error) {
