@@ -305,10 +305,16 @@ autoUpdater.on('update-downloaded', () => {
     .showMessageBox({
       type: 'info',
       title: 'Actualización lista',
-      message: 'La nueva versión está lista.'
+      message: 'La nueva versión está lista.',
+      buttons: ['Instalar ahora', 'Más tarde'],
+      defaultId: 0,
+      cancelId: 1
     })
-    .then(() => {
-      autoUpdater.quitAndInstall()
+    .then((result) => {
+      if (result.response === 0) {
+        // User clicked "Install Now"
+        autoUpdater.quitAndInstall(false, true) // false = don't force quit, true = install silently
+      }
     })
 })
 
