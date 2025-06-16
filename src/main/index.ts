@@ -245,6 +245,7 @@ function createWindow(): BrowserWindow {
 
   createTrayMenu(mainWindow)
 
+  autoUpdater.autoDownload = false
   autoUpdater.checkForUpdatesAndNotify()
 
   return mainWindow
@@ -290,42 +291,22 @@ app.whenReady().then(async () => {
   })
 })
 
-// Evento cuando hay una actualización disponible
+// Event when an update is available
 autoUpdater.on('update-available', () => {
-  dialog.showMessageBox({
-    type: 'info',
-    title: 'Actualización disponible',
-    message: 'Hay una nueva versión disponible. Se descargará en segundo plano.'
-  })
-})
-
-// Evento cuando la actualización se ha descargado
-autoUpdater.on('update-downloaded', () => {
   dialog
     .showMessageBox({
       type: 'info',
-      title: 'Actualización lista',
-      message: 'La nueva versión está lista.',
-      buttons: ['Instalar ahora', 'Más tarde'],
+      title: 'Update available',
+      message: 'A new version is available. It will open our download website.',
+      buttons: ['Download now', 'Later'],
       defaultId: 0,
       cancelId: 1
     })
     .then((result) => {
       if (result.response === 0) {
-        // User clicked "Install Now"
-        autoUpdater.quitAndInstall(false, true) // false = don't force quit, true = install silently
+        shell.openExternal('https://github.com/SkillOnBoard/SnippBoardPublic')
       }
     })
-})
-
-autoUpdater.on('download-progress', (progressObj) => {
-  const log_message = `Descargando actualización... ${progressObj.percent.toFixed(2)}%`
-  console.log(log_message)
-
-  const win = BrowserWindow.getFocusedWindow()
-  if (win) {
-    win.setTitle(log_message) // O actualizar la UI de la app
-  }
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common

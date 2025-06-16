@@ -10,7 +10,7 @@ const SearchBarHeader = ({ query, setQuery }: Props): JSX.Element => {
   const { t } = useTranslation()
   return (
     <div className="left-0 w-full draggable">
-      <div className="flex flex-row gap-2 items-center p-4 bg-red-500">
+      <div className="flex flex-row gap-2 items-center p-4">
         <Icon name="search" />
         <input
           type="text"
