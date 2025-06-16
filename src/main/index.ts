@@ -8,6 +8,7 @@ import {
   Tray,
   Menu,
   nativeImage,
+  dialog,
   screen
 } from 'electron'
 import { keyboard, Key, sleep } from '@nut-tree-fork/nut-js'
@@ -20,6 +21,7 @@ import { Op } from 'sequelize'
 import { runMigrations } from './migrator'
 import { Snippet, Label } from './models'
 import { exec } from 'child_process'
+import { autoUpdater } from 'electron-updater'
 
 type SnippetFields = {
   title: string
@@ -242,6 +244,10 @@ function createWindow(): BrowserWindow {
   })
 
   createTrayMenu(mainWindow)
+
+  autoUpdater.autoDownload = false
+  autoUpdater.checkForUpdatesAndNotify()
+
   return mainWindow
 }
 
@@ -283,6 +289,24 @@ app.whenReady().then(async () => {
       })
     }
   })
+})
+
+// Event when an update is available
+autoUpdater.on('update-available', () => {
+  dialog
+    .showMessageBox({
+      type: 'info',
+      title: 'Update available',
+      message: 'A new version is available. It will open our download website.',
+      buttons: ['Download now', 'Later'],
+      defaultId: 0,
+      cancelId: 1
+    })
+    .then((result) => {
+      if (result.response === 0) {
+        shell.openExternal('https://github.com/SkillOnBoard/SnippBoardPublic')
+      }
+    })
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common
