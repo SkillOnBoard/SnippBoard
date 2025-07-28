@@ -2,15 +2,25 @@
 
 The best partner to save all your favorite code snipped.
 
-## License
+## 🧑‍💻 Contributors
 
-SnippBoard is licensed under the [Apache License 2.0](./LICENSE).
+- [@camimaya21](https://github.com/camimaya21)
+- [@jorgeregidor](https://github.com/jorgeregidor)
+- [@RubenMZ](https://github.com/RubenMZ)
+- [@pablosentis]() <= Figma
 
-## Recommended IDE Setup
+🔗 If you contributed and are not listed here, feel free to open a PR!
 
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+## 📄 License
+This project is licensed under the Apache License 2.0.
+See the NOTICE file for attribution and third-party notices.
 
-## Project Setup
+## 🤝 Contributing
+We welcome contributions!
+Feel free to open issues, suggest improvements, or submit pull requests.
+
+
+## 🛠 Project Setup
 
 ### Install
 
@@ -32,7 +42,7 @@ $ npm run build:mac
 ```
 
 
-## How to install
+## 💻 How to install
 
 
 You can download the application from the following link:
