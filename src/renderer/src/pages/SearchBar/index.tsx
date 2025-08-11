@@ -99,6 +99,17 @@ function SearchBar(): JSX.Element {
   }
 
   useEffect(() => {
+    window.addEventListener('paste', (event) => {
+      const filteredData = filterData()
+      console.log('filteredData', filteredData)
+      if (filteredData.length === 0) {
+        const value = event.clipboardData?.getData('text')
+        setTimeout(() => navigate(`/snippets/new?content=${value}`), 500)
+      }
+    })
+  }, [])
+
+  useEffect(() => {
     if (selectedIndex !== null && rowRefs.current[selectedIndex]) {
       rowRefs.current[selectedIndex]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
     }
