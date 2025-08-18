@@ -36,7 +36,7 @@
     "react-router-dom": "6.26.0",
     "sequelize": "^6.37.5",
     "sqlite3": "^5.1.7",
-    "tailwindcss": "3.4.7",
+    "tailwindcss": "4.1.12",
     "umzug": "^3.8.2",
     "vite-plugin-node-polyfills": "0.22.0"
   },
