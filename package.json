@@ -38,7 +38,7 @@
     "sqlite3": "^5.1.7",
     "tailwindcss": "3.4.7",
     "umzug": "^3.8.2",
-    "vite-plugin-node-polyfills": "0.22.0"
+    "vite-plugin-node-polyfills": "0.24.0"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "2.0.0",
