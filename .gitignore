@@ -4,4 +4,4 @@ out
 .DS_Store
 *.log*
 resources/data-dev.json
-
+coverage/
