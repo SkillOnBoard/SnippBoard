@@ -34,7 +34,7 @@
     "electron-updater": "6.3.9",
     "i18next": "23.14.0",
     "i18next-browser-languagedetector": "8.0.0",
-    "postcss": "8.4.40",
+    "postcss": "8.5.6",
     "react-i18next": "15.0.1",
     "react-router-dom": "6.26.0",
     "sequelize": "^6.37.5",
