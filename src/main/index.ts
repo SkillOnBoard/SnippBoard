@@ -107,7 +107,7 @@ function createToast(message: string): void {
     x,
     y,
     frame: false,
-    alwaysOnTop: true,
+    alwaysOnTop: false,
     skipTaskbar: true,
     transparent: true,
     resizable: false,
@@ -143,7 +143,7 @@ function createToast(message: string): void {
 function createWindow(): BrowserWindow {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    alwaysOnTop: true,
+    alwaysOnTop: false,
     width: 750,
     height: 100,
     show: false,
@@ -159,7 +159,8 @@ function createWindow(): BrowserWindow {
     }
   })
 
-  mainWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
+  // TODO: Enable this when we have a way to handle the window being visible on all workspaces
+  // mainWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
 
   const showWindow = (): void => {
     const { x, y } = screen.getCursorScreenPoint()
