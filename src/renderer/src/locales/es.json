@@ -1,5 +1,61 @@
 {
+  "actions": {
+    "back": "volver",
+    "create": "nuevo snippet",
+    "copy": "copiar",
+    "close_and_paste": "cerrar y pegar",
+    "edit": "editar",
+    "delete": "eliminar",
+    "for_actions": "acciones",
+    "navigate": "navegar",
+    "save": "guardar"
+  },
   "search_bar": {
+    "empty_state": "No se encontraron resultados",
     "placeholder": "Busca tus snippets"
+  },
+  "create": {
+    "notifications": {
+      "success": "Snippet guardado correctamente",
+      "error": "Ocurrió un error: {{error}}"
+    },
+    "header": "Guardar código",
+    "fields": {
+      "name": {
+        "label": "Nombre",
+        "placeholder": "Nombre del código"
+      },
+      "label": {
+        "label": "Etiqueta",
+        "placeholder": "Seleccionar"
+      },
+      "code": {
+        "label": "Código",
+        "placeholder": "Crea tu snippet"
+      }
+    },
+    "submit": "Crear"
+  },
+  "copy": {
+    "notifications": {
+      "success": "¡Copiado!"
+    }
+  },
+  "delete": {
+    "modal": {
+      "cancel": "No, cancelar",
+      "confirm": "Sí, eliminarlo",
+      "content": "¿Estás seguro de que quieres eliminar este snippet?"
+    },
+    "notifications": {
+      "success": "Snippet eliminado correctamente",
+      "error": "Ocurrió un error: {{error}}"
+    }
+  },
+  "updated": {
+    "notifications": {
+      "success": "Snippet actualizado correctamente",
+      "error": "Ocurrió un error: {{error}}"
+    }
   }
 }
