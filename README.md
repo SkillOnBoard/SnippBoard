@@ -23,19 +23,6 @@ SnippBoard is a powerful desktop application designed to help developers organiz
 - **Memory**: 100 MB available space
 - **Internet**: Required only for initial download
 
-## 🚀 Quick Start
-
-### Download & Install
-
-1. Download the latest release from [GitHub Releases](https://github.com/SkillOnBoard/SnippBoardPublic/releases)
-2. Follow the detailed installation guide in [INSTALLATION.md](INSTALLATION.md)
-
-### First Launch
-
-1. Open SnippBoard from your Applications folder
-2. Press `Control + Space` to activate the app
-3. Start creating your first snippet!
-
 ## 🛠 Development
 
 ### Prerequisites
@@ -70,6 +57,47 @@ npm run build:mac
 # Run tests
 npm test
 ```
+## 🚀 Quick Start
+
+### Build & Install
+
+1. **Build the application:**
+   ```bash
+   npm run build:mac
+   ```
+
+2. **Install the application:**
+   - Navigate to the `dist/` folder
+   - Open the generated `.dmg` file
+   - Drag SnippBoard to your Applications folder
+
+3. **First Launch:**
+   - Open SnippBoard from your Applications folder
+   - Press `Control + Space` to activate the app
+   - Start creating your first snippet!
+
+### Troubleshooting
+
+#### Permission Issues on macOS
+
+If you encounter permission errors when trying to open SnippBoard:
+
+1. **"App is from an unidentified developer" error:**
+   - Go to `System Preferences` > `Security & Privacy` > `General`
+   - Click "Open Anyway" next to the SnippBoard warning
+   - Confirm that you want to open the application
+
+2. **App won't open at all:**
+   - Right-click on SnippBoard in Applications folder
+   - Select "Open" from the context menu
+   - Click "Open" when prompted
+
+3. **Still having issues?**
+   - Check that you have macOS 10.14 or later
+   - Ensure you have sufficient disk space (100 MB minimum)
+   - Try restarting your Mac and attempting again
+
+For detailed installation instructions, see [INSTALLATION.md](INSTALLATION.md).
 
 ## 📁 Project Structure
 
