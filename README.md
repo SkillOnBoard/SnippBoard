@@ -15,12 +15,12 @@ SnippBoard is a powerful desktop application designed to help developers organiz
 - ⌨️ **Keyboard Shortcuts** - Access snippets with `Control + Space`
 - 🎨 **Modern UI** - Clean and intuitive user interface
 - 💾 **Local Storage** - Your data stays on your machine
-- 🌍 **Multi-language Support** - Available in multiple languages
+- 🌍 **Multi-language Support** - Available in multiple languages 
 
 ## 📋 Requirements
 
 - **Operating System**: macOS 10.14 or later
-- **Memory**: 100 MB available space
+- **Memory**: 400 MB available space
 - **Internet**: Required only for initial download
 
 ## 🛠 Development
@@ -76,27 +76,6 @@ npm test
    - Press `Control + Space` to activate the app
    - Start creating your first snippet!
 
-### Troubleshooting
-
-#### Permission Issues on macOS
-
-If you encounter permission errors when trying to open SnippBoard:
-
-1. **"App is from an unidentified developer" error:**
-   - Go to `System Preferences` > `Security & Privacy` > `General`
-   - Click "Open Anyway" next to the SnippBoard warning
-   - Confirm that you want to open the application
-
-2. **App won't open at all:**
-   - Right-click on SnippBoard in Applications folder
-   - Select "Open" from the context menu
-   - Click "Open" when prompted
-
-3. **Still having issues?**
-   - Check that you have macOS 10.14 or later
-   - Ensure you have sufficient disk space (100 MB minimum)
-   - Try restarting your Mac and attempting again
-
 For detailed installation instructions, see [INSTALLATION.md](INSTALLATION.md).
 
 ## 📁 Project Structure
@@ -128,6 +107,30 @@ We welcome contributions! Here's how you can help:
 - Write tests for new features
 - Update documentation as needed
 - Ensure all tests pass before submitting
+
+### Troubleshooting
+
+<details>
+
+   <summary> Permission Issues on macOS </summary>
+
+   If you encounter permission errors when trying to open SnippBoard:
+
+1. **"App is from an unidentified developer" error:**
+   - Go to `System Preferences` > `Security & Privacy` > `General`
+   - Click "Open Anyway" next to the SnippBoard warning
+   - Confirm that you want to open the application
+
+2. **App won't open at all:**
+   - Right-click on SnippBoard in Applications folder
+   - Select "Open" from the context menu
+   - Click "Open" when prompted
+
+3. **Still having issues?**
+   - Check that you have macOS 10.14 or later
+   - Ensure you have sufficient disk space (400 MB minimum)
+   - Try restarting your Mac and attempting again
+</details>
 
 ## 🧑‍💻 Contributors
 
